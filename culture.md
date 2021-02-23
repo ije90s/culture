@@ -9,7 +9,7 @@
 - Mapper 인터페이스, Mapper XML : CultureMapper
 - CRUD 구현하기 전, culture 전체 리스트를 가져오는 sql 테스트 
 - CRUD 구현 후, 각각 테스트
-  C(insert)부분에 cdate는 sysdate로 고정으로 테스트(추후에 날짜를 넣어 테스트할 예정)
+  C(insert)부분에 cdate는 sysdate로 고정으로 테스트 >> 임의의 날짜 데이트도 잘 들어가는지 확인 완료
 3. 비즈니스 계층 CRUD 구현 
 - CultureService, CultureServiceImpl(CultureService Implement)
 - 영속계층에 만들어낸 CRUD를 토대로 Service계층을 구현 후, 각각 테스트 
