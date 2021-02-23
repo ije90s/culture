@@ -18,3 +18,25 @@ VO > Mapper > Service순 까먹지 말 것.
 급하게 말고 천천히 테스트 해보며 진행할 것. 
 git에 대한 지식이 부족하여 현 프로젝트를 repository하는데 시간이 오래 걸림 >> 지식 습득 필요 
 ========================================================================================
+4. 웹 계층 CRUD 구현 
+- CultureController에 아래와 같은 표로 구현 
+|구분|URL|Method|Parameter|From|URL이동|
+|---|--------|---|---|--------|---|
+|목록|/culture/list|get||||
+|상세|/culture/get|get|cno|||
+|등록|/culture/register|post|모든항목|입력화면필요|O|
+|수정|/culture/modify|post|모든항목|입력화면필요|O|
+|삭제|/culture/remove|post|cno|입력화면필요|O|
+- MockMVC로 각각 화면 테스트 
+5. 화면단 처리 
+- [부트스트랩을 이용] : https://startbootstrap.com/theme/sb-admin-2
+- 나의 기록 목록 화면 완료, 현재 등록폼 작성중 
+========================================================================================
+오류 : java.lang.NoClassDefFoundError: javax/servlet/SessionCookieConfig
+Junit으로 테스트 케이스를 만들어 세션에 어떤 작업을 할 때, MockHttpSession 객체를 생성하게 되는데, 서블릿 버전 3.1 이하에서는 SessionCookieConfig 클래스를 찾지 못하는 오류가 발생  
+해결책 : 서블릿 jar 파일을 3.1 버전으로 업데이트 해 주면 해결된다.
+오류 : java.lang.IllegalStateException: Failed to load ApplicationContext
+Caused by: java.io.FileNotFoundException: src\main\webapp\WEB-INF\spring\servlet-context.xml (지정된 파일을 찾을 수 없습니다)
+해결책 : 파일 경로가 제대로 되는지 한번 더 체크 
+두개의 오류가 발생한 이유는 테스트를 급하게 하느라 발생하는 것으로, 한번 더 체크하는 습관을 들이도록 하자
+========================================================================================
