@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper 
+	PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+	
+<mapper namespace="com.ije.mapper.CultureMapper">
+	<select id="getList" resultType="com.ije.domain.CultureVO">
+	 select * from tb_culture
+	</select>
+
+	<insert id="insert">
+	INSERT INTO tb_culture(cno, cdate, kind, title, content, RANK, mno)
+	Values(seq_culture.nextval, sysdate, #{kind}, #{title}, #{content}, #{rank}, 1)
+	</insert>
+	
+	<insert id="insertKey">
+		<selectKey keyProperty="cno" order="BEFORE" resultType="Long">
+		Select seq_culture.nextval from dual
+		</selectKey>
+	INSERT INTO tb_culture(cno, cdate, kind, title, content, RANK, mno)
+	Values(#{cno}, sysdate, #{kind}, #{title}, #{content}, #{rank}, 1)	
+	</insert>
+	
+	<select id="read" resultType="com.ije.domain.CultureVO">
+	select * from tb_culture where cno = #{cno}
+	</select>
+	
+	<update id="update">
+	update tb_culture 
+	set cdate=#{cdate}, kind=#{kind}, title=#{title}, content=#{content}, rank=#{rank}, udate=sysdate
+	where cno=#{cno}
+	</update>
+	
+	<delete id="delete">
+	delete tb_culture where cno=#{cno}
+	</delete>
+</mapper>
