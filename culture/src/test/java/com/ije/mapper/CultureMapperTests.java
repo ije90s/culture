@@ -1,8 +1,13 @@
 package com.ije.mapper;
 
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
@@ -17,7 +22,7 @@ public class CultureMapperTests {
 
 	@Autowired
 	private CultureMapper mapper;
-	
+
 	@Test
 	public void getList() {
 		log.info("getList().........................");
@@ -27,11 +32,18 @@ public class CultureMapperTests {
 	@Test
 	public void insert() {
 		log.info("insert()..........................");
+		Calendar cal = Calendar.getInstance();
+		cal.set(2021,0,1);
+		Date strToday = cal.getTime(); 
+		//SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd"); 
+		//String formatSTr = sdf.format(strToday);
+		//log.info(formatSTr);
 		CultureVO ins = new CultureVO(); 
 		ins.setKind(1L);
 		ins.setTitle("insert 테스트");
 		ins.setContent("insert 테스트");
 		ins.setRank(1L);
+		ins.setCdate(strToday);
 		log.info(mapper.insert(ins));
 		log.info(ins);
 	}

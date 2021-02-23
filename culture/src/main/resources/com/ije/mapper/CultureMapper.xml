@@ -10,7 +10,7 @@
 
 	<insert id="insert">
 	INSERT INTO tb_culture(cno, cdate, kind, title, content, RANK, mno)
-	Values(seq_culture.nextval, sysdate, #{kind}, #{title}, #{content}, #{rank}, 1)
+	Values(seq_culture.nextval, #{cdate}, #{kind}, #{title}, #{content}, #{rank}, 1)
 	</insert>
 	
 	<insert id="insertKey">
@@ -18,7 +18,7 @@
 		Select seq_culture.nextval from dual
 		</selectKey>
 	INSERT INTO tb_culture(cno, cdate, kind, title, content, RANK, mno)
-	Values(#{cno}, sysdate, #{kind}, #{title}, #{content}, #{rank}, 1)	
+	Values(#{cno}, #{cdate}, #{kind}, #{title}, #{content}, #{rank}, 1)	
 	</insert>
 	
 	<select id="read" resultType="com.ije.domain.CultureVO">
