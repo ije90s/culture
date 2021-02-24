@@ -31,6 +31,8 @@ public class CultureController {
 	@GetMapping("/get")
 	public void get(@RequestParam("cno") Long cno, Model d) {
 		log.info("상세보기 호출.........................................");
+		log.info("cno : " + cno);
+		log.info("...........................................");
 		d.addAttribute("culture", service.get(cno)); 
 	}
 	
@@ -42,13 +44,25 @@ public class CultureController {
 	@PostMapping("/register")
 	public String register(CultureVO ins, RedirectAttributes rttr) {
 		log.info("등록하기 호출.........................................");
+		log.info(ins);
+		log.info("...........................................");
 		rttr.addFlashAttribute("result", service.registerKey(ins));
 		return "redirect:/culture/list"; 
+	}
+	
+	@GetMapping("/modify")
+	public void modify(@RequestParam("cno") Long cno, Model d) {
+		log.info("수정폼 호출...........................................");
+		log.info(service.get(cno));
+		log.info("...........................................");
+		d.addAttribute("culture", service.get(cno)); 
 	}
 	
 	@PostMapping("/modify")
 	public String modify(CultureVO upt, RedirectAttributes rttr) {
 		log.info("수정하기 호출.........................................");
+		log.info(upt);
+		log.info("...........................................");
 		rttr.addFlashAttribute("result", service.modify(upt));
 		return "redirect:/culture/list";
 	}
@@ -56,6 +70,8 @@ public class CultureController {
 	@PostMapping("/remove")
 	public String remove(@RequestParam("cno") Long cno, RedirectAttributes rttr) {
 		log.info("삭제하기 호출...............................................");
+		log.info("cno : " + cno);
+		log.info("...........................................");
 		rttr.addFlashAttribute("result", service.remove(cno)); 
 		return "redirect:/culture/list";
 	}

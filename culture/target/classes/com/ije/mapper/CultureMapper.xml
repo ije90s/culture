@@ -5,7 +5,7 @@
 	
 <mapper namespace="com.ije.mapper.CultureMapper">
 	<select id="getList" resultType="com.ije.domain.CultureVO">
-	 select * from tb_culture
+	 select * from tb_culture where cno > 0 
 	</select>
 
 	<insert id="insert">

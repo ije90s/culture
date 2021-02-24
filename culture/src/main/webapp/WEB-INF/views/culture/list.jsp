@@ -9,6 +9,7 @@
                         <div class="card mb-4">
                             <div class="card-header">
                                 <i class="fas fa-table mr-1"></i> 리스트형
+                                <button id="regBtn" class="btn btn-secondary float-right">등록</button>
                             </div>
                             <div class="card-body">
                                 <div class="table-responsive">
@@ -34,17 +35,63 @@
      												<c:if test="${culture.kind eq 5}">스포츠</c:if> 
      												<c:if test="${culture.kind eq 6}">기타</c:if> 
      											</td>
-     											<td>${culture.title}</td>
+     											<td><a href="/culture/get?cno=${culture.cno}">${culture.title}</a></td>
      											<td>${culture.content}</td>
      											<td><fmt:formatDate value="${culture.cdate}" pattern="yyyy-MM-dd"/></td>
      										</tr>
      									</c:forEach>
                                         </tbody>
                                     </table>  <!-- table 끝  -->
-                                </div> <!-- table-responsive 끝  -->
+                                </div> <!-- table-responsive 끝  -->                            
                             </div> <!-- card-body 끝  -->
-                        </div> <!-- card mb-4 끝 -->
+                        </div> <!-- card mb-4 끝 -->  
+<!-- The Modal -->
+<div class="modal fade" id="myModal" role="dialog">
+  <div class="modal-dialog">
+    <div class="modal-content">
+
+      <!-- Modal Header -->
+      <div class="modal-header">
+        <h4 class="modal-title">처리결과</h4>
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+      </div>
+
+      <!-- Modal body -->
+      <div class="modal-body">
+     	 정상적으로 처리되었습니다.
+      </div>
+
+      <!-- Modal footer -->
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+      </div>
+
+    </div>
+  </div>
+</div>            	
+<!-- The Modal 끝 -->                            
+                        
                 	</div> <!-- container-fluid 끝 -->   
-                	
+                               
+                          	
+<script type="text/javascript">
+$(document).ready(function(){
+	var result = '<c:out value="${result}"/>';
+	
+	checkModal(result); 
+	history.replaceState({}, null, null);
+	
+	function checkModal(result){
+		if(result === '' || history.state){
+			return; 
+		}
+		$("#myModal").modal("show");
+	}
+	
+	$("#regBtn").click(function(){
+		self.location="/culture/register";
+	});
+});
+</script>                	
 <%@ include file="../includes/footer.jsp"  %>
               
