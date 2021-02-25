@@ -35,16 +35,39 @@
      												<c:if test="${culture.kind eq 5}">스포츠</c:if> 
      												<c:if test="${culture.kind eq 6}">기타</c:if> 
      											</td>
-     											<td><a href="/culture/get?cno=${culture.cno}">${culture.title}</a></td>
+     											<td><a class="move" href="${culture.cno}">${culture.title}</a></td>
      											<td>${culture.content}</td>
      											<td><fmt:formatDate value="${culture.cdate}" pattern="yyyy-MM-dd"/></td>
      										</tr>
      									</c:forEach>
                                         </tbody>
                                     </table>  <!-- table 끝  -->
-                                </div> <!-- table-responsive 끝  -->                            
+                                </div> <!-- table-responsive 끝  -->   
+                                
+                                <div class=" float-right"> <!-- paging 처리 -->
+                                  <ul class="pagination">
+                                  	<c:if test="${page.pre}">
+                                  		<li class="page-item"><a class="page-link" href="${page.start-1}">Previous</a></li>
+                                  	</c:if>
+                                  	
+								    <c:forEach var="num" begin="${page.start}" end="${page.end}">
+								    	<li class='page-item ${page.cri.pageNum eq num? "active":""}'><a class='page-link' href="${num}">${num}</a></li>
+								    </c:forEach>
+								    
+								    <c:if test="">
+								    	<li class="page-item"><a class="page-link" href="${page.end+1}">Next</a></li>
+								    </c:if>
+  								  </ul>
+                                </div> <!-- paging 처리 끝 -->                        
                             </div> <!-- card-body 끝  -->
-                        </div> <!-- card mb-4 끝 -->  
+                        </div> <!-- card mb-4 끝 -->                            
+                	</div> <!-- container-fluid 끝 -->   
+<!-- form -->
+<form role="form" action="/culture/list" method="get">
+	<input type="hidden" name="pageNum" value="${page.cri.pageNum }" />
+	<input type="hidden" name="amount" value="${page.cri.amount }" />
+</form>
+<!-- form 끝 -->                        
 <!-- The Modal -->
 <div class="modal fade" id="myModal" role="dialog">
   <div class="modal-dialog">
@@ -69,10 +92,7 @@
     </div>
   </div>
 </div>            	
-<!-- The Modal 끝 -->                            
-                        
-                	</div> <!-- container-fluid 끝 -->   
-                               
+<!-- The Modal 끝 -->                                  
                           	
 <script type="text/javascript">
 $(document).ready(function(){
@@ -81,6 +101,7 @@ $(document).ready(function(){
 	checkModal(result); 
 	history.replaceState({}, null, null);
 	
+	//모달창
 	function checkModal(result){
 		if(result === '' || history.state){
 			return; 
@@ -88,8 +109,26 @@ $(document).ready(function(){
 		$("#myModal").modal("show");
 	}
 	
+	//등록하기
 	$("#regBtn").click(function(){
 		self.location="/culture/register";
+	});
+	
+	//페이징
+	$("ul.pagination li.page-item a").on("click", function(e){
+		e.preventDefault(); 
+		
+		console.log("click");
+		
+		$("form").find("input[name='pageNum']").val($(this).attr("href"));
+		$("form").submit();
+	});
+	
+	//상세페이지 이동
+	$(".move").click(function(e){
+		e.preventDefault(); 
+		$("form").append("<input type='hidden' name='cno' value='"+$(this).attr("href")+"'>"); 
+		$("form").attr("action", "/culture/get").submit();
 	});
 });
 </script>                	

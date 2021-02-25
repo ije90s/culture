@@ -86,8 +86,13 @@
                                                 <label class="small mb-1" for="content">내용</label>
                                                 <textarea class="form-control" name="content" rows="5" id="content"></textarea>
 											</div>
-											<div class="form-group">
-												<label class="small mb-1">사진첨부</label>
+											<div class="form-group uploadDiv">
+												<label class="small mb-1" for="upload">사진첨부</label>
+												<input type="file" id="upload" name="upload" multiple />
+												<input type="button" id="uploadBtn" value="업로드테스트" />
+											</div>
+											<div class="form-group uploadResult">
+												<ul class="list-group list-group-horizontal"></ul>
 											</div>
                                             <div class="form-group mt-4 mb-0 text-right">
                                             	<button type="submit" class="btn btn-primary">등록</button>
@@ -97,5 +102,128 @@
                              </div> <!-- card-body 끝  -->
                         </div> <!-- card mb-4 끝 -->
                 	</div> <!-- container-fluid 끝 -->   
+<!-- The Modal -->
+<div class="modal fade" id="myModal" role="dialog">
+  <div class="modal-dialog">
+    <div class="modal-content">
+
+      <!-- Modal Header -->
+      <div class="modal-header">
+        <h4 class="modal-title">원본이미지</h4>
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+      </div>
+
+      <!-- Modal body -->
+      <div class="modal-body">
+      </div>
+
+      <!-- Modal footer -->
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+      </div>
+
+    </div>
+  </div>
+</div>            	
+<!-- The Modal 끝 -->                    	
                 	
+<script>
+var regex = new RegExp("(.*?)\.(jpg|png|gif|bmp)$"); 
+var maxSize = 5242880; 
+var uploadResult = $(".uploadResult ul"); 
+
+function checkExtension(fileName, fileSize){
+	if(fileSize > maxSize){
+		alert("파일 사이즈가 초과되었습니다."); 
+		return false; 
+	}
+	
+	if(!regex.test(fileName)){
+		alert("사진 파일 형식만 가능합니다.");
+		return false; 
+	}
+	
+	return true; 
+}
+
+function showUploadResult(uploadResultArr){
+	var str=""; 
+	
+	$(uploadResultArr).each(function(i, obj){
+		
+		if(!obj.image){
+			
+		}else{
+			//str+="<li class='list-group-item'>"+obj.fileName+"</li>";
+			var list = "li_"+i;
+			var fileCallPath = encodeURIComponent(obj.uploadPath+"/s_"+obj.uuid+"_"+obj.fileName); 
+			var originPath = obj.uploadPath+"\\"+obj.uuid+"_"+obj.fileName;
+			originPath = originPath.replace(new RegExp(/\\/g),"/"); 
+			str+="<li class='list-group-item' id='"+list+"'><div class='float-right' data-rank='"+i+"' data-file=\'"+fileCallPath+"\' data-type='image'>x</div>"+
+				 "<a href=\"javascript:showImg(\'"+originPath+"')\"><img src='/display?fileName="+fileCallPath+"' /></a>"+
+				 "</li>"; 
+		}
+	});
+	
+	uploadResult.append(str);
+}
+
+function showImg(originPath){
+	
+	$(".modal-body").html("<img src='/display?fileName="+originPath+"'/>"); 
+	$("#myModal").modal("show");
+}
+
+$(document).ready(function(){
+	
+	var cloneObj = $(".uploadDiv").clone(); 
+	$("#uploadBtn").click(function(){
+		var formData = new FormData(); 
+		var upload = $("input[name='upload']"); 
+		var files = upload[0].files; 
+		
+		//console.log(files);		
+		formData.append("folder", "culture");		
+		
+		for(var i=0;i<files.length;i++){
+			formData.append("upload",files[i]); 
+			if(!checkExtension(files[i].name, files[i].size)){
+				return false; 
+			}
+		}
+
+		$.ajax({
+			url : '/uploadAction', 
+			processData: false, 
+			contentType : false, 
+			data: formData, 
+			type: 'POST', 
+			success: function(result){
+				console.log(result);
+				showUploadResult(result);
+				$(".uploadDiv").html(cloneObj.html()); 
+			}
+		});
+	});
+	
+	$(".uploadResult").on("click", "div", function(e){
+		var targetFile = $(this).data("file"); 
+		var type=$(this).data("type"); 
+		var rank=$(this).data("rank");
+		console.log(targetFile);
+		
+		$.ajax({
+			url : '/deleteFile', 
+			data : {fileName:targetFile, type:type}, 
+			dataType : 'text', 
+			type : 'POST', 
+			success : function(result){
+				$("#li_"+rank).remove();
+				alert("삭제되었습니다.");
+				//$(".uploadResult").html(cloneObj2.html()); 
+			}
+		});
+	});
+});
+</script>                	
 <%@ include file="../includes/footer.jsp"  %>

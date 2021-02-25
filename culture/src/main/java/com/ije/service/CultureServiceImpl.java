@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
+import com.ije.domain.Criteria;
 import com.ije.domain.CultureVO;
 import com.ije.mapper.CultureMapper;
 
@@ -51,8 +52,17 @@ public class CultureServiceImpl implements CultureService {
 	public int remove(Long cno) {
 		log.info("remove.......................");
 		return mapper.delete(cno);
-	} 
-	
+	}
 
+	@Override
+	public List<CultureVO> getListPaging(Criteria cri) {
+		log.info("paging.......................");
+		return mapper.getListPaging(cri);
+	}
 
+	@Override
+	public int getCount(Criteria cri) {
+		log.info("count.......................");
+		return mapper.getCount(cri);
+	}
 }

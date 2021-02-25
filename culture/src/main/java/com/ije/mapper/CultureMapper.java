@@ -2,6 +2,7 @@ package com.ije.mapper;
 
 import java.util.List;
 
+import com.ije.domain.Criteria;
 import com.ije.domain.CultureVO;
 
 public interface CultureMapper {
@@ -15,4 +16,8 @@ public interface CultureMapper {
 	public CultureVO read(Long cno);
 	public int update(CultureVO upt);
 	public int delete(Long cno);
+	
+	//페이징 처리 
+	public List<CultureVO> getListPaging(Criteria cri);
+	public int getCount(Criteria cri); 
 }

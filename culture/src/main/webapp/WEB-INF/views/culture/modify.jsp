@@ -10,6 +10,8 @@
                             <div class="card-body">
 									<form role="form" action="/culture/modify" method="post">
 										<input type="hidden" name="cno" value="${culture.cno }" />
+										<input type="hidden" name="pageNum" value="${cri.pageNum}"/>
+										<input type="hidden" name="amount" value="${cri.amount}" />
 									        <div class="form-group">
                                                 <label class="small mb-1" for="cdate">날짜</label>
                                                 <input class="form-control py-4" name="cdate" id="cdate" type="date" value='<fmt:formatDate value="${culture.cdate}" pattern="yyyy-MM-dd"/>'/>
@@ -111,7 +113,14 @@ $(document).ready(function(){
 				formObj.submit();
 			}
 		}else{
-			self.location="/culture/list";
+			formObj.attr("action", "/culture/list").attr("method", "get"); 
+			var pageNum = $("input[name='pageNum']").clone(); 
+			var amount = $("input[name='amount']").clone(); 
+			
+			formObj.empty(); 
+			formObj.append(pageNum); 
+			formObj.append(amount); 
+			formObj.submit();
 		}
 	});
 });

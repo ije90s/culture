@@ -11,6 +11,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import com.ije.domain.Criteria;
 import com.ije.domain.CultureVO;
 
 import lombok.extern.log4j.Log4j;
@@ -22,7 +23,7 @@ public class CultureMapperTests {
 
 	@Autowired
 	private CultureMapper mapper;
-
+	
 	@Test
 	public void getList() {
 		log.info("getList().........................");
@@ -81,5 +82,14 @@ public class CultureMapperTests {
 		log.info("delete().........................................");
 		log.info(mapper.delete(12L));
 		log.info(mapper.getList());
+	}
+	
+	@Test
+	public void getListPaging() {
+		log.info("getListPaging.........................................");
+		Criteria cri = new Criteria(); 
+		cri.setPageNum(3);
+		cri.setAmount(10);
+		mapper.getListPaging(cri).forEach(culture -> log.info(culture));
 	}
 }

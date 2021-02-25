@@ -82,4 +82,12 @@ public class CultureContollerTests {
 		
 		log.info(returnPage);
 	}
+	
+	@Test
+	public void testPaging() throws Exception {
+		log.info(mockMvc.perform(MockMvcRequestBuilders.get("/culture/list")
+				.param("amount", "10")
+				.param("pageNum", "3")
+				).andReturn().getModelAndView().getModelMap());
+	}
 }

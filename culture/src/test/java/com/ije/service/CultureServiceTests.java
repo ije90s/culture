@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import com.ije.domain.Criteria;
 import com.ije.domain.CultureVO;
 
 import lombok.extern.log4j.Log4j;
@@ -68,6 +69,15 @@ public class CultureServiceTests {
 	public void remove() {
 		log.info("==================================================");	
 		log.info(service.remove(11L));
+	}
+	
+	@Test
+	public void paging() {
+		log.info("==================================================");	
+		Criteria cri = new Criteria(); 
+		cri.setPageNum(3);
+		cri.setAmount(10);
+		service.getListPaging(cri).forEach(culture -> log.info(culture));
 	}
 }
 

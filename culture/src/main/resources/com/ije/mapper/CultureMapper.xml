@@ -7,7 +7,20 @@
 	<select id="getList" resultType="com.ije.domain.CultureVO">
 	 select * from tb_culture where cno > 0 
 	</select>
-
+	
+	<select id="getCount" resultType="int">
+	select count(*) from tb_culture
+	</select>
+	
+	<select id="getListPaging" resultType="com.ije.domain.CultureVO">
+	<![CDATA[
+	select * from ( 
+		select /*+ INDEX_DESC(tb_culture pk_culture)*/ 
+		ROWNUM rn, cno, cdate, kind, title, content, rdate, udate, mno 
+		From tb_culture where ROWNUM <= #{pageNum}*#{amount}
+	) where rn > (#{pageNum}-1)*#{amount}
+	]]>
+	</select>
 	<insert id="insert">
 	INSERT INTO tb_culture(cno, cdate, kind, title, content, RANK, mno)
 	Values(seq_culture.nextval, #{cdate}, #{kind}, #{title}, #{content}, #{rank}, 1)

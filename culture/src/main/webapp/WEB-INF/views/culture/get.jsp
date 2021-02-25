@@ -98,6 +98,8 @@
                 	</div> <!-- container-fluid 끝 -->
  <form role="form" method="post">
  	<input type="hidden" id="cno" name="cno" value="${culture.cno}" />
+ 	<input type="hidden" name="pageNum" value="${cri.pageNum}" />
+ 	<input type="hidden" name="amount" value="${cri.amount}" />
  </form>   
  <script>
  $(document).ready(function(){
