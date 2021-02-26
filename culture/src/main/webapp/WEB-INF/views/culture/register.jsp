@@ -89,7 +89,6 @@
 											<div class="form-group uploadDiv">
 												<label class="small mb-1" for="upload">사진첨부</label>
 												<input type="file" id="upload" name="upload" multiple />
-												<input type="button" id="uploadBtn" value="업로드테스트" />
 											</div>
 											<div class="form-group uploadResult">
 												<ul class="list-group list-group-horizontal"></ul>
@@ -128,23 +127,10 @@
 <!-- The Modal 끝 -->                    	
                 	
 <script>
-var regex = new RegExp("(.*?)\.(jpg|png|gif|bmp)$"); 
-var maxSize = 5242880; 
+
 var uploadResult = $(".uploadResult ul"); 
 
-function checkExtension(fileName, fileSize){
-	if(fileSize > maxSize){
-		alert("파일 사이즈가 초과되었습니다."); 
-		return false; 
-	}
-	
-	if(!regex.test(fileName)){
-		alert("사진 파일 형식만 가능합니다.");
-		return false; 
-	}
-	
-	return true; 
-}
+
 
 function showUploadResult(uploadResultArr){
 	var str=""; 
@@ -154,14 +140,15 @@ function showUploadResult(uploadResultArr){
 		if(!obj.image){
 			
 		}else{
-			//str+="<li class='list-group-item'>"+obj.fileName+"</li>";
-			var list = "li_"+i;
 			var fileCallPath = encodeURIComponent(obj.uploadPath+"/s_"+obj.uuid+"_"+obj.fileName); 
 			var originPath = obj.uploadPath+"\\"+obj.uuid+"_"+obj.fileName;
 			originPath = originPath.replace(new RegExp(/\\/g),"/"); 
-			str+="<li class='list-group-item' id='"+list+"'><div class='float-right' data-rank='"+i+"' data-file=\'"+fileCallPath+"\' data-type='image'>x</div>"+
-				 "<a href=\"javascript:showImg(\'"+originPath+"')\"><img src='/display?fileName="+fileCallPath+"' /></a>"+
-				 "</li>"; 
+			str+="<li class='list-group-item' data-path='"+obj.uploadPath+"'";
+			str+=" data-uuid='"+obj.uuid+"' data-filename='"+obj.fileName+"' data-type='"+obj.image+"'/>";
+			str+="<div><span>"+obj.fileName+"</span>";
+			str+="<button type='button' class='btn btn-warning btn-circle' data-file=\'"+fileCallPath+"\' data-type='image'><i class='fa fa-times'></i></button><br>";
+			str+="<a href=\"javascript:showImg(\'"+originPath+"')\"><img src='/display?fileName="+fileCallPath+"' /></a>";
+			str+="</div></li>"; 
 		}
 	});
 	
@@ -176,8 +163,43 @@ function showImg(originPath){
 
 $(document).ready(function(){
 	
+	
+	var formObj = $("form"); 
+	$("button[type='submit']").on("click", function(e){
+		e.preventDefault(); 
+		console.log("submit clicked");
+		
+		var str=""; 
+		
+		$(".uploadResult ul li").each(function(i, obj){
+			var jobj = $(obj); 
+			console.log(jobj); 
+			str+="<input type='hidden' name='attachList["+i+"].fileName' value='"+jobj.data("filename")+"'/>"; 
+			str+="<input type='hidden' name='attachList["+i+"].uuid' value='"+jobj.data("uuid")+"'/>"; 
+			str+="<input type='hidden' name='attachList["+i+"].uploadPath' value='"+jobj.data("path")+"'/>";
+			str+="<input type='hidden' name='attachList["+i+"].fileType' value='"+jobj.data("type")+"'/>";
+		});
+		formObj.append(str).submit();
+	});
+	
+	var regex = new RegExp("(.*?)\.(jpg|png|gif|bmp)$"); 
+	var maxSize = 5242880; 
+	function checkExtension(fileName, fileSize){
+		if(fileSize > maxSize){
+			alert("파일 사이즈가 초과되었습니다."); 
+			return false; 
+		}
+		
+		if(!regex.test(fileName)){
+			alert("사진 파일 형식만 가능합니다.");
+			return false; 
+		}
+		
+		return true; 
+	}
+	
 	var cloneObj = $(".uploadDiv").clone(); 
-	$("#uploadBtn").click(function(){
+	$("input[type='file']").change(function(e){
 		var formData = new FormData(); 
 		var upload = $("input[name='upload']"); 
 		var files = upload[0].files; 
@@ -201,16 +223,16 @@ $(document).ready(function(){
 			success: function(result){
 				console.log(result);
 				showUploadResult(result);
-				$(".uploadDiv").html(cloneObj.html()); 
 			}
-		});
+		});		
 	});
 	
-	$(".uploadResult").on("click", "div", function(e){
+	$(".uploadResult").on("click", "button", function(e){
+		console.log("deleted file");
+		
 		var targetFile = $(this).data("file"); 
 		var type=$(this).data("type"); 
-		var rank=$(this).data("rank");
-		console.log(targetFile);
+		var targetLi = $(this).closest("li"); 
 		
 		$.ajax({
 			url : '/deleteFile', 
@@ -218,9 +240,9 @@ $(document).ready(function(){
 			dataType : 'text', 
 			type : 'POST', 
 			success : function(result){
-				$("#li_"+rank).remove();
+				targetLi.remove();
 				alert("삭제되었습니다.");
-				//$(".uploadResult").html(cloneObj2.html()); 
+				
 			}
 		});
 	});

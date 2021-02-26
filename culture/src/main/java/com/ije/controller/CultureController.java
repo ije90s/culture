@@ -54,9 +54,13 @@ public class CultureController {
 	@PostMapping("/register")
 	public String register(CultureVO ins, RedirectAttributes rttr) {
 		log.info("등록하기 호출.........................................");
-		log.info(ins);
+		//log.info(ins);
 		log.info("...........................................");
-		rttr.addFlashAttribute("result", service.registerKey(ins));
+		if(ins.getAttachList() != null) {
+			ins.getAttachList().forEach(attach -> log.info(attach));
+		}
+		log.info("...........................................");
+		//rttr.addFlashAttribute("result", service.registerKey(ins));
 		return "redirect:/culture/list"; 
 	}
 	
@@ -92,5 +96,5 @@ public class CultureController {
 		rttr.addAttribute("pageNum", cri.getPageNum()); 
 		rttr.addAttribute("amount", cri.getAmount());		
 		return "redirect:/culture/list";
-	}
+	}	
 }

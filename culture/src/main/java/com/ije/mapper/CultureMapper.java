@@ -2,6 +2,7 @@ package com.ije.mapper;
 
 import java.util.List;
 
+import com.ije.domain.AttachVO;
 import com.ije.domain.Criteria;
 import com.ije.domain.CultureVO;
 
@@ -20,4 +21,7 @@ public interface CultureMapper {
 	//페이징 처리 
 	public List<CultureVO> getListPaging(Criteria cri);
 	public int getCount(Criteria cri); 
+	
+	//첨부파일
+	public List<AttachVO> findByCno(Long cno); 
 }
