@@ -89,8 +89,12 @@
                                                 <label class="small mb-1" for="content">내용</label>
                                                 <textarea class="form-control" name="content" rows="5" id="content">${culture.content}</textarea>
 											</div>
-											<div class="form-group">
-												<label class="small mb-1">사진첨부</label>
+											<div class="form-group uploadDiv">
+												<label class="small mb-1" for="upload">사진첨부</label>
+												<input type="file" id="upload" name="upload" multiple />
+											</div>
+											<div class="form-group uploadResult">
+												<ul class="list-group list-group-horizontal"></ul>
 											</div>
                                             <div class="form-group mt-4 mb-0 text-right">
                                             	<button type="button" class="btn btn-primary" data-oper="modify">수정</button>
@@ -100,9 +104,149 @@
                              </div> <!-- card-body 끝  -->
                         </div> <!-- card mb-4 끝 -->
                 	</div> <!-- container-fluid 끝 -->   
+
+ <!-- The Modal -->
+<div class="modal fade" id="myModal" role="dialog">
+  <div class="modal-dialog">
+    <div class="modal-content">
+
+      <!-- Modal Header -->
+      <div class="modal-header">
+        <h4 class="modal-title">원본이미지</h4>
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+      </div>
+
+      <!-- Modal body -->
+      <div class="modal-body">
+      </div>
+
+      <!-- Modal footer -->
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+      </div>
+
+    </div>
+  </div>
+</div>            	
+<!-- The Modal 끝 -->   
+                	
 <script>
+
+var uploadResult = $(".uploadResult ul"); 
+
+function showUploadResult(uploadResultArr){
+	var str="";  
+	$(uploadResultArr).each(function(i, obj){
+		
+		if(!obj.image){
+			
+		}else{
+			var fileCallPath = encodeURIComponent(obj.uploadPath+"/s_"+obj.uuid+"_"+obj.fileName); 
+			var originPath = obj.uploadPath+"\\"+obj.uuid+"_"+obj.fileName;
+			originPath = originPath.replace(new RegExp(/\\/g),"/");  
+			str+="<li class='list-group-item' data-path='"+obj.uploadPath+"'";
+			str+=" data-uuid='"+obj.uuid+"' data-filename='"+obj.fileName+"' data-type='"+obj.image+"'/>";
+			str+="<div><span>"+obj.fileName+"</span>";
+			str+="<button type='button' class='btn btn-warning btn-circle' data-file=\'"+fileCallPath+"\' data-type='image'><i class='fa fa-times'></i></button><br>";
+			str+="<a href=\"javascript:showImg(\'"+originPath+"')\"><img src='/display?fileName="+fileCallPath+"' /></a>";
+			str+="</div></li>"; 
+		}
+	});
+
+	uploadResult.append(str);
+}
+
+function showImg(originPath){
+	//alert(originPath);
+	$(".modal-body").html("<img src='/display?fileName="+originPath+"'/>"); 
+	$("#myModal").modal("show");
+}	 
+
 $(document).ready(function(){
 	var formObj = $("form"); 
+	var regex = new RegExp("(.*?)\.(jpg|png|gif|bmp)$"); 
+	var maxSize = 5242880; 	
+	
+	 (function(){
+			var cno = '<c:out value="${culture.cno}" />';
+			$.getJSON("/culture/getAttachList", {cno : cno}, function(arr){
+				var str = ""; 
+
+				$(arr[0].fileList).each(function(i, attach){
+					
+					if(!attach.fileType){	
+					}else{
+						var fileCallPath = encodeURIComponent(attach.path+"/s_"+attach.uuid+"_"+attach.fileName); 
+						var originPath = attach.path+"\\"+attach.uuid+"_"+attach.fileName;
+						originPath = originPath.replace(new RegExp(/\\/g),"/");  
+						str+="<li class='list-group-item' data-path='"+attach.path+"'";
+						str+=" data-uuid='"+attach.uuid+"' data-filename='"+attach.fileName+"' data-type='"+attach.fileType+"'>";
+						str+="<div><span>"+attach.fileName+"</span>";
+						str+="<button type='button' class='btn btn-warning btn-circle' data-file=\'"+attach.path+"\' data-type='image'><i class='fa fa-times'></i></button><br>";
+						str+="<a href=\"javascript:showImg(\'"+originPath+"')\"><img src='/display?fileName="+fileCallPath+"' /></a>";
+						str+="</div></li>"; 
+					}
+				});
+				$(".uploadResult ul").html(str);
+			});
+	 })();	
+		
+	$(".uploadResult").on("click", "button", function(e){
+		console.log("deleted file");
+		
+		var targetFile = $(this).data("file"); 
+		var type=$(this).data("type"); 
+		var targetLi = $(this).closest("li"); 
+		
+		if(confirm("사진을 삭제하시겠습니까?")){
+			targetLi.remove();
+		}
+	});	
+
+
+	function checkExtension(fileName, fileSize){
+		if(fileSize > maxSize){
+			alert("파일 사이즈가 초과되었습니다."); 
+			return false; 
+		}
+		
+		if(!regex.test(fileName)){
+			alert("사진 파일 형식만 가능합니다.");
+			return false; 
+		}
+		
+		return true; 
+	}
+	
+	$("input[type='file']").change(function(e){
+		var formData = new FormData(); 
+		var upload = $("input[name='upload']"); 
+		var files = upload[0].files; 
+		
+		//console.log(files);		
+		formData.append("folder", "culture");		
+		
+		for(var i=0;i<files.length;i++){
+			if(!checkExtension(files[i].name, files[i].size)){
+				return false; 
+			}
+			formData.append("upload",files[i]); 
+		}
+
+		$.ajax({
+			url : '/uploadAction', 
+			processData: false, 
+			contentType : false, 
+			data: formData, 
+			type: 'POST', 
+			dataType:'json',
+			success: function(result){
+				console.log(result);
+				showUploadResult(result);
+			}
+		});		
+	});	
+	
 	
 	$(".btn").click(function(e){
 		e.preventDefault(); 
@@ -110,7 +254,15 @@ $(document).ready(function(){
 		console.log(oper);
 		if(oper === "modify"){
 			if(confirm("수정하시겠습니까?")){
-				formObj.submit();
+				var str="";
+				$(".uploadResult ul li").each(function(i, obj){
+					var jobj = $(obj);
+					str+="<input type='hidden' name='attachList[0].fileList["+i+"].path' value='"+jobj.data("path")+"' />";
+					str+="<input type='hidden' name='attachList[0].fileList["+i+"].uuid' value='"+jobj.data("uuid")+"' />";
+					str+="<input type='hidden' name='attachList[0].fileList["+i+"].fileName' value='"+jobj.data("filename")+"'/>"; 
+					str+="<input type='hidden' name='attachList[0].fileList["+i+"].fileType' value='"+jobj.data("type")+"'/>";
+				});
+				formObj.append(str).submit();
 			}
 		}else{
 			formObj.attr("action", "/culture/list").attr("method", "get"); 

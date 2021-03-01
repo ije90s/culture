@@ -57,7 +57,7 @@ public class CultureMapperTests {
 		ins.setTitle("insertKey 테스트");
 		ins.setContent("insertKey 테스트");
 		ins.setRank(1L);
-		log.info(mapper.insertKey(ins));
+		mapper.insertKey(ins);
 		log.info(ins);		
 	}
 	

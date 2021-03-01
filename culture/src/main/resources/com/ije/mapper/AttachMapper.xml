@@ -5,22 +5,52 @@
 	
 <mapper namespace="com.ije.mapper.AttachMapper">
 
-	<insert id="insert">
-		<foreach collection="list" item="item" open="INSERT ALL" close="Select * from dual" separator=" ">
-			into tb_attach_group(gno, path, mno, cno, bno) values(seq_attach_group.nextval, #{path}, #{mno}, #{cno}, #{bno})
-			into tb_attach(uuid, filename, filetype, gno) values(#{uuid}, #{fileName}, #{fileType}, seq_attach_group.nextval)	
+	<resultMap type="com.ije.domain.AttachVO" id="attachMap">
+		<result column="gno" property="gno"/>
+		<result column="rdate" property="rdate"/>
+		<result column="mno" property="mno"/>
+		<result column="cno" property="cno"/>
+		<result column="bno" property="bno"/>
+		<collection property="fileList" resultMap="fileMap"/>
+	</resultMap>
+
+	<resultMap type="com.ije.domain.AttachFileVO" id="fileMap">
+		<result column="uuid" property="uuid"/>
+		<result column="fileName" property="fileName"/>
+		<result column="fileType" property="fileType"/>
+		<result column="gno" property="gno"/>
+		<result column="path" property="path"/>
+	</resultMap>
+
+	<select id="findByCno" resultMap="attachMap">
+	SELECT a.gno, rdate, mno, cno, bno, uuid, fileName, fileType, path FROM 
+	TB_ATTACH_GROUP a LEFT OUTER JOIN TB_ATTACH b ON a.GNO = b.GNO 
+	WHERE cno=#{cno}
+	</select>
+	
+	<insert id="insert" parameterType="java.util.List">
+		<foreach collection="list" item="item" open="INSERT ALL" close="select * from dual" separator=" " >
+		INTO TB_ATTACH_GROUP(gno, cno, mno, bno)
+		VALUES(seq_attach_group.nextval, #{item.cno}, #{item.mno}, #{item.bno})
+			<foreach collection="item.fileList" item="file" separator=" ">
+			INTO TB_ATTACH(uuid, fileName, fileType, gno, path)
+			VALUES(#{file.uuid}, #{file.fileName}, #{file.fileType}, seq_attach_group.nextval, #{file.path})
+			</foreach>
 		</foreach>
 	</insert>
-	
-	<delete id="delete">
-	delete from TB_ATTACH_GROUP 
-	from TB_ATTACH_GROUP a INNER JOIN tb_attach b ON a.GNO = b.GNO 
-	where cno = #{cno}
+
+	<delete id="deleteFile">
+	delete TB_ATTACH where uuid=#{uuid}
 	</delete>
 	
-	<select id="findByCno" resultType="com.ije.domain.AttachVO">
-	SELECT a.gno, PATH, rdate, mno, cno, bno, uuid, fileName, fileType FROM 
-	TB_ATTACH_GROUP a INNER JOIN tb_attach b ON a.GNO = b.GNO 
-	WHERE cno=#{cno};
-	</select>
+	<delete id="delete">
+	delete from TB_ATTACH_GROUP a 
+	where NOT EXISTS (SELECT 1 FROM TB_ATTACH b WHERE b.GNO=a.GNO)	
+	</delete>
+		
+	<delete id="deleteFileAll">
+	delete TB_ATTACH 
+	where gno = (select gno from TB_ATTACH_GROUP where cno = #{cno})
+	</delete>
+
 </mapper>

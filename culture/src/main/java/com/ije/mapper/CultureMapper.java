@@ -13,7 +13,7 @@ public interface CultureMapper {
 	
 	//CRUD 구현 
 	public int insert(CultureVO ins);
-	public int insertKey(CultureVO ins); 
+	public void insertKey(CultureVO ins); 
 	public CultureVO read(Long cno);
 	public int update(CultureVO upt);
 	public int delete(Long cno);
@@ -21,7 +21,5 @@ public interface CultureMapper {
 	//페이징 처리 
 	public List<CultureVO> getListPaging(Criteria cri);
 	public int getCount(Criteria cri); 
-	
-	//첨부파일
-	public List<AttachVO> findByCno(Long cno); 
+
 }

@@ -19,6 +19,7 @@ public class CultureVO {
 	private Date rdate;
 	private Date udate; 
 	private Long mno; 
-	
 	private List<AttachVO> attachList;
+	
+
 }

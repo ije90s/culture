@@ -130,11 +130,8 @@
 
 var uploadResult = $(".uploadResult ul"); 
 
-
-
 function showUploadResult(uploadResultArr){
-	var str=""; 
-	
+	var str="";  
 	$(uploadResultArr).each(function(i, obj){
 		
 		if(!obj.image){
@@ -142,7 +139,7 @@ function showUploadResult(uploadResultArr){
 		}else{
 			var fileCallPath = encodeURIComponent(obj.uploadPath+"/s_"+obj.uuid+"_"+obj.fileName); 
 			var originPath = obj.uploadPath+"\\"+obj.uuid+"_"+obj.fileName;
-			originPath = originPath.replace(new RegExp(/\\/g),"/"); 
+			originPath = originPath.replace(new RegExp(/\\/g),"/");  
 			str+="<li class='list-group-item' data-path='"+obj.uploadPath+"'";
 			str+=" data-uuid='"+obj.uuid+"' data-filename='"+obj.fileName+"' data-type='"+obj.image+"'/>";
 			str+="<div><span>"+obj.fileName+"</span>";
@@ -151,7 +148,7 @@ function showUploadResult(uploadResultArr){
 			str+="</div></li>"; 
 		}
 	});
-	
+
 	uploadResult.append(str);
 }
 
@@ -163,22 +160,19 @@ function showImg(originPath){
 
 $(document).ready(function(){
 	
-	
 	var formObj = $("form"); 
 	$("button[type='submit']").on("click", function(e){
 		e.preventDefault(); 
 		console.log("submit clicked");
-		
-		var str=""; 
-		
+		var str="";
 		$(".uploadResult ul li").each(function(i, obj){
-			var jobj = $(obj); 
-			console.log(jobj); 
-			str+="<input type='hidden' name='attachList["+i+"].fileName' value='"+jobj.data("filename")+"'/>"; 
-			str+="<input type='hidden' name='attachList["+i+"].uuid' value='"+jobj.data("uuid")+"'/>"; 
-			str+="<input type='hidden' name='attachList["+i+"].uploadPath' value='"+jobj.data("path")+"'/>";
-			str+="<input type='hidden' name='attachList["+i+"].fileType' value='"+jobj.data("type")+"'/>";
+			var jobj = $(obj);
+			str+="<input type='hidden' name='attachList[0].fileList["+i+"].path' value='"+jobj.data("path")+"' />";
+			str+="<input type='hidden' name='attachList[0].fileList["+i+"].uuid' value='"+jobj.data("uuid")+"' />";
+			str+="<input type='hidden' name='attachList[0].fileList["+i+"].fileName' value='"+jobj.data("filename")+"'/>"; 
+			str+="<input type='hidden' name='attachList[0].fileList["+i+"].fileType' value='"+jobj.data("type")+"'/>";
 		});
+
 		formObj.append(str).submit();
 	});
 	
@@ -198,7 +192,6 @@ $(document).ready(function(){
 		return true; 
 	}
 	
-	var cloneObj = $(".uploadDiv").clone(); 
 	$("input[type='file']").change(function(e){
 		var formData = new FormData(); 
 		var upload = $("input[name='upload']"); 
@@ -208,10 +201,10 @@ $(document).ready(function(){
 		formData.append("folder", "culture");		
 		
 		for(var i=0;i<files.length;i++){
-			formData.append("upload",files[i]); 
 			if(!checkExtension(files[i].name, files[i].size)){
 				return false; 
 			}
+			formData.append("upload",files[i]); 
 		}
 
 		$.ajax({
@@ -220,6 +213,7 @@ $(document).ready(function(){
 			contentType : false, 
 			data: formData, 
 			type: 'POST', 
+			dataType:'json',
 			success: function(result){
 				console.log(result);
 				showUploadResult(result);

@@ -30,7 +30,7 @@ import net.coobird.thumbnailator.Thumbnailator;
 
 @Controller
 @Log4j
-public class uploadController {
+public class UploadController {
 
 	private String getFolder(String folder) {
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd"); 

@@ -85,8 +85,8 @@
                                                 <label class="small mb-1" for="content">내용</label>
                                                 <textarea class="form-control" name="content" rows="5" id="content" readonly>${culture.content}</textarea>
 											</div>
-											<div class="form-group">
-												<label class="small mb-1">사진첨부</label>
+											<div class="form-group uploadResult">
+												<ul class="list-group list-group-horizontal"></ul>
 											</div>
                                             <div class="form-group mt-4 mb-0 text-right">
                                             	<button type="button" class="btn btn-primary" data-oper="modify">수정</button>
@@ -96,6 +96,30 @@
                              </div> <!-- card-body 끝  -->
                         </div> <!-- card mb-4 끝 -->
                 	</div> <!-- container-fluid 끝 -->
+ <!-- The Modal -->
+<div class="modal fade" id="myModal" role="dialog">
+  <div class="modal-dialog">
+    <div class="modal-content">
+
+      <!-- Modal Header -->
+      <div class="modal-header">
+        <h4 class="modal-title">원본이미지</h4>
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+      </div>
+
+      <!-- Modal body -->
+      <div class="modal-body">
+      </div>
+
+      <!-- Modal footer -->
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+      </div>
+
+    </div>
+  </div>
+</div>            	
+<!-- The Modal 끝 -->                 	
  <form role="form" method="post">
  	<input type="hidden" id="cno" name="cno" value="${culture.cno}" />
  	<input type="hidden" name="pageNum" value="${cri.pageNum}" />
@@ -105,6 +129,41 @@
  $(document).ready(function(){
 	 
 	 var formObj = $("form"); 
+	 
+	 (function(){
+			var cno = '<c:out value="${culture.cno}" />';
+			$.getJSON("/culture/getAttachList", {cno : cno}, function(arr){
+				var str = ""; 
+
+				$(arr[0].fileList).each(function(i, attach){
+					
+					if(!attach.fileType){	
+					}else{
+						var fileCallPath = encodeURIComponent(attach.path+"/s_"+attach.uuid+"_"+attach.fileName); 
+						
+						str+="<li class='list-group-item' data-path='"+attach.path+"'";
+						str+=" data-uuid='"+attach.uuid+"' data-filename='"+attach.fileName+"' data-type='"+attach.image+"'>";
+						str+="<div>";
+						str+="<img src='/display?fileName="+fileCallPath+"' />";
+						str+="</div></li>"; 
+					}
+				});
+				$(".uploadResult ul").html(str);
+			});
+	 })();	 
+	 
+	 $(".uploadResult").on("click", "li", function(e){
+		console.log("clicked");
+		var liObj = $(this); 
+		var path = encodeURIComponent(liObj.data("path")+"/"+liObj.data("uuid")+"_"+liObj.data("filename")); 
+	 	showImg(path.replace(new RegExp(/\\/g),"/"));
+	 });
+		
+	function showImg(originPath){
+		//alert(originPath);
+		$(".modal-body").html("<img src='/display?fileName="+originPath+"'/>"); 
+		$("#myModal").modal("show");
+	}
 	 
 	 $(".btn").on("click",function(e){
 		 e.preventDefault(); 
@@ -117,9 +176,9 @@
 		 }else{
 			 formObj.find("#cno").remove();
 			 formObj.attr("action", "/culture/list").attr("method","get").submit();
-		 }
-		 
-	 })
+		 } 
+	 });
+	
  });
  </script>               	
 <%@ include file="../includes/footer.jsp"  %>

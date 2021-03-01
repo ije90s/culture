@@ -7,12 +7,10 @@ import lombok.Data;
 
 @Data
 public class AttachVO {
-	private Long gno; 
-	private String path; 
+	private Long gno;  
 	private Date rdate; 
 	private Long mno; 
 	private Long cno; 
 	private Long bno; 
-	private List<AttachFileVO> filelist;  
-	
+	private List<AttachFileVO> fileList;
 }

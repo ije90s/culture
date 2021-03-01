@@ -1,5 +1,7 @@
 package com.ije.domain;
 
+import org.springframework.web.util.UriComponentsBuilder;
+
 import lombok.Data;
 
 @Data
@@ -18,5 +20,11 @@ public class Criteria {
 		this.amount = amount;
 	} 
 	
-	
+	public String getListLink() {
+		UriComponentsBuilder builder = UriComponentsBuilder.fromPath("")
+				.queryParam("pageNum", this.pageNum)
+				.queryParam("amount", this.getAmount());
+		
+		return builder.toString(); 
+	}
 }

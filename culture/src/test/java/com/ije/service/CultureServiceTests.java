@@ -46,7 +46,7 @@ public class CultureServiceTests {
 		ins.setContent("서비스 테스트");
 		ins.setKind(1L);
 		ins.setRank(1L);
-		log.info(service.registerKey(ins));
+		service.registerKey(ins);
 		log.info(ins);		
 	}
 	
