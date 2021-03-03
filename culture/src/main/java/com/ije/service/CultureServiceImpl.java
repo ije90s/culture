@@ -105,4 +105,11 @@ public class CultureServiceImpl implements CultureService {
 		log.info("첨부파일 리스트 호출 : " + cno);
 		return attachMapper.findByCno(cno);
 	}
+
+
+	@Override
+	public List<CultureVO> getStatsList(Criteria cri) {
+		log.info("월별 조회 : " + cri);
+		return mapper.getStatsList(cri);
+	}
 }

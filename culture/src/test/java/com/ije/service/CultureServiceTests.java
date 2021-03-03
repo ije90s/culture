@@ -79,5 +79,14 @@ public class CultureServiceTests {
 		cri.setAmount(10);
 		service.getListPaging(cri).forEach(culture -> log.info(culture));
 	}
+	
+	@Test
+	public void month() {
+		log.info("==================================================");	
+		Criteria cri = new Criteria(); 
+		cri.setSdate("2021-03-01");
+		cri.setEdate("2021-03-31");
+		service.getStatsList(cri).forEach(culture -> log.info(culture));
+	}
 }
 

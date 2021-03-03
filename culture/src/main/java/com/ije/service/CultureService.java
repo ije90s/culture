@@ -22,4 +22,6 @@ public interface CultureService {
 	
 	public List<AttachVO> getAttachList(Long cno);
 	
+	public List<CultureVO> getStatsList(Criteria cri); 
+	
 }

@@ -1,13 +1,11 @@
 package com.ije.mapper;
 
-import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
@@ -91,5 +89,16 @@ public class CultureMapperTests {
 		cri.setPageNum(3);
 		cri.setAmount(10);
 		mapper.getListPaging(cri).forEach(culture -> log.info(culture));
+	}
+	
+	
+	@Test
+	public void getMonList() {
+		log.info("getMonList.............................................");
+		Criteria cri = new Criteria(); 
+		cri.setSdate("2021-03-01");
+		cri.setEdate("2021-03-31");
+		log.info(cri);
+		mapper.getStatsList(cri).forEach(culture -> log.info(culture));
 	}
 }

@@ -21,5 +21,7 @@ public class CultureVO {
 	private Long mno; 
 	private List<AttachVO> attachList;
 	
+	private String day; 
+	private int sum; 
 
 }

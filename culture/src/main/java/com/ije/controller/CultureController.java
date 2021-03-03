@@ -148,4 +148,15 @@ public class CultureController {
 		
 		return new ResponseEntity<>(service.getAttachList(cno), HttpStatus.OK);
 	}
+	
+	@GetMapping("/stats")
+	public void stats(Criteria cri, Model d) {
+		log.info("통계..............................................");
+		cri.setSdate("2021-03-01");
+		cri.setEdate("2021-03-31");
+		d.addAttribute("list", service.getStatsList(cri)); 
+	}
+	
+	
+	
 }

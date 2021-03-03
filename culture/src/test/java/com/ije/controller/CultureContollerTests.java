@@ -90,4 +90,12 @@ public class CultureContollerTests {
 				.param("pageNum", "3")
 				).andReturn().getModelAndView().getModelMap());
 	}
+	
+	@Test
+	public void testStats() throws Exception {
+		log.info(mockMvc.perform(MockMvcRequestBuilders.get("/culture/stats")
+				.param("sdate", "2021-03-01")
+				.param("edate", "2021-03-31")
+				).andReturn().getModelAndView().getModelMap());
+	}
 }

@@ -21,5 +21,9 @@ public interface CultureMapper {
 	//페이징 처리 
 	public List<CultureVO> getListPaging(Criteria cri);
 	public int getCount(Criteria cri); 
+	
+	//통계 
+	public List<CultureVO> getStatsList(Criteria cri); 
+	
 
 }
