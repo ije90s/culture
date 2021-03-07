@@ -4,8 +4,11 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
+import org.apache.ibatis.annotations.Param;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -13,6 +16,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -152,11 +156,32 @@ public class CultureController {
 	@GetMapping("/stats")
 	public void stats(Criteria cri, Model d) {
 		log.info("통계..............................................");
-		cri.setSdate("2021-03-01");
-		cri.setEdate("2021-03-31");
-		d.addAttribute("list", service.getStatsList(cri)); 
 	}
 	
+
 	
+	@GetMapping(value="/{tab}/{sdate}/{edate}", produces= {MediaType.APPLICATION_XML_VALUE, MediaType.APPLICATION_JSON_UTF8_VALUE})
+	public ResponseEntity<List<CultureVO>> stats(@PathVariable("tab") String tab, @PathVariable("sdate") String sdate, @PathVariable("edate") String edate,  Criteria cri, Model d) {
+		log.info("통계..............................................");
+		cri.setSdate(sdate);
+		cri.setEdate(edate);
+		List<CultureVO> list = new ArrayList<CultureVO>(); 
+		if(tab.equals("mon")) {
+			list = service.getMonList(cri);
+		}else if(tab.equals("year")) {
+			list = service.getYearList(cri); 
+		}else {
+			list = service.getChartList(cri);
+		}
+		log.info(list);
+		return new ResponseEntity<>(list, HttpStatus.OK);
+	}
+	
+	@GetMapping(value="/{sdate}", produces= {MediaType.APPLICATION_XML_VALUE, MediaType.APPLICATION_JSON_UTF8_VALUE})
+	public ResponseEntity<List<CultureVO>> get(@PathVariable("sdate") String sdate, Criteria cri){
+		log.info("get : " + sdate);
+		cri.setSdate(sdate);
+		return new ResponseEntity<>(service.getBySdate(cri), HttpStatus.OK);
+	}
 	
 }

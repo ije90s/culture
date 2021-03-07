@@ -2,7 +2,8 @@ package com.ije.mapper;
 
 import java.util.List;
 
-import com.ije.domain.AttachVO;
+import org.apache.ibatis.annotations.Param;
+
 import com.ije.domain.Criteria;
 import com.ije.domain.CultureVO;
 
@@ -23,7 +24,8 @@ public interface CultureMapper {
 	public int getCount(Criteria cri); 
 	
 	//통계 
-	public List<CultureVO> getStatsList(Criteria cri); 
-	
-
+	public List<CultureVO> getMonList(Criteria cri); 
+	public List<CultureVO> getYearList(Criteria cri);
+	public List<CultureVO> getChartList(Criteria cri);
+	public List<CultureVO> read2(Criteria cri); 
 }

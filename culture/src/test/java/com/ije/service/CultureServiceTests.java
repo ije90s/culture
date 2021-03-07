@@ -86,7 +86,33 @@ public class CultureServiceTests {
 		Criteria cri = new Criteria(); 
 		cri.setSdate("2021-03-01");
 		cri.setEdate("2021-03-31");
-		service.getStatsList(cri).forEach(culture -> log.info(culture));
+		service.getMonList(cri).forEach(culture -> log.info(culture));
+	}
+	
+	@Test
+	public void year() {
+		log.info("==================================================");	
+		Criteria cri = new Criteria(); 
+		cri.setSdate("2021-01-01");
+		cri.setEdate("2021-03-31");
+		service.getYearList(cri).forEach(culture -> log.info(culture));		
+	}
+	
+	@Test
+	public void chart() {
+		log.info("==================================================");	
+		Criteria cri = new Criteria(); 
+		cri.setSdate("2021-03-01");
+		cri.setEdate("2021-03-31");
+		service.getChartList(cri).forEach(culture -> log.info(culture));			
+	}
+	
+	@Test
+	public void getBySdate() {
+		log.info("==================================================");	
+		Criteria cri = new Criteria(); 
+		cri.setSdate("2021-03-01");
+		log.info(service.getBySdate(cri));
 	}
 }
 

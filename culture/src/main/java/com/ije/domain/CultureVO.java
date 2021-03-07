@@ -23,5 +23,5 @@ public class CultureVO {
 	
 	private String day; 
 	private int sum; 
-
+	private int ratio; 
 }

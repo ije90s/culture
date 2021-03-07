@@ -23,15 +23,39 @@
 	]]>
 	</select>
 	
-	<select id="getStatsList" resultType="com.ije.domain.CultureVO">
+	<select id="getMonList" resultType="com.ije.domain.CultureVO">
 	<![CDATA[
-	SELECT TO_CHAR(TO_DATE(rdate), 'yyyy-MM-dd') As day, kind, count(*) AS sum
+	SELECT TO_CHAR(TO_DATE(cdate), 'yyyy-MM-dd') As day, kind, count(*) AS sum
 	FROM tb_culture
-	WHERE 1=1 AND TO_CHAR(TO_DATE(rdate), 'yyyy-MM-dd') between #{sdate} and #{edate}
-	GROUP BY rdate, kind
-	ORDER BY rdate, kind
+	WHERE 1=1 AND TO_CHAR(TO_DATE(cdate), 'yyyy-MM-dd') between #{sdate} and #{edate}
+	GROUP BY TO_CHAR(TO_DATE(cdate), 'yyyy-MM-dd'), kind
+	ORDER BY TO_CHAR(TO_DATE(cdate), 'yyyy-MM-dd'), kind 
 	]]>
 	</select>	
+
+	<select id="getYearList" resultType="com.ije.domain.CultureVO">
+	<![CDATA[
+	SELECT TO_CHAR(cdate, 'yyyy-MM') As day, kind, COUNT(*) AS sum
+	FROM tb_culture
+	WHERE 1=1 AND TO_CHAR(TO_DATE(cdate), 'yyyy-MM-dd') between #{sdate} and #{edate}
+	GROUP BY TO_CHAR(cdate, 'yyyy-MM'), kind
+	ORDER BY TO_CHAR(cdate, 'yyyy-MM'), kind
+	]]>
+	</select>	
+	
+	<select id="getChartList" resultType="com.ije.domain.CultureVO">
+	SELECT kind, count(*) AS sum, 
+	ROUND(RATIO_TO_REPORT(count(*)) over(PARTITION BY GROUPING_ID(kind)) * 100,0) as ratio
+	FROM tb_culture
+	WHERE 1=1 AND TO_CHAR(TO_DATE(cdate), 'yyyy-MM-dd') between #{sdate} and #{edate} 	
+	GROUP BY ROLLUP(kind)	
+	</select>
+	
+	<select id="read2" resultType="com.ije.domain.CultureVO">
+	Select cno, cdate, kind, title, content, rdate, udate, mno 
+	From tb_culture
+	Where 1=1 AND TO_CHAR(TO_DATE(cdate), 'yyyy-MM-dd') = #{sdate} 
+	</select>
 	
 	<insert id="insert">
 	INSERT INTO tb_culture(cno, cdate, kind, title, content, RANK, mno)
@@ -60,5 +84,4 @@
 	delete tb_culture where cno=#{cno}
 	</delete>
 	
-
 </mapper>

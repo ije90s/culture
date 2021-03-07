@@ -92,8 +92,24 @@ public class CultureContollerTests {
 	}
 	
 	@Test
-	public void testStats() throws Exception {
-		log.info(mockMvc.perform(MockMvcRequestBuilders.get("/culture/stats")
+	public void testMon() throws Exception {
+		log.info(mockMvc.perform(MockMvcRequestBuilders.get("/culture/stats/mon")
+				.param("sdate", "2021-03-01")
+				.param("edate", "2021-03-31")
+				).andReturn().getModelAndView().getModelMap());
+	}
+	
+	@Test
+	public void testYear() throws Exception {
+		log.info(mockMvc.perform(MockMvcRequestBuilders.get("/culture/stats/year")
+				.param("sdate", "2021-01-01")
+				.param("edate", "2021-03-31")
+				).andReturn().getModelAndView().getModelMap());
+	}
+	
+	@Test
+	public void testChart() throws Exception {
+		log.info(mockMvc.perform(MockMvcRequestBuilders.get("/culture/stats/chart")
 				.param("sdate", "2021-03-01")
 				.param("edate", "2021-03-31")
 				).andReturn().getModelAndView().getModelMap());

@@ -108,8 +108,29 @@ public class CultureServiceImpl implements CultureService {
 
 
 	@Override
-	public List<CultureVO> getStatsList(Criteria cri) {
+	public List<CultureVO> getMonList(Criteria cri) {
 		log.info("월별 조회 : " + cri);
-		return mapper.getStatsList(cri);
+		return mapper.getMonList(cri);
+	}
+
+
+	@Override
+	public List<CultureVO> getYearList(Criteria cri) {
+		log.info("연별 조회 : " + cri);
+		return mapper.getYearList(cri);
+	}
+
+
+	@Override
+	public List<CultureVO> getChartList(Criteria cri) {
+		log.info("차트 조회 : " + cri);
+		return mapper.getChartList(cri);
+	}
+
+
+	@Override
+	public List<CultureVO> getBySdate(Criteria cri) {
+		log.info("일별 자세히 조회 : "+cri);
+		return mapper.read2(cri);
 	}
 }

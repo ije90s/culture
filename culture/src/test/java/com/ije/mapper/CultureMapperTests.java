@@ -99,6 +99,31 @@ public class CultureMapperTests {
 		cri.setSdate("2021-03-01");
 		cri.setEdate("2021-03-31");
 		log.info(cri);
-		mapper.getStatsList(cri).forEach(culture -> log.info(culture));
+		mapper.getMonList(cri).forEach(culture -> log.info(culture));
+	}
+	
+	@Test
+	public void getYearList() {
+		log.info("getYearList()...........................................");
+		Criteria cri = new Criteria(); 
+		cri.setSdate("2021-01-01");
+		cri.setEdate("2021-03-31");
+		mapper.getYearList(cri).forEach(culture -> log.info(culture));
+	}
+	@Test
+	public void getChartList() {
+		log.info("getChartList()..............................................");
+		Criteria cri = new Criteria(); 
+		cri.setSdate("2021-03-01");
+		cri.setEdate("2021-03-31");
+		mapper.getChartList(cri).forEach(culture -> log.info(culture));
+	}
+	
+	@Test
+	public void getRead2() {
+		log.info("getRead2().........................................................");
+		Criteria cri = new Criteria(); 
+		cri.setSdate("2021-03-01");
+		log.info(mapper.read2(cri));
 	}
 }
