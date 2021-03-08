@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper 
+	PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+	
+<mapper namespace="com.ije.mapper.BoardMapper">
+
+	<select id="getList" resultType="com.ije.domain.BoardVO">
+	Select * from tb_board where bno > 0 
+	</select>
+	
+	<select id="getListPaging" resultType="com.ije.domain.BoardVO">
+	<![CDATA[
+	Select * from (
+		Select /*+ INDEX_DESC(tb_board pk_board) */
+		ROWNUM rn, bno, kind, title, content, writer, rdate, udate 
+		From tb_board
+		Where bno > 0 and #{pageNum}*#{amount} >= ROWNUM
+	) Where rn > (#{pageNum}-1)*#{amount} 
+	]]>
+	</select>
+	
+	<select id="getCount" resultType="int">
+	Select count(*) From tb_board
+	</select>
+	
+	<insert id="insert">
+	Insert into tb_board(bno, kind, title, content, writer)
+	Values(seq_board.nextval, #{kind}, #{title}, #{content}, #{writer})
+	</insert>
+	
+	<insert id="insertKey">
+		<selectKey keyProperty="bno" order="BEFORE" resultType="Long">
+		Select seq_board.nextval from dual 
+		</selectKey>	
+	Insert into tb_board(bno, kind, title, content, writer)
+	Values(#{bno}, #{kind}, #{title}, #{content}, #{writer})
+	</insert>
+	
+	<select id="read" resultType="com.ije.domain.BoardVO">
+	Select * from tb_board where bno=#{bno}
+	</select>
+	
+	<delete id="delete">
+	Delete tb_board where bno = #{bno}
+	</delete>
+	
+	<update id="update">
+	Update tb_board set 
+	title=#{title}, content=#{content}, udate=sysdate 
+	where bno = #{bno}
+	</update>
+</mapper>
