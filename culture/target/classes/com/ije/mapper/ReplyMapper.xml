@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper 
+	PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+	
+<mapper namespace="com.ije.mapper.ReplyMapper">
+
+	<select id="getList" resultType="com.ije.domain.ReplyVO">
+	Select * from tb_reply where rno > 0 
+	</select>
+
+	<insert id="insert">
+	Insert into tb_reply(rno, reply, replyer, bno)
+	Values(seq_reply.nextval, #{reply}, #{replyer}, #{bno})
+	</insert>
+	
+	<select id="read" resultType="com.ije.domain.ReplyVO">
+	select * from tb_reply where rno = #{rno}
+	</select>
+	
+	<update id="update">
+	Update tb_reply 
+	Set reply=#{reply}, udate=sysdate 
+	Where rno=#{rno} 
+	</update>
+	
+	<delete id="delete">
+	Delete tb_reply Where rno=#{rno}
+	</delete>
+	
+	<select id="getListPaing" resultType="com.ije.domain.ReplyVO">
+	<![CDATA[
+	Select * from (
+		Select /*+ INDEX(tb_reply, idx_reply) */
+		rownum rn, rno, reply, replyer, rdate, udate, bno  
+		from tb_reply 
+		Where bno=#{bno} and rno > 0 and rownum <= #{cri.pageNum} * #{cri.amount} 
+	) Where rn > (#{cri.pageNum}-1)*#{cri.amount}
+	]]>
+	</select>
+	
+	<select id="getCountByRno" resultType="int">
+	Select count(*) from tb_reply 
+	Where bno=#{bno}
+	</select>
+</mapper>

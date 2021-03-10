@@ -33,7 +33,7 @@
 									</table> <!-- table 끝 -->
 								 </div> <!-- table-responsive 끝  -->           
 								 
-								 <div class=" float-right"> <!-- paging 처리 -->
+								 <div class="float-right"> <!-- paging 처리 -->
                                   <ul class="pagination">
                                   	<c:if test="${page.pre}">
                                   		<li class="page-item"><a class="page-link" href="${page.start-1}">Previous</a></li>
