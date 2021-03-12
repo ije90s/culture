@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper 
+	PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+	
+<mapper namespace="com.ije.mapper.MemberMapper">
+	<resultMap type="com.ije.domain.MemberVO" id="memberMap">
+		<id property="mno" column="mno" />
+		<result property="mno" column="mno"/>
+		<result property="id" column="id"/>
+		<result property="pw" column="pw"/>
+		<result property="name" column="name"/>
+		<result property="phone" column="phone"/>
+		<result property="email" column="email"/>
+		<result property="favorites" column="favorites"/>
+		<result property="rdate" column="rdate"/>
+		<result property="udate" column="udate"/>
+		<collection property="authList" resultMap="autoMap"></collection>
+	</resultMap>
+	
+	<resultMap type="com.ije.domain.AuthVO" id="autoMap">
+		<result property="auth" column="auth"/>
+		<result property="mno" column="mno"/>
+	</resultMap>
+	
+	<select id="read" resultMap="memberMap">
+	select a.mno, id, pw, name, phone, email, favorites, rdate, udate, auth 
+	from tb_member a left outer join tb_member_auth b on a.mno=b.mno 
+	where id=#{id}
+	</select>
+</mapper>
