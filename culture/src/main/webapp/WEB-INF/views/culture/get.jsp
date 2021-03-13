@@ -2,6 +2,7 @@
     pageEncoding="UTF-8"%>
 <%@ taglib prefix="c"  uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt"  uri="http://java.sun.com/jsp/jstl/fmt" %>    
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %> 
 <%@ include file="../includes/header.jsp"  %>
                     <div class="container-fluid">
                         <h1 class="mt-4">나의 기록 상세</h1>
@@ -89,8 +90,13 @@
 												<ul class="list-group list-group-horizontal"></ul>
 											</div>
                                             <div class="form-group mt-4 mb-0 text-right">
-                                            	<button type="button" class="btn btn-primary" data-oper="modify">수정</button>
-                                            	<button type="button" class="btn btn-danger" data-oper="remove">삭제</button>
+                                            	<sec:authentication property="principal" var="pinfo"/>
+                                             	<sec:authorize access="isAuthenticated()">
+                                             		<c:if test="${pinfo.member.mno eq culture.mno}">
+	                                            		<button type="button" class="btn btn-primary" data-oper="modify">수정</button>
+	                                            		<button type="button" class="btn btn-danger" data-oper="remove">삭제</button>
+                                            		</c:if>
+                                            	</sec:authorize>
 												<button type="button" class="btn btn-secondary"  data-oper="list">목록</button>
                                             </div>                       
                              </div> <!-- card-body 끝  -->
@@ -122,6 +128,7 @@
 <!-- The Modal 끝 -->                 	
  <form role="form" method="post">
  	<input type="hidden" id="cno" name="cno" value="${culture.cno}" />
+ 	<input type="hidden" name="mno" value="${culture.mno }" />
  	<input type="hidden" name="pageNum" value="${cri.pageNum}" />
  	<input type="hidden" name="amount" value="${cri.amount}" />
  </form>   
@@ -134,6 +141,11 @@
 			var cno = '<c:out value="${culture.cno}" />';
 			$.getJSON("/culture/getAttachList", {cno : cno}, function(arr){
 				var str = ""; 
+				
+				if(arr==null || arr.length==0){
+					$(".uploadResult ul").html("");
+					return;
+				}
 
 				$(arr[0].fileList).each(function(i, attach){
 					
@@ -172,6 +184,7 @@
 		 if(oper === "modify"){
 			 formObj.attr("action", "/culture/modify").attr("method", "get").submit();
 		 }else if(oper === "remove"){
+			 formObj.append('<input type="hidden" id="${_csrf.parameterName}" name="${_csrf.parameterName}" value="${_csrf.token}" />');
 			 formObj.attr("action", "/culture/remove").submit();
 		 }else{
 			 formObj.find("#cno").remove();

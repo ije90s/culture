@@ -2,6 +2,7 @@
     pageEncoding="UTF-8"%>
 <%@ taglib prefix="c"  uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt"  uri="http://java.sun.com/jsp/jstl/fmt" %>    
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %> 
 <%@ include file="../includes/header.jsp"  %>
 
                     <div class="container-fluid">
@@ -93,6 +94,7 @@ if(month < 10) month = "0"+month;
 	
 sdate = year+"-"+month+"-01"; 
 edate = year+"-"+month+"-31";	
+var mno = '<sec:authentication property="principal.member.mno"/>';
 
 $(document).ready(function(){	
 	var datepicker_default = {
@@ -171,7 +173,7 @@ $(document).ready(function(){
 	$("#mon tbody").on("dblclick",".move", function(){
 		var date = $(this).data("date");
 		var str; 
-		statsService.get(date, function(list){
+		statsService.get({mno:mno, sdate:date}, function(list){
 			for(var i=0, len=list.length||0; i<len;i++){
 				//console.log(list[i]);
 				switch(list[i].kind){
@@ -193,7 +195,7 @@ $(document).ready(function(){
 	$("#myChartContainer").on("dblclick","#myChart", function(){
 		var str; 
 		modalThead.html("<tr><td>구분</td><td>합계</td><td>비율</td></tr>");
-		statsService.getList({tab:tab, sdate:sdate, edate:edate}, function(list){
+		statsService.getList({tab:tab, mno:mno, sdate:sdate, edate:edate}, function(list){
 			for(var i=0, len=list.length||0; i<len;i++){
 				switch(list[i].kind){
 				case 1 : kind="공연";break;
@@ -225,7 +227,7 @@ function showList(tab, sdate, edate){
 	}	
 	$("#sdate").val(sdate.substr(0,sdate.length-3));
 	showTab(tab, sdate, edate);
-	statsService.getList({tab:tab, sdate:sdate, edate:edate}, function(list){
+	statsService.getList({tab:tab, mno:mno, sdate:sdate, edate:edate}, function(list){
 		for(var i=0, len=list.length||0; i<len;i++){
 			//console.log(list[i]);
 			switch(list[i].kind){

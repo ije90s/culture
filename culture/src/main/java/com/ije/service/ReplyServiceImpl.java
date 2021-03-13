@@ -47,7 +47,7 @@ public class ReplyServiceImpl implements ReplyService {
 	@Override
 	public boolean remove(Long rno) {
 		log.info("..................................");
-		return mapper.delete(rno) > 0 ;
+		return mapper.delete(rno) > 0;
 	}
 
 	@Override

@@ -2,6 +2,7 @@
     pageEncoding="UTF-8"%>
 <%@ taglib prefix="c"  uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt"  uri="http://java.sun.com/jsp/jstl/fmt" %>    
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %> 
 <%@ include file="../includes/header.jsp"  %>
                     <div class="container-fluid">
                         <h1 class="mt-4">나의 기록 수정</h1>
@@ -9,9 +10,11 @@
                             <div class="card-header"><i class="fa fa-check-circle"></i> 자유롭게 수정하세요</div>
                             <div class="card-body">
 									<form role="form" action="/culture/modify" method="post">
+										<input type="hidden" name="mno" value="${culture.mno}" />
 										<input type="hidden" name="cno" value="${culture.cno }" />
 										<input type="hidden" name="pageNum" value="${cri.pageNum}"/>
 										<input type="hidden" name="amount" value="${cri.amount}" />
+										<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
 									        <div class="form-group">
                                                 <label class="small mb-1" for="cdate">날짜</label>
                                                 <input class="form-control py-4" name="cdate" id="cdate" type="date" value='<fmt:formatDate value="${culture.cdate}" pattern="yyyy-MM-dd"/>'/>
@@ -97,7 +100,12 @@
 												<ul class="list-group list-group-horizontal"></ul>
 											</div>
                                             <div class="form-group mt-4 mb-0 text-right">
-                                            	<button type="button" class="btn btn-primary" data-oper="modify">수정</button>
+                                            	<sec:authentication property="principal" var="pinfo"/>
+                                             	<sec:authorize access="isAuthenticated()">
+                                             		<c:if test="${pinfo.member.mno eq culture.mno}">
+                                            			<button type="button" class="btn btn-primary" data-oper="modify">수정</button>
+                                            		</c:if>
+                                            	</sec:authorize>
 												<button type="button" class="btn btn-secondary"  data-oper="list">목록</button>
                                             </div>
                               		</form> <!-- form 끝  -->                            
@@ -171,6 +179,11 @@ $(document).ready(function(){
 			var cno = '<c:out value="${culture.cno}" />';
 			$.getJSON("/culture/getAttachList", {cno : cno}, function(arr){
 				var str = ""; 
+				
+				if(arr==null || arr.length==0){
+					$(".uploadResult ul").html("");
+					return;
+				}
 
 				$(arr[0].fileList).each(function(i, attach){
 					
@@ -218,6 +231,8 @@ $(document).ready(function(){
 		return true; 
 	}
 	
+	var csrfHeader = "${_csrf.headerName}"; 
+	var csrfToken = "${_csrf.token}"; 
 	$("input[type='file']").change(function(e){
 		var formData = new FormData(); 
 		var upload = $("input[name='upload']"); 
@@ -240,6 +255,9 @@ $(document).ready(function(){
 			data: formData, 
 			type: 'POST', 
 			dataType:'json',
+			beforeSend : function(xhr){
+				xhr.setRequestHeader(csrfHeader, csrfToken);
+			},
 			success: function(result){
 				console.log(result);
 				showUploadResult(result);
@@ -268,10 +286,12 @@ $(document).ready(function(){
 			formObj.attr("action", "/culture/list").attr("method", "get"); 
 			var pageNum = $("input[name='pageNum']").clone(); 
 			var amount = $("input[name='amount']").clone(); 
+			var mno = $("input[name='mno']").clone(); 
 			
 			formObj.empty(); 
 			formObj.append(pageNum); 
 			formObj.append(amount); 
+			formObj.append(mno);
 			formObj.submit();
 		}
 	});

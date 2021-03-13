@@ -1,5 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>    
 <!DOCTYPE html>
 <html lang="en">
     <head>
@@ -42,7 +43,12 @@
                         <a class="dropdown-item" href="#">Settings</a>
                         <a class="dropdown-item" href="#">Activity Log</a>
                         <div class="dropdown-divider"></div>
-                        <a class="dropdown-item" href="login.html">Logout</a>
+                        <sec:authorize access="isAuthenticated()">
+                        	<a class="dropdown-item" href="#" onclick="document.getElementById('logoutForm').submit();"><i class="fa fa-sign-out"></i> Logout</a>
+                        	<form id="logoutForm" action="/customLogout" method="POST">
+   								<input name="${_csrf.parameterName}" type="hidden" value="${_csrf.token}"/>
+							</form>
+                        </sec:authorize>
                     </div>
                 </li>
             </ul>

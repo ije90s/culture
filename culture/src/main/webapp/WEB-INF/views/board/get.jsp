@@ -1,7 +1,8 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <%@ taglib prefix="c"  uri="http://java.sun.com/jsp/jstl/core" %>
-<%@ taglib prefix="fmt"  uri="http://java.sun.com/jsp/jstl/fmt" %>    
+<%@ taglib prefix="fmt"  uri="http://java.sun.com/jsp/jstl/fmt" %>   
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>  
 <%@ include file="../includes/header.jsp"  %>
                     <div class="container-fluid">
                         <h1 class="mt-4">게시판 상세</h1>
@@ -28,14 +29,21 @@
 								사진 첨부
 								</div>
                                 <div class="form-group mt-4 mb-0 text-right">
-                                    <button type="button" class="btn btn-primary" data-oper="modify">수정</button>
-                                    <button type="button" class="btn btn-danger" data-oper="remove">삭제</button>
+                                	<sec:authentication property="principal" var="pinfo"/>
+                                	<sec:authorize access="isAuthenticated()">
+                                		<c:if test="${pinfo.username eq board.writer}">
+		                                    <button type="button" class="btn btn-primary" data-oper="modify">수정</button>
+		                                    <button type="button" class="btn btn-danger" data-oper="remove">삭제</button>
+	                                    </c:if>
+                                    </sec:authorize>
 									<button type="button" class="btn btn-secondary"  data-oper="list">목록</button>
                                 </div>                  				
                             </div> <!-- card-body 끝  -->
                             <!-- 댓글 시작 -->
                             <div class="card-header"><i class="fa fa-comments fa-fw"></i> 댓글
-                             <button id="regBtn" class="btn btn-secondary float-right">새글</button>
+                           		<sec:authorize access="isAuthenticated()">
+                             		<button id="regBtn" class="btn btn-secondary float-right">새글</button>
+                             	</sec:authorize>
                             </div>
                             <div class="card-body"> 
                             	<ul class="chat list-group list-group-flush">
@@ -81,7 +89,7 @@
      	</div>
    		<div class="form-group">
      		<label>아이디</label>
-     		<input class="form-control" name="replyer" />
+     		<input class="form-control" name="replyer" readonly />
      	</div>
      	<div>
   			<label>작성일</label>
@@ -101,6 +109,8 @@
 <!-- The Modal 끝 -->     
 <script src="/resources/scripts/reply.js"></script>      	  
 <script>
+
+
 $(document).ready(function(){
 	var form = $("form"); 
 	$(".btn").click(function(e){
@@ -110,7 +120,9 @@ $(document).ready(function(){
 		if(oper === "modify"){
 			form.attr("action", "/board/modify").submit();
 		}else if(oper === "remove"){
-			form.attr("method", "post").form.attr("action", "/board/remove").submit();
+			form.append('<input type="hidden" name="writer" value="${board.writer}" />');
+			form.append('<input type="hidden" id="${_csrf.parameterName}" name="${_csrf.parameterName}" value="${_csrf.token}" />');
+			form.attr("method", "post").attr("action", "/board/remove").submit();
 		}else if(oper === "list"){
 			form.find("input[name='bno']").remove();
 			form.attr("action", "/board/list").submit();
@@ -138,10 +150,10 @@ $(document).ready(function(){
 			}
 			
 			var str=""; 
-			if(list==null || list.length==0){
-				replyUL.html(""); 
+			/*if(list==null || list.length==0){
+				//replyUL.html(""); 
 				return; 
-			}
+			}*/
 			for(var i=0;i<list.length;i++){
 				str+="<li class='list-group-item' data-rno='"+list[i].rno+"'>";
 				str+="<div><div class='header'>";
@@ -161,7 +173,7 @@ $(document).ready(function(){
 		
 		var prev = startNum != 1; 
 		var next = false; 
-		
+				
 		if(endNum * 10 >= replyCnt){
 			endNum = Math.ceil(replyCnt/10.0); 
 		}
@@ -190,16 +202,30 @@ $(document).ready(function(){
 		replyPageFooter.html(str);
 	}		
 	
+	
+	var replyer = null; 
+	<sec:authorize access="isAuthenticated()">
+		replyer = '<sec:authentication property="principal.username" />'; 
+	</sec:authorize>
+	
 	var modal = $(".modal"); 
 	var modalReply = $(".modal").find("input[name='reply']"); 
 	var modalReplyer = $(".modal").find("input[name='replyer']"); 
 	var modalRdate = $(".modal").find("input[name='rdate']"); 
 	var modalModBtn = $("#modBtn"); 
 	var modalDelBtn = $("#delBtn"); 
+	
+	var csrfHeader = "${_csrf.headerName}";
+	var csrfToken = "${_csrf.token}";
+	
+	$(document).ajaxSend(function(e, xhr, options){
+		xhr.setRequestHeader(csrfHeader, csrfToken);
+	});
+	
 	$("#regBtn").click(function(){
 		
 		modalReply.val(""); 
-		modalReplyer.attr("readonly", false).val("");
+		modalReplyer.val(replyer);
 		modalRdate.closest("div").hide(); 
 		modal.find(modalDelBtn).hide(); 
 		modal.find(modalModBtn).text("등록");
@@ -213,27 +239,46 @@ $(document).ready(function(){
 		var reply; 
 		
 		if(parseInt(rno) > 0){
+			
+			var origin = modalReplyer.val(); 
+			
 			reply={
-					reply : modalReply.val(), 
+					reply : modalReply.val(),
+					replyer : origin, 
 					rno : rno
 				};
-					
+			
+			if(!replyer){
+				alert("로그인후 수정이 가능합니다.");
+				modal.modal("hide"); 
+				return;
+			}
+			
+			console.log("origin : "+ origin); 
+			
+			if(origin!=replyer){
+				alert("자신이 작성한 댓글만 수정이 가능합니다."); 
+				modal.modal("hide"); 
+				return; 
+			}			
+			
 			replyService.modify(reply, function(result){
 				alert("수정되었습니다."); 
 				modal.modal("hide"); 
 				showList(pageNum);
 			});					
-		}else{	
+		}else{
+			
 			reply = {
 					reply : modalReply.val(), 
 					replyer : modalReplyer.val(), 
 					bno : bnoValue
 			};
-		
+					
 			replyService.add(reply, function(result){
 				alert("등록되었습니다."); 
 				
-				modal.find("input").val(""); 
+				//modal.find("input").val(""); 
 				modal.modal("hide");
 				showList(-1);
 			});			
@@ -246,7 +291,21 @@ $(document).ready(function(){
 		
 		var rno = modal.data("rno"); 
 		
-		replyService.remove(rno, function(result){
+		if(!replyer){
+			alert("로그인후 삭제가 가능합니다."); 
+			modal.modal("hide"); 
+			return;
+		}
+		
+		var origin = modalReplyer.val(); 
+		
+		if(replyer != origin){
+			alert("자신이 작성한 댓글만 삭제 가능합니다."); 
+			modal.modal("hide"); 
+			return; 
+		}
+		
+		replyService.remove(rno, origin, function(result){
 			alert("삭제되었습니다."); 
 			modal.modal("hide");
 			showList(pageNum);
@@ -258,7 +317,7 @@ $(document).ready(function(){
 		
 		replyService.get(rno, function(data){
 			modalReply.val(data.reply); 
-			modalReplyer.attr("readonly", "readonly").val(data.replyer); 
+			modalReplyer.val(data.replyer); 
 			modalRdate.attr("readonly", "readonly").val(replyService.displyTime(data.rdate));
 			modal.data("rno", data.rno); 
 			modal.find(modalModBtn).text("수정");

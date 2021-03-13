@@ -66,8 +66,8 @@ public class CultureServiceImpl implements CultureService {
 		log.info("modify..............." + upt);
 		attachMapper.deleteFileAll(upt.getCno());
 		attachMapper.delete(); 
-		
-		if(upt.getAttachList() != null || upt.getAttachList().size() > 0) {
+			
+		if(upt.getAttachList() != null && upt.getAttachList().size() > 0) {
 			upt.getAttachList().forEach(attach ->{
 				attach.setCno(upt.getCno());
 				attach.setBno(0L);
@@ -88,9 +88,9 @@ public class CultureServiceImpl implements CultureService {
 	}
 
 	@Override
-	public List<CultureVO> getListPaging(Criteria cri) {
+	public List<CultureVO> getListPaging(Criteria cri, Long mno) {
 		log.info("paging.......................");
-		return mapper.getListPaging(cri);
+		return mapper.getListPaging(cri, mno);
 	}
 
 	@Override
@@ -108,29 +108,29 @@ public class CultureServiceImpl implements CultureService {
 
 
 	@Override
-	public List<CultureVO> getMonList(Criteria cri) {
-		log.info("월별 조회 : " + cri);
-		return mapper.getMonList(cri);
+	public List<CultureVO> getMonList(Criteria cri, Long mno) {
+		log.info("월별 조회 : " + cri + ", mno  : "+mno );
+		return mapper.getMonList(cri, mno);
 	}
 
 
 	@Override
-	public List<CultureVO> getYearList(Criteria cri) {
-		log.info("연별 조회 : " + cri);
-		return mapper.getYearList(cri);
+	public List<CultureVO> getYearList(Criteria cri, Long mno) {
+		log.info("연별 조회 : " + cri+ ", mno  : "+mno );
+		return mapper.getYearList(cri, mno);
 	}
 
 
 	@Override
-	public List<CultureVO> getChartList(Criteria cri) {
-		log.info("차트 조회 : " + cri);
-		return mapper.getChartList(cri);
+	public List<CultureVO> getChartList(Criteria cri, Long mno) {
+		log.info("차트 조회 : " + cri+ ", mno  : "+mno );
+		return mapper.getChartList(cri, mno);
 	}
 
 
 	@Override
-	public List<CultureVO> getBySdate(Criteria cri) {
-		log.info("일별 자세히 조회 : "+cri);
-		return mapper.read2(cri);
+	public List<CultureVO> getBySdate(Criteria cri, Long mno) {
+		log.info("일별 자세히 조회 : "+cri+ ", mno  : "+mno );
+		return mapper.read2(cri, mno);
 	}
 }

@@ -2,6 +2,7 @@
     pageEncoding="UTF-8"%>
 <%@ taglib prefix="c"  uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt"  uri="http://java.sun.com/jsp/jstl/fmt" %>    
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %> 
 <%@ include file="../includes/header.jsp"  %>
                     <div class="container-fluid">
                         <h1 class="mt-4">게시판 상세</h1>
@@ -9,7 +10,8 @@
                             <div class="card-header"></div>
                             <div class="card-body">
                             	<form role="form" action="/board/register" method="post">
-                            		<input type="hidden" name="writer" value="user01" />
+                            		<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
+                            		<input type="hidden" name="writer" value='<sec:authentication property="principal.username"/>'/>
                             		<div class="form-group">
                             			<label class="small mb-1" for="kind">구분</label>
                             			<select name="kind" id="kind">

@@ -2,6 +2,7 @@
     pageEncoding="UTF-8"%>
 <%@ taglib prefix="c"  uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt"  uri="http://java.sun.com/jsp/jstl/fmt" %>    
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>  
 <%@ include file="../includes/header.jsp"  %>
                     <div class="container-fluid">
                         <h1 class="mt-4">나의 기록 등록</h1>
@@ -9,6 +10,8 @@
                             <div class="card-header"><i class="fa fa-check-circle"></i> 자유롭게 기입하세요 </div>
                             <div class="card-body">
 									<form role="form" action="/culture/register" method="post">
+										<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
+										<input type="hidden" name="mno" value='<sec:authentication property="principal.member.mno"/>' />
 									        <div class="form-group">
                                                 <label class="small mb-1" for="cdate">날짜</label>
                                                 <input class="form-control py-4" name="cdate" id="cdate" type="date"/>
@@ -192,6 +195,9 @@ $(document).ready(function(){
 		return true; 
 	}
 	
+	var csrfHeader = "${_csrf.headerName}"; 
+	var csrfToken = "${_csrf.token}"; 
+	
 	$("input[type='file']").change(function(e){
 		var formData = new FormData(); 
 		var upload = $("input[name='upload']"); 
@@ -214,6 +220,9 @@ $(document).ready(function(){
 			data: formData, 
 			type: 'POST', 
 			dataType:'json',
+			beforeSend : function(xhr){
+				xhr.setRequestHeader(csrfHeader, csrfToken);
+			},
 			success: function(result){
 				console.log(result);
 				showUploadResult(result);
@@ -233,6 +242,9 @@ $(document).ready(function(){
 			data : {fileName:targetFile, type:type}, 
 			dataType : 'text', 
 			type : 'POST', 
+			beforeSend : function(xhr){
+				xhr.setRequestHeader(csrfHeader, csrfToken);
+			},
 			success : function(result){
 				targetLi.remove();
 				alert("삭제되었습니다.");

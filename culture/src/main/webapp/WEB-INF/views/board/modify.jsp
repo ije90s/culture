@@ -1,7 +1,8 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <%@ taglib prefix="c"  uri="http://java.sun.com/jsp/jstl/core" %>
-<%@ taglib prefix="fmt"  uri="http://java.sun.com/jsp/jstl/fmt" %>    
+<%@ taglib prefix="fmt"  uri="http://java.sun.com/jsp/jstl/fmt" %>   
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>   
 <%@ include file="../includes/header.jsp"  %>
                     <div class="container-fluid">
                         <h1 class="mt-4">나의 기록 수정</h1>
@@ -9,6 +10,8 @@
                             <div class="card-header"><i class="fa fa-check-circle"></i> 자유롭게 수정하세요</div>
                             <div class="card-body">
                             	<form role="form" action="/board/modify" method="post">
+                            		<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
+                            		<input type="hidden" name="writer" value="${board.writer}" />
                             		<input type="hidden" name="pageNum" value="${cri.pageNum}" />
                             		<input type="hidden" name="amount" value="${cri.amount}" />
 									<input type="hidden" name="bno" value="${board.bno}" />
@@ -32,7 +35,12 @@
 									사진 첨부
 									</div>
 	                                <div class="form-group mt-4 mb-0 text-right">
-	                                     <button type="button" class="btn btn-primary" data-oper="modify">수정</button>
+	                                	<sec:authentication property="principal" var="pinfo"/>
+	                                	<sec:authorize access="isAuthenticated()">
+	                                		<c:if test="${pinfo.username eq board.writer}">
+	                                    		<button type="button" class="btn btn-primary" data-oper="modify">수정</button>
+	                                    	</c:if>
+	                                    </sec:authorize>
 										<button type="button" class="btn btn-secondary"  data-oper="list">목록</button>
 	                                </div>
                                 </form>                             

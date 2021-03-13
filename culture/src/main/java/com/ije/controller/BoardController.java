@@ -1,5 +1,6 @@
 package com.ije.controller;
 
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -25,7 +26,9 @@ public class BoardController {
 	
 	private final BoardService service; 
 	
+	
 	@GetMapping("/list")
+	@PreAuthorize("isAuthenticated()")
 	public void list(Criteria cri, Model d) {
 		log.info("목록 출력.............................");
 		d.addAttribute("list", service.getListPaging(cri)); 
@@ -39,11 +42,13 @@ public class BoardController {
 	}
 	
 	@GetMapping("/register")
+	@PreAuthorize("isAuthenticated()")
 	public void register() {
 		log.info("게시글 등록폼....................");
 	}
 	
 	@PostMapping("/register")
+	@PreAuthorize("isAuthenticated()")
 	public String register(BoardVO ins, RedirectAttributes rd) {
 		log.info("게시글 등록하기 : "+ins);
 		service.register(ins);
@@ -51,6 +56,7 @@ public class BoardController {
 		return "redirect:/board/list";
 	}
 	
+	@PreAuthorize("principal.username == #upt.writer")
 	@PostMapping("/modify")
 	public String modify(BoardVO upt, @ModelAttribute("cri") Criteria cri, RedirectAttributes rd) {
 		log.info("게시글 수정하기: "+upt);
@@ -63,9 +69,9 @@ public class BoardController {
 		return "redirect:/board/list"; 
 	}
 	
-	
+	@PreAuthorize("principal.username == #writer")
 	@PostMapping("/remove")
-	public String remove(@RequestParam("bno") Long bno, @ModelAttribute("cri") Criteria cri, RedirectAttributes rd) {
+	public String remove(@RequestParam("bno") Long bno, @ModelAttribute("cri") Criteria cri, RedirectAttributes rd, String writer) {
 		log.info("게시글 삭제하기: " + bno);
 		int result = service.remove(bno); 
 		if(result > 0 ) {

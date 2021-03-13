@@ -1,7 +1,8 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <%@ taglib prefix="c"  uri="http://java.sun.com/jsp/jstl/core" %>
-<%@ taglib prefix="fmt"  uri="http://java.sun.com/jsp/jstl/fmt" %>    
+<%@ taglib prefix="fmt"  uri="http://java.sun.com/jsp/jstl/fmt" %>   
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>   
 <%@ include file="../includes/header.jsp"  %>
 
                     <div class="container-fluid">
@@ -66,6 +67,7 @@
 <form role="form" action="/culture/list" method="get">
 	<input type="hidden" name="pageNum" value="${page.cri.pageNum }" />
 	<input type="hidden" name="amount" value="${page.cri.amount }" />
+	<input type="hidden" name="mno" value='<sec:authentication property="principal.member.mno"/>' />
 </form>
 <!-- form 끝 -->                        
 <!-- The Modal -->

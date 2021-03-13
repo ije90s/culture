@@ -17,13 +17,13 @@ public interface CultureService {
 	public int modify(CultureVO upt);
 	public int remove(Long cno);
 	
-	public List<CultureVO> getListPaging(Criteria cri); 
+	public List<CultureVO> getListPaging(Criteria cri, Long mno); 
 	public int getCount(Criteria cri);  
 	
 	public List<AttachVO> getAttachList(Long cno);
 	
-	public List<CultureVO> getMonList(Criteria cri); 
-	public List<CultureVO> getYearList(Criteria cri);
-	public List<CultureVO> getChartList(Criteria cri);
-	public List<CultureVO> getBySdate(Criteria cri); 
+	public List<CultureVO> getMonList(Criteria cri, Long mno); 
+	public List<CultureVO> getYearList(Criteria cri, Long mno);
+	public List<CultureVO> getChartList(Criteria cri, Long mno);
+	public List<CultureVO> getBySdate(Criteria cri, Long mno); 
 }

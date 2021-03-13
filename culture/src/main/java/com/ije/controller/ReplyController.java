@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -31,6 +32,7 @@ public class ReplyController {
 	
 	private final ReplyService service; 
 	
+	@PreAuthorize("isAuthenticated()")
 	@PostMapping(value="/new", consumes = "application/json", produces= {MediaType.TEXT_PLAIN_VALUE})
 	public ResponseEntity<String> create(@RequestBody ReplyVO ins){
 		log.info("ReplyVO : " + ins);
@@ -52,16 +54,19 @@ public class ReplyController {
 		return new ResponseEntity<>(service.get(rno), HttpStatus.OK); 
 	}
 	
+	@PreAuthorize("principal.username == #upt.replyer")
 	@PutMapping(value="/{rno}", consumes = "application/json", produces= {MediaType.TEXT_PLAIN_VALUE})
 	public ResponseEntity<String> modify(@PathVariable("rno") Long rno, @RequestBody ReplyVO upt){
 		log.info("수정 : " + rno);
 		log.info(upt);
-		return service.modify(upt) ? new ResponseEntity<>("success", HttpStatus.OK) : new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+		return service.modify(upt)? new ResponseEntity<>("success", HttpStatus.OK) : new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
 	}
 	
-	@DeleteMapping(value="/{rno}", produces= {MediaType.TEXT_PLAIN_VALUE})
-	public ResponseEntity<String> remove(@PathVariable("rno") Long rno){
+	@PreAuthorize("principal.username == #del.replyer")
+	@DeleteMapping("/{rno}")
+	public ResponseEntity<String> remove(@RequestBody ReplyVO del, @PathVariable("rno") Long rno){
 		log.info("삭제 : "+rno);
-		return service.remove(rno) ? new ResponseEntity<>("success", HttpStatus.OK) : new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+		log.info("replyer : " + del.getReplyer());
+		return service.remove(rno)? new ResponseEntity<>("success", HttpStatus.OK) : new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
 	}
 }
