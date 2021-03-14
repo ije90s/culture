@@ -83,5 +83,4 @@
 	<delete id="delete">
 	delete tb_culture where cno=#{cno}
 	</delete>
-	
 </mapper>

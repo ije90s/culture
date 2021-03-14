@@ -61,4 +61,10 @@ public class BoardServiceImpl implements BoardService {
 		return mapper.getCount();
 	}
 
+	@Override
+	public List<BoardVO> topList(String kind) {
+		log.info("kind : " + kind);
+		return mapper.topList(kind);
+	}
+
 }

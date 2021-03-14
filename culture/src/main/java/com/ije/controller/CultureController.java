@@ -196,4 +196,13 @@ public class CultureController {
 		return new ResponseEntity<>(service.getBySdate(cri, mno), HttpStatus.OK);
 	}
 	
+	
+	@GetMapping(value="/{mno}/top", produces = {MediaType.APPLICATION_XML_VALUE, MediaType.APPLICATION_JSON_UTF8_VALUE})
+	@ResponseBody
+	public ResponseEntity<List<CultureVO>> top(@PathVariable("mno") Long mno){
+		log.info("최근 글 10기만 가져오기"); 
+		Criteria cri = new Criteria(); 
+		return new ResponseEntity<>(service.getListPaging(cri, mno), HttpStatus.OK); 
+	}
+	
 }

@@ -18,4 +18,6 @@ public interface BoardMapper {
 	
 	public List<BoardVO> getListPaging(Criteria cri); 
 	public int getCount();
+	
+	public List<BoardVO> topList(String kind);
 }

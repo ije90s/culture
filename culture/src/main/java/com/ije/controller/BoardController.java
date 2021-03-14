@@ -1,13 +1,20 @@
 package com.ije.controller;
 
+import java.util.List;
+
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.ije.domain.BoardVO;
@@ -80,6 +87,13 @@ public class BoardController {
 		rd.addAttribute("pageNum", cri.getPageNum());
 		rd.addAttribute("amount", cri.getAmount());	
 		return "redirect:/board/list"; 
+	}
+	
+	@GetMapping(value="/{kind}/top",produces = {MediaType.APPLICATION_JSON_UTF8_VALUE, MediaType.APPLICATION_XML_VALUE})
+	@ResponseBody
+	public ResponseEntity<List<BoardVO>> top(@PathVariable("kind") String kind){
+		log.info("게시판 최신글 가져오기 : "+kind);
+		return new ResponseEntity<>(service.topList(kind), HttpStatus.OK); 
 	}
 
 }

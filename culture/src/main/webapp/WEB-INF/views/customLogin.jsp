@@ -49,7 +49,7 @@
 				                        </form>
 				                     </div>
 				                     <div class="card-footer text-center">
-				                     	<div class="small"><a href="#">회원가입</a></div>
+				                     	<div class="small"><a href="/member/join">회원가입</a></div>
 				                     </div>
 				                </div>
 				        	</div>

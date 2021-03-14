@@ -50,4 +50,14 @@
 	title=#{title}, content=#{content}, udate=sysdate 
 	where bno = #{bno}
 	</update>
+	
+	<select id="topList" resultType="com.ije.domain.BoardVO">
+	<![CDATA[
+	Select * from (
+	 Select /*+ INDESX_DESC(tb_board, pk_board) */ 
+	 rownum rn, bno, kind, title, content, writer, rdate, udate 
+	 From tb_board Where kind=#{kind}
+	) Where rn <= 5
+	]]>
+	</select>
 </mapper>

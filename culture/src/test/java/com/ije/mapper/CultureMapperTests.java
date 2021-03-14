@@ -88,7 +88,7 @@ public class CultureMapperTests {
 		Criteria cri = new Criteria(); 
 		cri.setPageNum(3);
 		cri.setAmount(10);
-		mapper.getListPaging(cri).forEach(culture -> log.info(culture));
+		mapper.getListPaging(cri, 102L).forEach(culture -> log.info(culture));
 	}
 	
 	
@@ -99,7 +99,7 @@ public class CultureMapperTests {
 		cri.setSdate("2021-03-01");
 		cri.setEdate("2021-03-31");
 		log.info(cri);
-		mapper.getMonList(cri).forEach(culture -> log.info(culture));
+		mapper.getMonList(cri, 102L).forEach(culture -> log.info(culture));
 	}
 	
 	@Test
@@ -108,7 +108,7 @@ public class CultureMapperTests {
 		Criteria cri = new Criteria(); 
 		cri.setSdate("2021-01-01");
 		cri.setEdate("2021-03-31");
-		mapper.getYearList(cri).forEach(culture -> log.info(culture));
+		mapper.getYearList(cri, 102L).forEach(culture -> log.info(culture));
 	}
 	@Test
 	public void getChartList() {
@@ -116,7 +116,7 @@ public class CultureMapperTests {
 		Criteria cri = new Criteria(); 
 		cri.setSdate("2021-03-01");
 		cri.setEdate("2021-03-31");
-		mapper.getChartList(cri).forEach(culture -> log.info(culture));
+		mapper.getChartList(cri, 102L).forEach(culture -> log.info(culture));
 	}
 	
 	@Test
@@ -124,6 +124,6 @@ public class CultureMapperTests {
 		log.info("getRead2().........................................................");
 		Criteria cri = new Criteria(); 
 		cri.setSdate("2021-03-01");
-		log.info(mapper.read2(cri));
+		log.info(mapper.read2(cri, 102L));
 	}
 }

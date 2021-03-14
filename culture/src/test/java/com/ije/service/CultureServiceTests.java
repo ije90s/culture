@@ -77,7 +77,7 @@ public class CultureServiceTests {
 		Criteria cri = new Criteria(); 
 		cri.setPageNum(3);
 		cri.setAmount(10);
-		service.getListPaging(cri).forEach(culture -> log.info(culture));
+		service.getListPaging(cri,102L).forEach(culture -> log.info(culture));
 	}
 	
 	@Test
@@ -86,7 +86,7 @@ public class CultureServiceTests {
 		Criteria cri = new Criteria(); 
 		cri.setSdate("2021-03-01");
 		cri.setEdate("2021-03-31");
-		service.getMonList(cri).forEach(culture -> log.info(culture));
+		service.getMonList(cri,102L).forEach(culture -> log.info(culture));
 	}
 	
 	@Test
@@ -95,7 +95,7 @@ public class CultureServiceTests {
 		Criteria cri = new Criteria(); 
 		cri.setSdate("2021-01-01");
 		cri.setEdate("2021-03-31");
-		service.getYearList(cri).forEach(culture -> log.info(culture));		
+		service.getYearList(cri,102L).forEach(culture -> log.info(culture));		
 	}
 	
 	@Test
@@ -104,7 +104,7 @@ public class CultureServiceTests {
 		Criteria cri = new Criteria(); 
 		cri.setSdate("2021-03-01");
 		cri.setEdate("2021-03-31");
-		service.getChartList(cri).forEach(culture -> log.info(culture));			
+		service.getChartList(cri,102L).forEach(culture -> log.info(culture));			
 	}
 	
 	@Test
@@ -112,7 +112,7 @@ public class CultureServiceTests {
 		log.info("==================================================");	
 		Criteria cri = new Criteria(); 
 		cri.setSdate("2021-03-01");
-		log.info(service.getBySdate(cri));
+		log.info(service.getBySdate(cri,102L));
 	}
 }
 
