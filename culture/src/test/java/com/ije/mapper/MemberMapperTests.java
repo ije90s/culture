@@ -11,6 +11,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import com.ije.domain.MemberVO;
+import com.ije.domain.UnjoinVO;
 
 import lombok.extern.log4j.Log4j;
 
@@ -49,5 +50,18 @@ public class MemberMapperTests {
 		ins.add(vo);
 		log.info(ins);
 		mapper.insert(ins);
+	}
+	
+	@Test
+	public void unjoi() {
+		log.info("..............................................."); 
+		UnjoinVO ins = new UnjoinVO(); 
+		ins.setReason(1L);
+		ins.setMemo("");
+		ins.setId("test4");
+		log.info(ins);
+		
+		mapper.insert2(ins);
+		
 	}
 }

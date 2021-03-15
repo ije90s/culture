@@ -18,7 +18,7 @@
                             		</select>
                             	</div>                            
                             	<div class="form-group">
-                                	<label class="small mb-1" for="cdate">제목 </label>
+                                	<label class="small mb-1" for="title">제목 </label>
                                     <input class="form-control py-4" name="title" id="title" type="text" value='${board.title}' readonly/>
                                 </div>
                                 <div class="form-group">

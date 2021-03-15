@@ -7,6 +7,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.ije.domain.MemberVO;
+import com.ije.domain.UnjoinVO;
 import com.ije.mapper.MemberMapper;
 
 import lombok.RequiredArgsConstructor;
@@ -33,6 +34,31 @@ public class MemberServiceImpl implements MemberService {
 	public MemberVO read(String id) {
 		log.info("아이디 체크하기 : "+id);
 		return mapper.read(id);
+	}
+
+	@Override
+	public int modify(MemberVO upt) {
+		log.info("회원정보 변경 : "+upt);
+		return mapper.update(upt);
+	}
+
+	@Override
+	public int modifyPW(MemberVO upt) {
+		log.info("비밀번호 변경하기......................");
+		upt.setPw(pw.encode(upt.getPw()));
+		return mapper.updatePw(upt);
+	}
+
+	@Override
+	public int remove(Long mno) {
+		log.info("탈퇴하기......................");
+		return mapper.delete(mno);
+	}
+
+	@Override
+	public void registerUnjoin(UnjoinVO ins) {
+		log.info("탈퇴사유 추가......................");
+		mapper.insert2(ins);
 	}
 
 }

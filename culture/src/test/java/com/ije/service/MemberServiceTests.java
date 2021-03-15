@@ -8,6 +8,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import com.ije.domain.MemberVO;
+import com.ije.domain.UnjoinVO;
 
 import lombok.extern.log4j.Log4j;
 
@@ -30,5 +31,16 @@ public class MemberServiceTests {
 		vo.setFavorites("");
 		log.info(vo);
 		service.register(vo);
+	}
+	
+	@Test
+	public void unjoin() {
+		log.info("....................................");
+		UnjoinVO ins = new UnjoinVO(); 
+		ins.setReason(2L);
+		ins.setMemo("");
+		ins.setId("test4");
+		log.info(ins);
+		service.registerUnjoin(ins);
 	}
 }

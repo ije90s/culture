@@ -36,4 +36,25 @@
 		Into tb_member_auth(mno) Values(seq_member.nextval)
 		</foreach>
 	</insert>
+	
+	<update id="update">
+	update tb_member 
+	set name=#{name}, phone=#{phone}, email=#{email}, favorites=#{favorites}, udate=sysdate
+	where mno=#{mno}
+	</update>
+	
+	<update id="updatePw">
+	update tb_member
+	set pw=#{pw}, udate=sysdate 
+	where mno=#{mno}
+	</update>
+	
+	<delete id="delete">
+	delete tb_member where mno=#{mno}
+	</delete>
+	
+	<insert id="insert2">
+	insert into tb_unjoin(reason, memo, id)
+	values (#{reason}, #{memo}, #{id})
+	</insert>
 </mapper>
