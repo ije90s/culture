@@ -18,7 +18,13 @@
                             	</div>
                             </div>
                             <div class="card-body">
-                            	<div>사진</div>
+                            	<div class="form-group uploadDiv">
+									<label class="small mb-1" for="upload">사진첨부</label>
+									<input type="file" id="upload" name="upload" data-folder="member" />
+								</div>
+								<div class="form-group uploadResult">
+									<ul class="list-group list-group-horizontal"></ul>
+								</div>
                             	<div class="form-group">
                                 	<label class="small mb-1" for="name">이름</label>
                                     <input class="form-control py-4" id="name" type="text" value='${member.name}' readonly/>
@@ -82,7 +88,7 @@
 
       <!-- Modal body -->
       <div class="modal-body"> 	
-      	<form method="post">
+      	<form id="modalForm" method="post">
       	<input type="hidden" name="mno" value="${member.mno }" />
       	<input type="hidden" name="id" value="${member.id }" />
       	<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
@@ -173,10 +179,18 @@
   </div>
 </div>            	
 <!-- The Modal 끝 -->       					
-					
+<form id="photoForm" method="post" action="/member/modifyPhoto">
+<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
+<input type="hidden" name="id" value="${member.id}" />
+<input type="hidden" name="mno" value="${member.mno}" />
+</form>			
+<script src="/resources/scripts/common.js"></script>  		
 <script>
 $(document).ready(function(){
 	var favorites = '<c:out value="${member.favorites}" />';
+	var csrfHeader = "${_csrf.headerName}"; 
+	var csrfToken = "${_csrf.token}";
+		
 	showFavorte('main', favorites);
 	function showFavorte(tab, favorites){
 		
@@ -228,7 +242,7 @@ $(document).ready(function(){
 		}
 	});	
 	
-	var form = $("form"); 
+	var form = $("#modalForm"); 
 	var pw = modal.find("input[name='pw']"); 
 	var pwConfirm = modal.find("input[name='pwConfirm']");
 	$(".btn").on("click",function(e){
@@ -264,6 +278,130 @@ $(document).ready(function(){
 			$("#chkPw").html("새 비밀번호 등록 가능합니다.");
 		}
 	});	
+	
+	
+	
+	
+	 (function(){
+			var mno = '<c:out value="${member.mno}" />';
+			$.getJSON("/member/getAttachList", {mno : mno}, function(arr){
+				var str = ""; 
+				
+				if(arr==null || arr.length==0){
+					$(".uploadResult ul").html("");
+					return;
+				}
+				
+				console.log(arr);
+				
+				$(arr.fileList).each(function(i, attach){
+					
+					if(!attach.fileType){	
+					}else{
+						var fileCallPath = encodeURIComponent(attach.path+"/s_"+attach.uuid+"_"+attach.fileName); 
+						var originPath = attach.path+"\\"+attach.uuid+"_"+attach.fileName;
+						originPath = originPath.replace(new RegExp(/\\/g),"/");  
+						str+="<li class='list-group-item' data-path='"+attach.path+"'";
+						str+=" data-uuid='"+attach.uuid+"' data-filename='"+attach.fileName+"' data-type='"+attach.fileType+"'>";
+						//str+="<div><span>"+attach.fileName+"</span>";
+						//str+="<button type='button' class='btn btn-warning btn-circle' data-file=\'"+attach.path+"\' data-type='image'><i class='fa fa-times'></i></button><br>";
+						str+="<img src='/display?fileName="+fileCallPath+"' />";
+						str+="</div></li>"; 
+					}
+				});
+				$(".uploadResult ul").html(str);
+			});
+	 })();	
+	
+	 
+		/* 파일 첨부 List Group 보여주기 */
+		function showUploadResult2(uploadResultArr){
+			var str="";  
+			$(uploadResultArr).each(function(i, obj){
+				
+				if(!obj.image){			
+				}else{
+					var fileCallPath = encodeURIComponent(obj.uploadPath+"/s_"+obj.uuid+"_"+obj.fileName); 
+					var originPath = obj.uploadPath+"\\"+obj.uuid+"_"+obj.fileName;
+					originPath = originPath.replace(new RegExp(/\\/g),"/");  
+					str+="<li class='list-group-item' data-path='"+obj.uploadPath+"'";
+					str+=" data-uuid='"+obj.uuid+"' data-filename='"+obj.fileName+"' data-type='"+obj.image+"'/>";
+					//str+="<div><span>"+obj.fileName+"</span>";
+					str+="<img src='/display?fileName="+fileCallPath+"' />";
+					str+="</div></li>"; 
+				}
+			});
+		
+			$(".uploadResult ul").append(str);
+		}	 
+	 
+	$("input[type='file']").change(function(e){
+		var formData = new FormData(); 
+		var upload = $("input[name='upload']"); 
+		var files = upload[0].files; 
+			
+		formData.append("folder", $(this).data("folder"));		
+		
+		for(var i=0;i<files.length;i++){
+			if(!checkExtension(files[i].name, files[i].size)){
+				return false; 
+			}
+			formData.append("upload",files[i]); 
+		}
+
+		$.ajax({
+			url : '/uploadAction', 
+			processData: false, 
+			contentType : false, 
+			data: formData, 
+			type: 'POST', 
+			dataType:'json',
+			beforeSend : function(xhr){
+				xhr.setRequestHeader(csrfHeader, csrfToken);
+			},
+			success: function(result){
+				console.log(result);
+				showUploadResult2(result);
+				PhotoAction(); 
+			}
+		});		
+	});
+	
+	$(".uploadResult").on("click", "button", function(e){
+		console.log("deleted file");
+		
+		var targetFile = $(this).data("file"); 
+		var type=$(this).data("type"); 
+		var targetLi = $(this).closest("li"); 
+		
+		$.ajax({
+			url : '/deleteFile', 
+			data : {fileName:targetFile, type:type}, 
+			dataType : 'text', 
+			type : 'POST', 
+			beforeSend : function(xhr){
+				xhr.setRequestHeader(csrfHeader, csrfToken);
+			},
+			success : function(result){
+				targetLi.remove();
+				alert("삭제되었습니다.");
+				
+			}
+		});
+	});		
+	
+	function PhotoAction(){
+		var form = $("#photoForm");
+		var str="";
+		$(".uploadResult ul li").each(function(i, obj){
+			var jobj = $(obj);
+			str+="<input type='hidden' name='attachList[0].fileList["+i+"].path' value='"+jobj.data("path")+"' />";
+			str+="<input type='hidden' name='attachList[0].fileList["+i+"].uuid' value='"+jobj.data("uuid")+"' />";
+			str+="<input type='hidden' name='attachList[0].fileList["+i+"].fileName' value='"+jobj.data("filename")+"'/>"; 
+			str+="<input type='hidden' name='attachList[0].fileList["+i+"].fileType' value='"+jobj.data("type")+"'/>";
+		});
+		form.append(str).submit();		
+	}
 });
 </script>					
 <%@ include file="../includes/footer.jsp"  %>

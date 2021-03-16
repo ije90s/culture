@@ -9,13 +9,14 @@ public interface AttachMapper {
 
 	
 	public List<AttachVO> findByCno(Long cno);	
+	public List<AttachVO> findByBno(Long bno); 
+	public AttachVO findByMno(Long mno); 
 	
 	public void insert(List<AttachVO> ins);
 	
-	
-	//public int delete(String uuid);
-	public void deleteFile(String uuid); 
-	public void deleteFileAll(Long cno);
-	public void delete(); 
+	public void deleteByCno(Long cno);
+	public void deleteByBno(Long bno); 
+	public void deleteByMno(Long mno);
+
 	
 }

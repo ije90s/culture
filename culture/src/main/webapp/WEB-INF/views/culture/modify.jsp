@@ -94,7 +94,7 @@
 											</div>
 											<div class="form-group uploadDiv">
 												<label class="small mb-1" for="upload">사진첨부</label>
-												<input type="file" id="upload" name="upload" multiple />
+												<input type="file" id="upload" name="upload" data-folder="culture" multiple />
 											</div>
 											<div class="form-group uploadResult">
 												<ul class="list-group list-group-horizontal"></ul>
@@ -137,43 +137,13 @@
   </div>
 </div>            	
 <!-- The Modal 끝 -->   
-                	
+<script src="/resources/scripts/common.js"></script>                	
 <script>
-
-var uploadResult = $(".uploadResult ul"); 
-
-function showUploadResult(uploadResultArr){
-	var str="";  
-	$(uploadResultArr).each(function(i, obj){
-		
-		if(!obj.image){
-			
-		}else{
-			var fileCallPath = encodeURIComponent(obj.uploadPath+"/s_"+obj.uuid+"_"+obj.fileName); 
-			var originPath = obj.uploadPath+"\\"+obj.uuid+"_"+obj.fileName;
-			originPath = originPath.replace(new RegExp(/\\/g),"/");  
-			str+="<li class='list-group-item' data-path='"+obj.uploadPath+"'";
-			str+=" data-uuid='"+obj.uuid+"' data-filename='"+obj.fileName+"' data-type='"+obj.image+"'/>";
-			str+="<div><span>"+obj.fileName+"</span>";
-			str+="<button type='button' class='btn btn-warning btn-circle' data-file=\'"+fileCallPath+"\' data-type='image'><i class='fa fa-times'></i></button><br>";
-			str+="<a href=\"javascript:showImg(\'"+originPath+"')\"><img src='/display?fileName="+fileCallPath+"' /></a>";
-			str+="</div></li>"; 
-		}
-	});
-
-	uploadResult.append(str);
-}
-
-function showImg(originPath){
-	//alert(originPath);
-	$(".modal-body").html("<img src='/display?fileName="+originPath+"'/>"); 
-	$("#myModal").modal("show");
-}	 
 
 $(document).ready(function(){
 	var formObj = $("form"); 
-	var regex = new RegExp("(.*?)\.(jpg|png|gif|bmp)$"); 
-	var maxSize = 5242880; 	
+	var csrfHeader = "${_csrf.headerName}"; 
+	var csrfToken = "${_csrf.token}";
 	
 	 (function(){
 			var cno = '<c:out value="${culture.cno}" />';
@@ -215,31 +185,13 @@ $(document).ready(function(){
 			targetLi.remove();
 		}
 	});	
-
-
-	function checkExtension(fileName, fileSize){
-		if(fileSize > maxSize){
-			alert("파일 사이즈가 초과되었습니다."); 
-			return false; 
-		}
-		
-		if(!regex.test(fileName)){
-			alert("사진 파일 형식만 가능합니다.");
-			return false; 
-		}
-		
-		return true; 
-	}
-	
-	var csrfHeader = "${_csrf.headerName}"; 
-	var csrfToken = "${_csrf.token}"; 
+ 
 	$("input[type='file']").change(function(e){
 		var formData = new FormData(); 
 		var upload = $("input[name='upload']"); 
 		var files = upload[0].files; 
-		
-		//console.log(files);		
-		formData.append("folder", "culture");		
+			
+		formData.append("folder", $(this).data("folder"));		
 		
 		for(var i=0;i<files.length;i++){
 			if(!checkExtension(files[i].name, files[i].size)){

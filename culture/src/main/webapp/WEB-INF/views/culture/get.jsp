@@ -132,6 +132,7 @@
  	<input type="hidden" name="pageNum" value="${cri.pageNum}" />
  	<input type="hidden" name="amount" value="${cri.amount}" />
  </form>   
+ <script src="/resources/scripts/common.js"></script>
  <script>
  $(document).ready(function(){
 	 
@@ -171,12 +172,7 @@
 	 	showImg(path.replace(new RegExp(/\\/g),"/"));
 	 });
 		
-	function showImg(originPath){
-		//alert(originPath);
-		$(".modal-body").html("<img src='/display?fileName="+originPath+"'/>"); 
-		$("#myModal").modal("show");
-	}
-	 
+
 	 $(".btn").on("click",function(e){
 		 e.preventDefault(); 
 		 var oper = $(this).data("oper"); 

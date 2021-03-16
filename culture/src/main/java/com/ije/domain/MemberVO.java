@@ -18,5 +18,6 @@ public class MemberVO {
 	private Date udate; 
 	private boolean enabled; 
 	private List<AuthVO> authList;
+	private List<AttachVO> attachList; 
 	
 }

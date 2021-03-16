@@ -1,5 +1,9 @@
 package com.ije.controller;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,6 +24,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.ije.domain.AttachFileVO;
+import com.ije.domain.AttachVO;
 import com.ije.domain.MemberVO;
 import com.ije.domain.UnjoinVO;
 import com.ije.service.MemberService;
@@ -86,6 +92,30 @@ public class MemberController {
 		return "redirect:/member/myprofile";
 	}
 	
+	private void deleteFiles(List<AttachFileVO> attachList) {
+		if(attachList == null || attachList.size() <=0) {
+			return; 
+		}
+		
+		log.info("delete attach files........................");
+		log.info(attachList);
+		
+		attachList.forEach(attach ->{
+			try {
+				Path file = Paths.get("C:\\upload\\"+attach.getPath()+"\\"+attach.getUuid()+"_"+attach.getFileName()); 
+				Files.deleteIfExists(file);
+				
+				if(Files.probeContentType(file).startsWith("image")) {
+					Path thumnail = Paths.get("C:\\upload\\"+attach.getPath()+"\\s_"+attach.getUuid()+"_"+attach.getFileName());
+					Files.delete(thumnail);
+				}
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				log.info("delete file error : " +e.getMessage());
+			}
+		});
+	}	
+	
 	@PostMapping("/unjoin")
 	public String unjoin(@RequestParam("mno") Long mno, UnjoinVO ins, RedirectAttributes rttr) {
 		log.info("탈퇴하기 "+ mno); 
@@ -99,5 +129,27 @@ public class MemberController {
 		}
 		return "redirect:/customLogin"; 
 	}
+	
+	@PostMapping("/modifyPhoto")
+	@PreAuthorize("principal.member.mno == #upt.mno")
+	public String modifyPhoto(MemberVO upt, RedirectAttributes rttr) {
+		log.info("사진 바꾸기"); 
+		log.info("upt :"+upt);
+		if(upt.getAttachList()!=null && upt.getAttachList().size()>0) {
+			service.modifyPhoto(upt);
+			rttr.addFlashAttribute("result", "1");
+		}
+		rttr.addAttribute("id", upt.getId()); 
+		return "redirect:/member/myprofile";
+	}
+	
+	@GetMapping(value="/getAttachList", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+	@ResponseBody
+	public ResponseEntity<AttachVO> getAttachList(Long mno){
+		
+		log.info("첨부파일 호출..............................................");
+		
+		return new ResponseEntity<>(service.getAttach(mno), HttpStatus.OK);
+	}	
 
 }

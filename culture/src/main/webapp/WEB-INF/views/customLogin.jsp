@@ -43,7 +43,7 @@
 				                                </div>
 				                             </div>
 				                             <div class="form-group d-flex align-items-center justify-content-between mt-4 mb-0">
-				                             	<a class="small" href="#">비밀번호찾기</a>
+				                             	<a class="small" href="#">아이디/비밀번호찾기</a>
 				                                <a class="btn btn-primary">로그인</a>
 				                             </div>
 				                        </form>
@@ -62,11 +62,32 @@
         <script src="resources/dist/js/scripts.js"></script>
         <script>
         $(document).ready(function(){
+        	var form = $("form");
         	$(".btn-primary").on("click",function(e){
         		e.preventDefault(); 
         		console.log("로그인 클릭");
-        		$("form").submit();
+        		chkLogin();
+        		form.submit();
         	});
+        	
+        	$("#password").keyup(function(e){
+        		if(e.keyCode == 13){
+        			form.submit();
+        		}
+        	});
+        	
+        	function chkLogin(){
+        		if(form.find("input[name='id']").val() == ""){
+        			alert("아이디를 입력하세요.");
+        			return false;
+        		}
+        
+				if(form.find("input[name='password']").val() == ""){
+					alert("아이디를 입력하세요.");
+					return false;
+				}       
+       			return true;
+        	}
         });
         </script>
     </body>

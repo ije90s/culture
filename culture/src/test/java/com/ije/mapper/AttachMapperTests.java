@@ -11,6 +11,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import com.ije.domain.AttachFileVO;
 import com.ije.domain.AttachVO;
+import com.ije.domain.CultureVO;
 
 import lombok.extern.log4j.Log4j;
 
@@ -22,11 +23,11 @@ public class AttachMapperTests {
 	@Autowired
 	private AttachMapper mapper; 
 	
+	
 	@Test
 	public void getList() {
 		log.info("..................................");
-		mapper.findByCno(1L).forEach(attach -> log.info(attach));
-		
+		mapper.findByCno(83L).forEach(attach -> log.info(attach));
 	}
 	
 	@Test

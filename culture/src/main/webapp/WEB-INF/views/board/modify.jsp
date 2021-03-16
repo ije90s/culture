@@ -31,8 +31,12 @@
 	                                	<label class="small mb-1" for="content">내용</label>
 	                                    <textarea class="form-control" name="content" rows="5" id="content">${board.content}</textarea>
 									</div>
-									<div class="form-group">
-									사진 첨부
+									<div class="form-group uploadDiv">
+										<label class="small mb-1" for="upload">사진첨부</label>
+										<input type="file" id="upload" name="upload" data-folder="board" multiple />
+									</div>
+									<div class="form-group uploadResult">
+										<ul class="list-group list-group-horizontal"></ul>
 									</div>
 	                                <div class="form-group mt-4 mb-0 text-right">
 	                                	<sec:authentication property="principal" var="pinfo"/>
@@ -48,17 +52,100 @@
                             </div> <!-- card-body 끝  -->
                         </div> <!-- card mb-4 끝 -->
                 	</div> <!-- container-fluid 끝 -->   
+                	
+<script src="/resources/scripts/common.js"></script>   
 <script>
 $(document).ready(function(){
 	var form = $("form");
+	var csrfHeader = "${_csrf.headerName}"; 
+	var csrfToken = "${_csrf.token}";
 	
+	 (function(){
+			var bno = '<c:out value="${board.bno}" />';
+			$.getJSON("/board/getAttachList", {bno : bno}, function(arr){
+				var str = ""; 
+				
+				if(arr==null || arr.length==0){
+					$(".uploadResult ul").html("");
+					return;
+				}
+
+				$(arr[0].fileList).each(function(i, attach){
+					
+					if(!attach.fileType){	
+					}else{
+						var fileCallPath = encodeURIComponent(attach.path+"/s_"+attach.uuid+"_"+attach.fileName); 
+						var originPath = attach.path+"\\"+attach.uuid+"_"+attach.fileName;
+						originPath = originPath.replace(new RegExp(/\\/g),"/");  
+						str+="<li class='list-group-item' data-path='"+attach.path+"'";
+						str+=" data-uuid='"+attach.uuid+"' data-filename='"+attach.fileName+"' data-type='"+attach.fileType+"'>";
+						str+="<div><span>"+attach.fileName+"</span>";
+						str+="<button type='button' class='btn btn-warning btn-circle' data-file=\'"+attach.path+"\' data-type='image'><i class='fa fa-times'></i></button><br>";
+						str+="<a href=\"javascript:showImg(\'"+originPath+"')\"><img src='/display?fileName="+fileCallPath+"' /></a>";
+						str+="</div></li>"; 
+					}
+				});
+				$(".uploadResult ul").html(str);
+			});
+	 })();	
+		
+	$(".uploadResult").on("click", "button", function(e){
+		console.log("deleted file");
+		
+		var targetFile = $(this).data("file"); 
+		var type=$(this).data("type"); 
+		var targetLi = $(this).closest("li"); 
+		
+		if(confirm("사진을 삭제하시겠습니까?")){
+			targetLi.remove();
+		}
+	});	
+ 
+	$("input[type='file']").change(function(e){
+		var formData = new FormData(); 
+		var upload = $("input[name='upload']"); 
+		var files = upload[0].files; 
+			
+		formData.append("folder", $(this).data("folder"));		
+		
+		for(var i=0;i<files.length;i++){
+			if(!checkExtension(files[i].name, files[i].size)){
+				return false; 
+			}
+			formData.append("upload",files[i]); 
+		}
+
+		$.ajax({
+			url : '/uploadAction', 
+			processData: false, 
+			contentType : false, 
+			data: formData, 
+			type: 'POST', 
+			dataType:'json',
+			beforeSend : function(xhr){
+				xhr.setRequestHeader(csrfHeader, csrfToken);
+			},
+			success: function(result){
+				console.log(result);
+				showUploadResult(result);
+			}
+		});		
+	});		
 	$(".btn").click(function(e){
 		e.preventDefault(); 
 		var oper = $(this).data("oper"); 
 		
 		if(oper == "modify"){
 			if(confirm("수정하시겠습니까?")){
-				form.submit();
+				var str="";
+				$(".uploadResult ul li").each(function(i, obj){
+					var jobj = $(obj);
+					str+="<input type='hidden' name='attachList[0].fileList["+i+"].path' value='"+jobj.data("path")+"' />";
+					str+="<input type='hidden' name='attachList[0].fileList["+i+"].uuid' value='"+jobj.data("uuid")+"' />";
+					str+="<input type='hidden' name='attachList[0].fileList["+i+"].fileName' value='"+jobj.data("filename")+"'/>"; 
+					str+="<input type='hidden' name='attachList[0].fileList["+i+"].fileType' value='"+jobj.data("type")+"'/>";
+				});
+				form.append(str).submit();
 			}
 		}else{
 			var pageNumObj = $("input[name='pageNum']").clone(); 

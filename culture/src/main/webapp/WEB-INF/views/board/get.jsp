@@ -25,8 +25,8 @@
                                 	<label class="small mb-1" for="content">내용</label>
                                     <textarea class="form-control" name="content" rows="5" id="content" readonly>${board.content}</textarea>
 								</div>
-								<div class="form-group">
-								사진 첨부
+								<div class="form-group uploadResult">
+									<ul class="list-group list-group-horizontal"></ul>
 								</div>
                                 <div class="form-group mt-4 mb-0 text-right">
                                 	<sec:authentication property="principal" var="pinfo"/>
@@ -83,17 +83,17 @@
 
       <!-- Modal body -->
       <div class="modal-body">
-     	<div class="form-group">
+     	<div class="form-group reply">
      		<label>댓글</label>
-     		<input class="form-control" name="reply" />
+     		<input class="form-control reply" name="reply" />
      	</div>
    		<div class="form-group">
      		<label>아이디</label>
-     		<input class="form-control" name="replyer" readonly />
+     		<input class="form-control reply" name="replyer" readonly />
      	</div>
      	<div>
   			<label>작성일</label>
-     		<input class="form-control" name="rdate" />   	
+     		<input class="form-control reply" name="rdate" />   	
      	</div>
       </div>
       <!-- Modal footer -->
@@ -107,12 +107,48 @@
   </div>
 </div>            	
 <!-- The Modal 끝 -->     
-<script src="/resources/scripts/reply.js"></script>      	  
+<script src="/resources/scripts/reply.js"></script>      
+<script src="/resources/scripts/common.js"></script>	  
 <script>
 
 
 $(document).ready(function(){
 	var form = $("form"); 
+	
+	 (function(){
+			var bno = '<c:out value="${board.bno}" />';
+			$.getJSON("/board/getAttachList", {bno : bno}, function(arr){
+				var str = ""; 
+				
+				if(arr==null || arr.length==0){
+					$(".uploadResult ul").html("");
+					return;
+				}
+
+				$(arr[0].fileList).each(function(i, attach){
+					
+					if(!attach.fileType){	
+					}else{
+						var fileCallPath = encodeURIComponent(attach.path+"/s_"+attach.uuid+"_"+attach.fileName); 
+						
+						str+="<li class='list-group-item' data-path='"+attach.path+"'";
+						str+=" data-uuid='"+attach.uuid+"' data-filename='"+attach.fileName+"' data-type='"+attach.image+"'>";
+						str+="<div>";
+						str+="<img src='/display?fileName="+fileCallPath+"' />";
+						str+="</div></li>"; 
+					}
+				});
+				$(".uploadResult ul").html(str);
+			});
+	 })();	 
+	 
+	$(".uploadResult").on("click", "li", function(e){
+		console.log("clicked");
+		var liObj = $(this); 
+		var path = encodeURIComponent(liObj.data("path")+"/"+liObj.data("uuid")+"_"+liObj.data("filename")); 
+	 	showImg(path.replace(new RegExp(/\\/g),"/"));
+	});	
+	
 	$(".btn").click(function(e){
 		e.preventDefault(); 
 		var oper = $(this).data("oper"); 
@@ -209,6 +245,9 @@ $(document).ready(function(){
 	</sec:authorize>
 	
 	var modal = $(".modal"); 
+	var modalTitle = $(".modal-title");
+	var modalBody = $(".modal-body");
+	var modalReplys = modal.find(".reply"); 
 	var modalReply = $(".modal").find("input[name='reply']"); 
 	var modalReplyer = $(".modal").find("input[name='replyer']"); 
 	var modalRdate = $(".modal").find("input[name='rdate']"); 
@@ -223,12 +262,13 @@ $(document).ready(function(){
 	});
 	
 	$("#regBtn").click(function(){
-		
+		modalTitle.html("댓글");
+		modalBody.html(modalReplys); 
 		modalReply.val(""); 
 		modalReplyer.val(replyer);
 		modalRdate.closest("div").hide(); 
 		modal.find(modalDelBtn).hide(); 
-		modal.find(modalModBtn).text("등록");
+		modal.find(modalModBtn).text("등록").show();
 		modal.data("rno", 0); 
 		$(".modal").modal("show");
 	});
@@ -316,11 +356,12 @@ $(document).ready(function(){
 		var rno = $(this).data("rno"); 
 		
 		replyService.get(rno, function(data){
+			modalTitle.html("댓글");
 			modalReply.val(data.reply); 
 			modalReplyer.val(data.replyer); 
 			modalRdate.attr("readonly", "readonly").val(replyService.displyTime(data.rdate));
 			modal.data("rno", data.rno); 
-			modal.find(modalModBtn).text("수정");
+			modal.find(modalModBtn).text("수정").show();
 			modal.find(modalDelBtn).show(); 
 			$(".modal").modal("show");
 		});

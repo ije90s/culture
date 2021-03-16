@@ -25,9 +25,21 @@
 	<select id="findByCno" resultMap="attachMap">
 	SELECT a.gno, rdate, mno, cno, bno, uuid, fileName, fileType, path FROM 
 	TB_ATTACH_GROUP a LEFT OUTER JOIN TB_ATTACH b ON a.GNO = b.GNO 
-	WHERE cno=#{cno}
+	WHERE cno=#{cno} 
 	</select>
 	
+	<select id="findByBno" resultMap="attachMap">
+	SELECT a.gno, rdate, mno, cno, bno, uuid, fileName, fileType, path FROM 
+	TB_ATTACH_GROUP a LEFT OUTER JOIN TB_ATTACH b ON a.GNO = b.GNO 
+	WHERE bno=#{bno} 	
+	</select>
+
+	<select id="findByMno" resultMap="attachMap">
+	SELECT a.gno, rdate, mno, cno, bno, uuid, fileName, fileType, path FROM 
+	TB_ATTACH_GROUP a LEFT OUTER JOIN TB_ATTACH b ON a.GNO = b.GNO 
+	WHERE mno=#{mno} 	
+	</select>
+
 	<insert id="insert" parameterType="java.util.List">
 		<foreach collection="list" item="item" open="INSERT ALL" close="select * from dual" separator=" " >
 		INTO TB_ATTACH_GROUP(gno, cno, mno, bno)
@@ -38,19 +50,16 @@
 			</foreach>
 		</foreach>
 	</insert>
-
-	<delete id="deleteFile">
-	delete TB_ATTACH where uuid=#{uuid}
+	
+	<delete id="deleteByCno">
+	delete TB_ATTACH_GROUP where cno=#{cno}
 	</delete>
 	
-	<delete id="delete">
-	delete from TB_ATTACH_GROUP a 
-	where NOT EXISTS (SELECT 1 FROM TB_ATTACH b WHERE b.GNO=a.GNO)	
-	</delete>
-		
-	<delete id="deleteFileAll">
-	delete TB_ATTACH 
-	where gno = (select gno from TB_ATTACH_GROUP where cno = #{cno})
+	<delete id="deleteByBno">
+	delete TB_ATTACH_GROUP where bno=#{bno} 
 	</delete>
 
+	<delete id="deleteByMno">
+	delete TB_ATTACH_GROUP where mno=#{mno} 
+	</delete>
 </mapper>

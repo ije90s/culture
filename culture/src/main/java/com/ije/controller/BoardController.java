@@ -1,5 +1,9 @@
 package com.ije.controller;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
 
 import org.springframework.http.HttpStatus;
@@ -17,6 +21,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.ije.domain.AttachFileVO;
+import com.ije.domain.AttachVO;
 import com.ije.domain.BoardVO;
 import com.ije.domain.Criteria;
 import com.ije.domain.PageVO;
@@ -58,6 +64,11 @@ public class BoardController {
 	@PreAuthorize("isAuthenticated()")
 	public String register(BoardVO ins, RedirectAttributes rd) {
 		log.info("게시글 등록하기 : "+ins);
+		log.info("=============================================================");
+		if(ins.getAttachList() != null) {
+			ins.getAttachList().forEach(attach -> log.info(attach));
+		}
+		log.info("=============================================================");
 		service.register(ins);
 		rd.addFlashAttribute("result", "1");
 		return "redirect:/board/list";
@@ -75,13 +86,43 @@ public class BoardController {
 		rd.addAttribute("amount", cri.getAmount());
 		return "redirect:/board/list"; 
 	}
+
+	
+	private void deleteFiles(List<AttachFileVO> attachList) {
+		if(attachList == null || attachList.size() <=0) {
+			return; 
+		}
+		
+		log.info("delete attach files........................");
+		log.info(attachList);
+		
+		attachList.forEach(attach ->{
+			try {
+				Path file = Paths.get("C:\\upload\\"+attach.getPath()+"\\"+attach.getUuid()+"_"+attach.getFileName()); 
+				Files.deleteIfExists(file);
+				
+				if(Files.probeContentType(file).startsWith("image")) {
+					Path thumnail = Paths.get("C:\\upload\\"+attach.getPath()+"\\s_"+attach.getUuid()+"_"+attach.getFileName());
+					Files.delete(thumnail);
+				}
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				log.info("delete file error : " +e.getMessage());
+			}
+		});
+	}	
 	
 	@PreAuthorize("principal.username == #writer")
 	@PostMapping("/remove")
 	public String remove(@RequestParam("bno") Long bno, @ModelAttribute("cri") Criteria cri, RedirectAttributes rd, String writer) {
 		log.info("게시글 삭제하기: " + bno);
 		int result = service.remove(bno); 
+		List<AttachVO> attachList = service.getAttachList(bno); 
 		if(result > 0 ) {
+			if(attachList !=null && attachList.size() > 0) {
+				List<AttachFileVO> FileList = attachList.get(0).getFileList();
+				deleteFiles(FileList); 
+			}
 			rd.addFlashAttribute("result", result); 
 		}
 		rd.addAttribute("pageNum", cri.getPageNum());
@@ -96,4 +137,14 @@ public class BoardController {
 		return new ResponseEntity<>(service.topList(kind), HttpStatus.OK); 
 	}
 
+
+	@GetMapping(value="/getAttachList", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+	@ResponseBody
+	public ResponseEntity<List<AttachVO>> getAttachList(Long bno){
+		
+		log.info("첨부파일 호출..............................................");
+		
+		return new ResponseEntity<>(service.getAttachList(bno), HttpStatus.OK);
+	}	
+	
 }

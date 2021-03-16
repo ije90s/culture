@@ -28,8 +28,12 @@
 	                                	<label class="small mb-1" for="content">내용</label>
 	                                    <textarea class="form-control" name="content" rows="5" id="content"></textarea>
 									</div>
-									<div class="form-group">
-									사진 첨부
+									<div class="form-group uploadDiv">
+										<label class="small mb-1" for="upload">사진첨부</label>
+										<input type="file" id="upload" name="upload" data-folder="board" multiple />
+									</div>
+									<div class="form-group uploadResult">
+										<ul class="list-group list-group-horizontal"></ul>
 									</div>
 	                                <div class="form-group mt-4 mb-0 text-right">
 	                                    <button type="submit" class="btn btn-primary">등록</button>
@@ -39,4 +43,84 @@
                             </div> <!-- card-body 끝  -->
                         </div> <!-- card mb-4 끝 -->                            
                 	</div> <!-- container-fluid 끝 -->   
+<script src="/resources/scripts/common.js"></script>
+<script>
+$(document).ready(function(){
+	
+	var formObj = $("form"); 
+	var csrfHeader = "${_csrf.headerName}"; 
+	var csrfToken = "${_csrf.token}";
+	
+	$("button[type='submit']").on("click", function(e){
+		e.preventDefault(); 
+		console.log("submit clicked");
+		var str="";
+		$(".uploadResult ul li").each(function(i, obj){
+			var jobj = $(obj);
+			str+="<input type='hidden' name='attachList[0].fileList["+i+"].path' value='"+jobj.data("path")+"' />";
+			str+="<input type='hidden' name='attachList[0].fileList["+i+"].uuid' value='"+jobj.data("uuid")+"' />";
+			str+="<input type='hidden' name='attachList[0].fileList["+i+"].fileName' value='"+jobj.data("filename")+"'/>"; 
+			str+="<input type='hidden' name='attachList[0].fileList["+i+"].fileType' value='"+jobj.data("type")+"'/>";
+		});
+
+		formObj.append(str).submit();
+	});	
+	
+	$("input[type='file']").change(function(e){
+		var formData = new FormData(); 
+		var upload = $("input[name='upload']"); 
+		var files = upload[0].files; 
+				
+		formData.append("folder", $(this).data("folder"));		
+		
+		for(var i=0;i<files.length;i++){
+			if(!checkExtension(files[i].name, files[i].size)){
+				return false; 
+			}
+			formData.append("upload",files[i]); 
+		}
+		
+
+		$.ajax({
+			url : '/uploadAction', 
+			processData: false, 
+			contentType : false, 
+			data: formData, 
+			type: 'POST', 
+			dataType:'json',
+			beforeSend : function(xhr){
+				xhr.setRequestHeader(csrfHeader, csrfToken);
+			},
+			success: function(result){
+				console.log(result);
+				showUploadResult(result);
+			}
+		});	
+	});
+	
+
+	$(".uploadResult").on("click", "button", function(e){
+		console.log("deleted file");
+		
+		var targetFile = $(this).data("file"); 
+		var type=$(this).data("type"); 
+		var targetLi = $(this).closest("li"); 
+		
+		$.ajax({
+			url : '/deleteFile', 
+			data : {fileName:targetFile, type:type}, 
+			dataType : 'text', 
+			type : 'POST', 
+			beforeSend : function(xhr){
+				xhr.setRequestHeader(csrfHeader, csrfToken);
+			},
+			success : function(result){
+				targetLi.remove();
+				alert("삭제되었습니다.");
+				
+			}
+		});
+	});		
+});
+</script>         
 <%@ include file="../includes/footer.jsp"  %> 

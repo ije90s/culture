@@ -64,9 +64,8 @@ public class CultureServiceImpl implements CultureService {
 	public int modify(CultureVO upt) {
 		log.info("modify...................");
 		log.info("modify..............." + upt);
-		attachMapper.deleteFileAll(upt.getCno());
-		attachMapper.delete(); 
-			
+		attachMapper.deleteByCno(upt.getCno());
+
 		if(upt.getAttachList() != null && upt.getAttachList().size() > 0) {
 			upt.getAttachList().forEach(attach ->{
 				attach.setCno(upt.getCno());
@@ -82,8 +81,7 @@ public class CultureServiceImpl implements CultureService {
 	@Override
 	public int remove(Long cno) {
 		log.info("remove.......................");
-		attachMapper.deleteFileAll(cno);
-		attachMapper.delete(); 
+		attachMapper.deleteByCno(cno);
 		return mapper.delete(cno);
 	}
 
