@@ -26,25 +26,27 @@
 									<h2><c:out value="${logout}"/></h2>
 				                	</div>
 				                    <div class="card-body">
-				                    	<form method="post" action="/login">
+				                    	<form method="post" action="/login" class="needs-validation" novalidate>
 				                    	<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
 				                        	<div class="form-group">
 				                            	<label class="small mb-1" for="username">아이디</label>
-				                                <input class="form-control py-4" id="username" name="username" type="text" placeholder="아이디를 입력하세요" />
+				                                <input class="form-control py-4" id="username" name="username" type="text" placeholder="입력 후 엔터키를 누르세요." required/>
+				                                <div class="invalid-feedback">아이디를 입력하세요.</div>
 				                            </div>
 				                            <div class="form-group">
 				                                <label class="small mb-1" for="password">비밀번호</label>
-				                                <input class="form-control py-4" id="password" name="password" type="password" placeholder="비밀번호를 입력하세요." />
+				                                <input class="form-control py-4" id="password" name="password" type="password" placeholder="입력 후 엔터키를 누르세요." required />
+				                                <div class="invalid-feedback">비밀번호를 입력하세요.</div>
 				                             </div>
 				                             <div class="form-group">
 				                             	<div class="custom-control custom-checkbox">
-				                                	<input class="custom-control-input" id="rememberCheck" name="remember-me" type="checkbox"  />
+				                                	<input class="custom-control-input" id="rememberCheck" name="remember-me" type="checkbox"/>
 				                                    <label class="custom-control-label" for="rememberCheck">자동로그인</label>
 				                                </div>
 				                             </div>
 				                             <div class="form-group d-flex align-items-center justify-content-between mt-4 mb-0">
 				                             	<a class="small" href="#">아이디/비밀번호찾기</a>
-				                                <a class="btn btn-primary">로그인</a>
+				                                <button type="submit" class="btn btn-primary">로그인</button>
 				                             </div>
 				                        </form>
 				                     </div>
@@ -58,37 +60,27 @@
 				 </main>
             </div>	
 	 </div>
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
-        <script src="resources/dist/js/scripts.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+        <script src="/resources/dist/js/scripts.js"></script>
         <script>
-        $(document).ready(function(){
-        	var form = $("form");
-        	$(".btn-primary").on("click",function(e){
-        		e.preventDefault(); 
-        		console.log("로그인 클릭");
-        		chkLogin();
-        		form.submit();
-        	});
-        	
-        	$("#password").keyup(function(e){
-        		if(e.keyCode == 13){
-        			form.submit();
-        		}
-        	});
-        	
-        	function chkLogin(){
-        		if(form.find("input[name='id']").val() == ""){
-        			alert("아이디를 입력하세요.");
-        			return false;
-        		}
-        
-				if(form.find("input[name='password']").val() == ""){
-					alert("아이디를 입력하세요.");
-					return false;
-				}       
-       			return true;
-        	}
-        });
+	     // Disable form submissions if there are invalid fields
+	     (function() {
+	       'use strict';
+	       window.addEventListener('load', function() {
+	         // Get the forms we want to add validation styles to
+	         var forms = document.getElementsByClassName('needs-validation');
+	         // Loop over them and prevent submission
+	         var validation = Array.prototype.filter.call(forms, function(form) {
+	           form.addEventListener('submit', function(event) {
+	             if (form.checkValidity() === false) {
+	               event.preventDefault();
+	               event.stopPropagation();
+	             }
+	             form.classList.add('was-validated');
+	           }, false);
+	         });
+	       }, false);
+	     })();
         </script>
     </body>
 </html>
