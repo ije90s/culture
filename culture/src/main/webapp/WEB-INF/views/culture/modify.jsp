@@ -3,87 +3,119 @@
 <%@ taglib prefix="c"  uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt"  uri="http://java.sun.com/jsp/jstl/fmt" %>    
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %> 
+<%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>   
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %> 
 <%@ include file="../includes/header.jsp"  %>
+					<style>
+        			.invalid{color:red !important;}
+        			.originPictureWrapper{
+						position:absolute; 
+						display:none; 
+						justify-content:center; 
+						align-items:center; 
+						top:0%;
+						width:100%; 
+						height:100%; 
+						background-color:gray; 
+						z-index:100; 
+						background:rgba(255,255,255,0.5); 
+					}
+					.originPicture{
+						position:relative; 
+						display:flex; 
+						justify-content:center; 
+						align-items:center; 
+					}
+					.originPicture img{
+						width:600px; 
+					}
+        			</style>
                     <div class="container-fluid">
-                        <h1 class="mt-4">나의 기록 수정</h1>
+                        <h3 class="mt-4">나의 기록 수정</h3>
                         <div class="card mb-4">
-                            <div class="card-header"><i class="fa fa-check-circle"></i> 자유롭게 수정하세요</div>
+                            <div class="card-header"><h6><medium class="invalid">*</medium>(별표)가 있는 항목만 필수값입니다.</h6></div>
                             <div class="card-body">
 									<form role="form" action="/culture/modify" method="post">
 										<input type="hidden" name="mno" value="${culture.mno}" />
 										<input type="hidden" name="cno" value="${culture.cno }" />
 										<input type="hidden" name="pageNum" value="${cri.pageNum}"/>
 										<input type="hidden" name="amount" value="${cri.amount}" />
+										<input type="hidden" name="type" value="${cri.type}" />
+										<input type="hidden" name="keyword" value="${cri.keyword}" />
 										<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
 									        <div class="form-group">
-                                                <label class="small mb-1" for="cdate">날짜</label>
-                                                <input class="form-control py-4" name="cdate" id="cdate" type="date" value='<fmt:formatDate value="${culture.cdate}" pattern="yyyy-MM-dd"/>'/>
+                                                <label class="small mb-1" for="cdate">날짜<medium class="invalid">*</medium></label>
+												<fmt:parseDate value="${culture.cdate}" var="cdate" pattern="yyyy-MM-dd"/>
+                                                <input class="form-control py-4 chk" name="cdate" id="cdate" type="date" value='<fmt:formatDate value="${cdate}" pattern="yyyy-MM-dd"/>'/>
                                             </div>
                                            	<div class="form-group">
-                                            	<label class="small mb-1" for="kind">종류</label>
+                                            	<label class="small mb-1" for="kind">종류<medium class="invalid">*</medium></label>
                                             	<div id="kind">
 	                                            	<div class="form-check-inline">
 														<label class="form-check-label">
-															<input type="radio" class="form-check-input" name="kind" value="1" <c:if test="${culture.kind eq 1}"><c:out value="checked"/></c:if>>공연
+															<input type="radio" class="form-check-input chk" name="kind" value="1" <c:if test="${culture.kind eq 1}"><c:out value="checked"/></c:if>>공연
 														</label>
 													</div>
 	                                            	<div class="form-check-inline">
 														<label class="form-check-label">
-															<input type="radio" class="form-check-input" name="kind" value="2" <c:if test="${culture.kind eq 2}"><c:out value="checked"/></c:if>>영화
+															<input type="radio" class="form-check-input chk" name="kind" value="2" <c:if test="${culture.kind eq 2}"><c:out value="checked"/></c:if>>영화
 														</label>
 													</div>
 	                                            	<div class="form-check-inline">
 														<label class="form-check-label">
-															<input type="radio" class="form-check-input" name="kind" value="3" <c:if test="${culture.kind eq 3}"><c:out value="checked"/></c:if>>독서
+															<input type="radio" class="form-check-input chk" name="kind" value="3" <c:if test="${culture.kind eq 3}"><c:out value="checked"/></c:if>>독서
 														</label>
 													</div>	
 	                                            	<div class="form-check-inline">
 														<label class="form-check-label">
-															<input type="radio" class="form-check-input" name="kind" value="4" <c:if test="${culture.kind eq 4}"><c:out value="checked"/></c:if>>관람
+															<input type="radio" class="form-check-input chk" name="kind" value="4" <c:if test="${culture.kind eq 4}"><c:out value="checked"/></c:if>>관람
 														</label>
 													</div>	
 	                                            	<div class="form-check-inline">
 														<label class="form-check-label">
-															<input type="radio" class="form-check-input" name="kind" value="5" <c:if test="${culture.kind eq 5}"><c:out value="checked"/></c:if>>스포츠
+															<input type="radio" class="form-check-input chk" name="kind" value="5" <c:if test="${culture.kind eq 5}"><c:out value="checked"/></c:if>>스포츠
 														</label>
 													</div>	
 	                                            	<div class="form-check-inline">
 														<label class="form-check-label">
-															<input type="radio" class="form-check-input" name="kind" value="6" <c:if test="${culture.kind eq 6}"><c:out value="checked"/></c:if>>기타
+															<input type="radio" class="form-check-input chk" name="kind" value="6" <c:if test="${culture.kind eq 6}"><c:out value="checked"/></c:if>>기타
 														</label>
-													</div>
+													</div><br>
+													<small class="kind"></small>
 												</div>																																																							                                            			
                                             </div>
                                            <div class="form-group">
-                                                <label class="small mb-1" for="title">제목</label>
-                                                <input class="form-control py-4" name="title" id="title" type="text" value="${culture.title}"/>
+                                                <label class="small mb-1" for="title">제목<medium class="invalid">*</medium></label>
+                                                <input class="form-control py-4 chk" name="title" id="title" type="text" value="${culture.title}"/>
+                                            	<small></small>
                                             </div>
                                             <div class="form-group">
                                             	<label class="small mb-1" for="rank">평점</label>
-                                            	<div id="rank">
+                                            	<input type="hidden" name="rank" />
+                                            	<div id="rank"> 
 	                                            	<div class="form-check-inline">
 														<label class="form-check-label">
-															<input type="radio" class="form-check-input" name="rank" value="1" <c:if test="${culture.rank eq 1}"><c:out value="checked"/></c:if>>1점
+															<input type="radio" class="form-check-input" name="crank" value="1" <c:if test="${culture.rank eq 1}"><c:out value="checked"/></c:if>>1점
 														</label>
 													</div>
 	                                            	<div class="form-check-inline">
 														<label class="form-check-label">
-															<input type="radio" class="form-check-input" name="rank" value="2" <c:if test="${culture.rank eq 2}"><c:out value="checked"/></c:if>>2점
+															<input type="radio" class="form-check-input" name="crank" value="2" <c:if test="${culture.rank eq 2}"><c:out value="checked"/></c:if>>2점
 														</label>
 													</div>
 	                                            	<div class="form-check-inline">
 														<label class="form-check-label">
-															<input type="radio" class="form-check-input" name="rank" value="3" <c:if test="${culture.rank eq 3}"><c:out value="checked"/></c:if>>3점
+															<input type="radio" class="form-check-input" name="crank" value="3" <c:if test="${culture.rank eq 3}"><c:out value="checked"/></c:if>>3점
 														</label>
 													</div>	
 	                                            	<div class="form-check-inline">
 														<label class="form-check-label">
-															<input type="radio" class="form-check-input" name="rank" value="4" <c:if test="${culture.rank eq 4}"><c:out value="checked"/></c:if>>4점
+															<input type="radio" class="form-check-input" name="crank" value="4" <c:if test="${culture.rank eq 4}"><c:out value="checked"/></c:if>>4점
 														</label>
 													</div>	
 	                                            	<div class="form-check-inline">
 														<label class="form-check-label">
-															<input type="radio" class="form-check-input" name="rank" value="5" <c:if test="${culture.rank eq 5}"><c:out value="checked"/></c:if>>5점
+															<input type="radio" class="form-check-input" name="crank" value="5" <c:if test="${culture.rank eq 5}"><c:out value="checked"/></c:if>>5점
 														</label>
 													</div>	
 												</div>																																																							                                            			
@@ -112,7 +144,7 @@
                              </div> <!-- card-body 끝  -->
                         </div> <!-- card mb-4 끝 -->
                 	</div> <!-- container-fluid 끝 -->   
-
+<div class="originPictureWrapper"><div class="originPicture"></div></div>                 	
  <!-- The Modal -->
 <div class="modal fade" id="myModal" role="dialog">
   <div class="modal-dialog">
@@ -137,13 +169,22 @@
   </div>
 </div>            	
 <!-- The Modal 끝 -->   
-<script src="/resources/scripts/common.js"></script>                	
+<script src="/resources/scripts/common.js"></script>   
+<script src="/resources/scripts/culture.js"></script>               	
 <script>
 
 $(document).ready(function(){
 	var formObj = $("form"); 
 	var csrfHeader = "${_csrf.headerName}"; 
 	var csrfToken = "${_csrf.token}";
+	
+	$(".chk").blur(function(e){
+		cultureService.validate($(this));	
+	});
+	
+	<spring:hasBindErrors name="culture">
+	hasErrors();
+	</spring:hasBindErrors>			
 	
 	 (function(){
 			var cno = '<c:out value="${culture.cno}" />';
@@ -186,6 +227,14 @@ $(document).ready(function(){
 		}
 	});	
  
+	
+	 $(".originPictureWrapper").on("click", function(e){
+			$(".originPicture").animate({width:'0%', height:'0%'}, 1000); 
+			setTimeout(function(){
+				$(".originPictureWrapper").hide();
+			},1000);
+    });	
+	
 	$("input[type='file']").change(function(e){
 		var formData = new FormData(); 
 		var upload = $("input[name='upload']"); 
@@ -232,6 +281,21 @@ $(document).ready(function(){
 					str+="<input type='hidden' name='attachList[0].fileList["+i+"].fileName' value='"+jobj.data("filename")+"'/>"; 
 					str+="<input type='hidden' name='attachList[0].fileList["+i+"].fileType' value='"+jobj.data("type")+"'/>";
 				});
+				
+				$(".chk").each(function(e){
+					cultureService.validate($(this));	
+				});
+				
+				if(!checkItem($("input[name='cdate']"))) return false;
+				if(!checkItem($("input[name='kind']"))) return false;
+				if(!checkItem($("input[name='title']"))) return false;
+				
+				$("input[name='rank']").val("0");
+				var crank = $("input[name='crank']:checked"); 
+				if(crank.val() == ""){
+					$("input[name='rank']").val(crank.val()); 
+				}
+					
 				formObj.append(str).submit();
 			}
 		}else{
@@ -239,14 +303,38 @@ $(document).ready(function(){
 			var pageNum = $("input[name='pageNum']").clone(); 
 			var amount = $("input[name='amount']").clone(); 
 			var mno = $("input[name='mno']").clone(); 
+			var type = $("input[name='type']").clone(); 
+			var keyword = $("input[name='keyword']").clone(); 
 			
 			formObj.empty(); 
 			formObj.append(pageNum); 
 			formObj.append(amount); 
 			formObj.append(mno);
+			formObj.append(type);
+			formObj.append(keyword);
 			formObj.submit();
 		}
 	});
+	
+	//invalid 항목 검사
+	function checkItem(item){
+		if(item.siblings('small').hasClass("invalid")){
+			item.focus(); 
+			return false; 
+		}else {
+			return true; 
+		}	
+	}
+	
+	//서버에서 받아온 error 검사
+	function hasErrors(){
+		$(".chk").each(function(){
+			console.log($(this));
+			cultureService.validate($(this));	
+		}); 	
+	}	
+	
+	
 });
 </script>               	
 <%@ include file="../includes/footer.jsp"  %>

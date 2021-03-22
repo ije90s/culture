@@ -6,11 +6,29 @@
 <%@ include file="../includes/header.jsp"  %>
 
                     <div class="container-fluid">
-                        <h1 class="mt-4">나의 기록</h1>
+                        <h3 class="mt-4">나의 기록
+	                        <div class="btn-group float-right">
+	                         	<button type="button" class="btn btn-outline-primary active">리스트</button>
+	  							<button type="button" class="btn btn-outline-primary">통계</button>
+	                        </div>
+                        </h3>
                         <div class="card mb-4">
                             <div class="card-header">
-                                <i class="fas fa-table mr-1"></i> 리스트형
-                                <button id="regBtn" class="btn btn-secondary float-right">등록</button>
+                                <form id="searchForm" action="/culture/list" method="get">
+                                	<select name="type">
+                                	<option value="" <c:out value="${page.cri.type==null?'selected':''}"/>>선택</option>
+                                	<option value="T" <c:out value="${page.cri.type eq 'T'?'selected':''}"/>>제목</option>
+                                	<option value="C" <c:out value="${page.cri.type eq 'C'?'selected':''}"/>>내용</option>
+                                	<option value="TC" <c:out value="${page.cri.type eq 'TC'?'selected':''}"/>>제목 or 내용</option>
+                                	</select>
+                                	<input type="text" name="keyword" value='<c:out value="${page.cri.keyword}"/>' />
+                                	<input type="hidden" name="pageNum" value='<c:out value="${page.cri.pageNum }"/>' />
+									<input type="hidden" name="amount" value='<c:out value="${page.cri.amount }"/>' />
+									<input type="hidden" name="mno" value='${page.cri.mno }' />
+									<button class="btn btn-primary" data-oper="search">검색</button>
+									<button class="btn btn-secondary float-right" data-oper="regiter">등록</button>
+                                </form>
+                                
                             </div>
                             <div class="card-body">
                                 <div class="table-responsive">
@@ -20,7 +38,7 @@
                                                 <th>NO.</th>
                                                 <th>종류</th>
                                                 <th>제목</th>
-                                                <th>내용</th>
+                                                <th>평점</th>
                                                 <th>날짜</th>
                                             </tr>
                                         </thead>
@@ -37,8 +55,10 @@
      												<c:if test="${culture.kind eq 6}">기타</c:if> 
      											</td>
      											<td><a class="move" href="${culture.cno}">${culture.title}</a></td>
-     											<td>${culture.content}</td>
-     											<td><fmt:formatDate value="${culture.cdate}" pattern="yyyy-MM-dd"/></td>
+     											<td>${culture.rank}점</td>
+     											<td>
+     											<fmt:parseDate value="${culture.cdate}" var="cdate" pattern="yyyy-MM-dd"/>
+     											<fmt:formatDate value="${cdate}" pattern="yyyy-MM-dd"/></td>
      										</tr>
      									</c:forEach>
                                         </tbody>
@@ -64,10 +84,12 @@
                         </div> <!-- card mb-4 끝 -->                            
                 	</div> <!-- container-fluid 끝 -->   
 <!-- form -->
-<form role="form" action="/culture/list" method="get">
+<form id="listForm" role="form" action="/culture/list" method="get">
 	<input type="hidden" name="pageNum" value="${page.cri.pageNum }" />
 	<input type="hidden" name="amount" value="${page.cri.amount }" />
-	<input type="hidden" name="mno" value='<sec:authentication property="principal.member.mno"/>' />
+	<input type="hidden" name="type" value="${page.cri.type }" />
+	<input type="hidden" name="keyword" value="${page.cri.keyword }" />
+	<input type="hidden" name="mno" value='${page.cri.mno}' />
 </form>
 <!-- form 끝 -->                        
 <!-- The Modal -->
@@ -99,7 +121,7 @@
 <script type="text/javascript">
 $(document).ready(function(){
 	var result = '<c:out value="${result}"/>';
-	
+	var form = $("#listForm"); 
 	checkModal(result); 
 	history.replaceState({}, null, null);
 	
@@ -111,26 +133,56 @@ $(document).ready(function(){
 		$("#myModal").modal("show");
 	}
 	
-	//등록하기
-	$("#regBtn").click(function(){
-		self.location="/culture/register";
-	});
-	
 	//페이징
 	$("ul.pagination li.page-item a").on("click", function(e){
 		e.preventDefault(); 
 		
 		console.log("click");
+		var type = '<c:out value ="${page.cri.type}"/>';
+		var keyword = '<c:out value ="${page.cri.keyword}"/>';
 		
-		$("form").find("input[name='pageNum']").val($(this).attr("href"));
-		$("form").submit();
+		form.find("input[name='pageNum']").val($(this).attr("href"));
+		form.submit();
 	});
 	
 	//상세페이지 이동
 	$(".move").click(function(e){
 		e.preventDefault(); 
-		$("form").append("<input type='hidden' name='cno' value='"+$(this).attr("href")+"'>"); 
-		$("form").attr("action", "/culture/get").submit();
+		form.append("<input type='hidden' name='cno' value='"+$(this).attr("href")+"'>"); 
+		form.attr("action", "/culture/get").submit();
+	});
+	$(".btn-group").on("click", "button", function(e){
+		e.preventDefault(); 
+		var text = $(this).text(); 
+		var mno = '<sec:authentication property="principal.member.mno"/>';
+		if(text == "리스트"){
+			self.location="/culture/list?mno="+mno; 	
+		}else{
+			self.location="/culture/stats?mno="+mno; 	
+		}
+	});
+	var search = $("#searchForm"); 
+	$("#searchForm button").on("click", function(e){
+		e.preventDefault(); 
+		var oper = $(this).data("oper"); 	
+		if(oper == "search"){
+			if(!search.find("option:selected").val()){
+				alert("종류를 선택하세요."); 
+				return false; 
+			}
+			
+			if(!search.find("input[name='keyword']").val()){
+				alert("키워드를 입력하세요."); 
+				return false; 
+			}
+			search.find("input[name='pageNum']").val("1");
+			
+			
+			search.submit();			
+		}else{
+			self.location="/culture/register";
+		}
+		
 	});
 });
 </script>                	

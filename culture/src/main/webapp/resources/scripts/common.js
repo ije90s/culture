@@ -41,12 +41,9 @@
 
 	/*이미지 원본 보기 */
 	function showImg(originPath){
-		$(".modal-title").html("원본 이미지");
-		$(".modal-body").html("<img src='/display?fileName="+originPath+"'/>"); 
-		$(".modal").find("#modBtn").hide();
-		$(".modal").find("#modBtn").hide();
-		$(".modal").find("#delBtn").hide();
-		$("#myModal").modal("show");
+		$(".originPictureWrapper").css("display", "flex").show(); 
+		$(".originPicture").html("<img src='/display?fileName="+originPath+"'/>")
+		.animate({width:'100%', height:'100%'},1000);		
 	}
 
 	

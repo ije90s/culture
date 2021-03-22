@@ -1,12 +1,16 @@
 package com.ije.controller;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
+
+import javax.validation.Valid;
 
 import org.apache.ibatis.annotations.Param;
 import org.springframework.http.HttpStatus;
@@ -15,10 +19,14 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.ObjectError;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -52,7 +60,8 @@ public class CultureController {
 	@PreAuthorize("isAuthenticated()")
 	public void list(@RequestParam("mno") Long mno, Criteria cri, Model d) {
 		log.info("페이징 호출..............................................");
-		d.addAttribute("list", service.getListPaging(cri, mno)); 
+		cri.setMno(mno);
+		d.addAttribute("list", service.getListPaging(cri)); 
 		d.addAttribute("page", new PageVO(cri, service.getCount(cri)));
 	}
 		
@@ -73,9 +82,34 @@ public class CultureController {
 	
 	@PostMapping("/register")
 	@PreAuthorize("isAuthenticated()")
-	public String register(CultureVO ins, RedirectAttributes rttr) {
+	public String register(@RequestHeader("User-Agent") String userAgent, @Valid @ModelAttribute CultureVO ins, BindingResult result, RedirectAttributes rttr) {
 		//log.info("등록하기 호출.........................................");
 		//log.info(ins);
+		if(result.hasErrors()) {
+			for(ObjectError obj : result.getAllErrors()) {
+				System.out.println("메시지 : "+obj.getDefaultMessage());
+				System.out.println("코드 :"+obj.getCode());
+				System.out.println("ObjectName :"+obj.getObjectName());
+			}
+			if(ins.getAttachList() !=null) {
+				List<AttachFileVO> fileList = ins.getAttachList().get(0).getFileList();
+				fileList.forEach(attach -> {
+					try {
+						if(userAgent.contains("IE browser")) {
+							attach.setPath(URLEncoder.encode(attach.getPath(), "UTF-8").replaceAll("\\+", " "));
+						}else{
+							attach.setPath(URLEncoder.encode(attach.getPath(), "UTF-8"));	
+						}
+					} catch (UnsupportedEncodingException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				});
+
+			}
+			return "/culture/register";
+		}
+		
 		log.info("=============================================================");
 		if(ins.getAttachList() != null) {
 			ins.getAttachList().forEach(attach -> log.info(attach));
@@ -98,17 +132,43 @@ public class CultureController {
 	
 	@PreAuthorize("principal.member.mno == #upt.mno")
 	@PostMapping("/modify")
-	public String modify(CultureVO upt, @ModelAttribute("cri") Criteria cri, RedirectAttributes rttr) {
+	public String modify(@RequestHeader("User-Agent") String userAgent, @Valid @ModelAttribute("culture") CultureVO upt, BindingResult result, @ModelAttribute("cri") Criteria cri, RedirectAttributes rttr) {
+		
+		if(result.hasErrors()) {
+			for(ObjectError obj : result.getAllErrors()) {
+				System.out.println("메시지 : "+obj.getDefaultMessage());
+				System.out.println("코드 :"+obj.getCode());
+				System.out.println("ObjectName :"+obj.getObjectName());
+			}
+			if(upt.getAttachList() !=null) {
+				List<AttachFileVO> fileList = upt.getAttachList().get(0).getFileList();
+				fileList.forEach(attach -> {
+					try {
+						if(userAgent.contains("IE browser")) {
+							attach.setPath(URLEncoder.encode(attach.getPath(), "UTF-8").replaceAll("\\+", " "));
+						}else{
+							attach.setPath(URLEncoder.encode(attach.getPath(), "UTF-8"));	
+						}
+					} catch (UnsupportedEncodingException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				});
+
+			}
+			return "/culture/modify";			
+		}
+		
 		log.info("수정하기 호출.........................................");
 		log.info(upt);
 		log.info("...........................................");
 		if(service.modify(upt) > 0) {
 			rttr.addFlashAttribute("result", service.modify(upt));
 		}
-		rttr.addAttribute("pageNum", cri.getPageNum()); 
-		rttr.addAttribute("amount", cri.getAmount());
-		rttr.addAttribute("mno", upt.getMno()); 
-		return "redirect:/culture/list";
+		//rttr.addAttribute("pageNum", cri.getPageNum()); 
+		//rttr.addAttribute("amount", cri.getAmount());
+		//rttr.addAttribute("mno", upt.getMno()); 
+		return "redirect:/culture/list"+cri.getListLink();
 	}
 	
 	private void deleteFiles(List<AttachFileVO> attachList) {
@@ -149,10 +209,10 @@ public class CultureController {
 			}
 			rttr.addFlashAttribute("result", service.remove(cno)); 
 		}
-		rttr.addAttribute("pageNum", cri.getPageNum()); 
-		rttr.addAttribute("amount", cri.getAmount()); 
-		rttr.addAttribute("mno", mno);
-		return "redirect:/culture/list";
+		//rttr.addAttribute("pageNum", cri.getPageNum()); 
+		//rttr.addAttribute("amount", cri.getAmount()); 
+		//rttr.addAttribute("mno", mno);
+		return "redirect:/culture/list"+cri.getListLink();
 	}	
 	
 	@GetMapping(value="/getAttachList", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
@@ -177,13 +237,14 @@ public class CultureController {
 		log.info("통계..............................................");
 		cri.setSdate(sdate);
 		cri.setEdate(edate);
+		cri.setMno(mno);
 		List<CultureVO> list = new ArrayList<CultureVO>(); 
 		if(tab.equals("mon")) {
-			list = service.getMonList(cri, mno);
+			list = service.getMonList(cri);
 		}else if(tab.equals("year")) {
-			list = service.getYearList(cri, mno); 
+			list = service.getYearList(cri); 
 		}else {
-			list = service.getChartList(cri, mno);
+			list = service.getChartList(cri);
 		}
 		log.info(list);
 		return new ResponseEntity<>(list, HttpStatus.OK);
@@ -193,7 +254,8 @@ public class CultureController {
 	public ResponseEntity<List<CultureVO>> get(@PathVariable("mno") Long mno, @PathVariable("sdate") String sdate, Criteria cri){
 		log.info("get : " + sdate);
 		cri.setSdate(sdate);
-		return new ResponseEntity<>(service.getBySdate(cri, mno), HttpStatus.OK);
+		cri.setMno(mno);
+		return new ResponseEntity<>(service.getBySdate(cri), HttpStatus.OK);
 	}
 	
 	
@@ -202,7 +264,7 @@ public class CultureController {
 	public ResponseEntity<List<CultureVO>> top(@PathVariable("mno") Long mno){
 		log.info("최근 글 10기만 가져오기"); 
 		Criteria cri = new Criteria(); 
-		return new ResponseEntity<>(service.getListPaging(cri, mno), HttpStatus.OK); 
-	}
-	
+		cri.setMno(mno);
+		return new ResponseEntity<>(service.getListPaging(cri), HttpStatus.OK); 
+	}	
 }

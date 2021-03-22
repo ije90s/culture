@@ -33,10 +33,9 @@ var statsService= (function(){
 				error(); 
 			}
 		}); 
-	}
-	
+	}	
 	return {
 		getList : getList, 
-		get : get  
+		get : get
 	}
 })();

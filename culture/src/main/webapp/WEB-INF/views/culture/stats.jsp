@@ -6,10 +6,15 @@
 <%@ include file="../includes/header.jsp"  %>
 
                     <div class="container-fluid">
-                        <h1 class="mt-4">나의 기록</h1>
+                        <h3 class="mt-4">나의 기록
+                        <div class="btn-group float-right">
+                         	<button type="button" class="btn btn-outline-primary">리스트</button>
+  							<button type="button" class="btn btn-outline-primary active">통계</button>
+                        </div>
+                        </h3>
                         <div class="card mb-4">
                             <div class="card-header">
-                                <i class="fa fa-indent mr-1"></i> 통계형
+                                <input type="text" name="sdate" id="sdate" readonly/>
                                 <button id="regBtn" class="btn btn-secondary float-right">등록</button>
                             </div>
                             <div class="card-body">
@@ -25,9 +30,6 @@
 									      <a class="nav-link" data-toggle="tab" data-tab="chart" href="#chart">차트</a>
 									    </li>
 								    </ul>
-                                    <div>
-										<input type="text" name="sdate" id="sdate" readonly/>
-                                    </div>
 								    <!-- Tab panes -->
 									<div class="tab-content">
 										<div id="mon" class="container tab-pane active"><br>
@@ -173,9 +175,9 @@ $(document).ready(function(){
 	$("#mon tbody").on("dblclick",".move", function(){
 		var date = $(this).data("date");
 		var str; 
+		modalThead.html("<tr><td>구분</td><td>제목</td><td>평점</td></tr>");
 		statsService.get({mno:mno, sdate:date}, function(list){
 			for(var i=0, len=list.length||0; i<len;i++){
-				//console.log(list[i]);
 				switch(list[i].kind){
 				case 1 : kind="공연";break;
 				case 2 : kind="영화";break;
@@ -185,7 +187,10 @@ $(document).ready(function(){
 				case 6 : kind="기타";break;
 				default : kind="";
 				}	
-				str+="<tr><td>"+kind+"</td><td>"+list[i].title+"</td><td>"+list[i].content+"</td></tr>";		
+
+				str+="<tr><td>"+kind+"</td>";
+				str+="<td><a href='/culture/get?cno="+list[i].cno+"'>"+list[i].title+"</a></td>";
+				str+="<td>"+list[i].rank+"점</td></tr>";		
 			}
 			modalTbody.html(str);
 			$(".modal").modal("show");
@@ -215,6 +220,21 @@ $(document).ready(function(){
 			$(".modal").modal("show");
 		}); 	
 	}); 
+	
+	$(".btn-group").on("click", "button", function(e){
+		e.preventDefault(); 
+		var text = $(this).text(); 
+		var mno = '<sec:authentication property="principal.member.mno"/>';
+		if(text == "리스트"){
+			self.location="/culture/list?mno="+mno; 	
+		}else{
+			self.location="/culture/stats?mno="+mno; 	
+		}
+	});	
+	
+	$("#regBtn").click(function(){
+		self.location="/culture/register";
+	});
 	
 });
 

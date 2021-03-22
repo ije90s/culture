@@ -4,6 +4,29 @@
 <%@ taglib prefix="fmt"  uri="http://java.sun.com/jsp/jstl/fmt" %>    
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %> 
 <%@ include file="../includes/header.jsp"  %>
+					<style>
+					.originPictureWrapper{
+						position:absolute; 
+						display:none; 
+						justify-content:center; 
+						align-items:center; 
+						top:0%;
+						width:100%; 
+						height:100%; 
+						background-color:gray; 
+						z-index:100; 
+						background:rgba(255,255,255,0.5); 
+					}
+					.originPicture{
+						position:relative; 
+						display:flex; 
+						justify-content:center; 
+						align-items:center; 
+					}
+					.originPicture img{
+						width:600px; 
+					}
+					</style>
                     <div class="container-fluid">
                         <h1 class="mt-4">나의 기록 상세</h1>
                         <div class="card mb-4">
@@ -11,7 +34,8 @@
                             <div class="card-body">
 									        <div class="form-group">
                                                 <label class="small mb-1" for="cdate">날짜 </label>
-                                                <input class="form-control py-4" name="cdate" id="cdate" type="date" value='<fmt:formatDate value="${culture.cdate}" pattern="yyyy-MM-dd"/>' readonly/>
+                                                <fmt:parseDate value="${culture.cdate}" var="cdate" pattern="yyyy-MM-dd"/>
+                                                <input class="form-control py-4" name="cdate" id="cdate" type="date" value='<fmt:formatDate value="${cdate}" pattern="yyyy-MM-dd"/>' readonly/>
                                             </div>
                                            	<div class="form-group">
                                             	<label class="small mb-1" for="kind">종류</label>
@@ -102,35 +126,16 @@
                              </div> <!-- card-body 끝  -->
                         </div> <!-- card mb-4 끝 -->
                 	</div> <!-- container-fluid 끝 -->
- <!-- The Modal -->
-<div class="modal fade" id="myModal" role="dialog">
-  <div class="modal-dialog">
-    <div class="modal-content">
-
-      <!-- Modal Header -->
-      <div class="modal-header">
-        <h4 class="modal-title">원본이미지</h4>
-        <button type="button" class="close" data-dismiss="modal">&times;</button>
-      </div>
-
-      <!-- Modal body -->
-      <div class="modal-body">
-      </div>
-
-      <!-- Modal footer -->
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-      </div>
-
-    </div>
-  </div>
-</div>            	
-<!-- The Modal 끝 -->                 	
+<div class="originPictureWrapper">
+	<div class="originPicture"></div>
+</div>                	               	
  <form role="form" method="post">
  	<input type="hidden" id="cno" name="cno" value="${culture.cno}" />
  	<input type="hidden" name="mno" value="${culture.mno }" />
  	<input type="hidden" name="pageNum" value="${cri.pageNum}" />
  	<input type="hidden" name="amount" value="${cri.amount}" />
+ 	<input type="hidden" name="type" value="${cri.type }"/>
+ 	<input type="hidden" name="keyword" value="${cri.keyword }" />
  </form>   
  <script src="/resources/scripts/common.js"></script>
  <script>
@@ -182,10 +187,17 @@
 		 }else if(oper === "remove"){
 			 formObj.append('<input type="hidden" id="${_csrf.parameterName}" name="${_csrf.parameterName}" value="${_csrf.token}" />');
 			 formObj.attr("action", "/culture/remove").submit();
-		 }else{
+		 }else if(oper === "list"){
 			 formObj.find("#cno").remove();
 			 formObj.attr("action", "/culture/list").attr("method","get").submit();
 		 } 
+	 });
+	 
+	 $(".originPictureWrapper").on("click", function(e){
+		$(".originPicture").animate({width:'0%', height:'0%'}, 1000); 
+		setTimeout(function(){
+			$(".originPictureWrapper").hide();
+		},1000);
 	 });
 	
  });

@@ -3,91 +3,100 @@
 <%@ taglib prefix="c"  uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt"  uri="http://java.sun.com/jsp/jstl/fmt" %>    
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>  
+<%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>   
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %> 
 <%@ include file="../includes/header.jsp"  %>
+					<style>
+        			.invalid{color:red !important;}
+        			</style>
                     <div class="container-fluid">
-                        <h1 class="mt-4">나의 기록 등록</h1>
+                        <h3 class="mt-4">나의 기록 등록</h3>
                         <div class="card mb-4">
-                            <div class="card-header"><i class="fa fa-check-circle"></i> 자유롭게 기입하세요 </div>
+                            <div class="card-header"><h6><medium class="invalid">*</medium>(별표)가 있는 항목만 필수값입니다.</h6></div>
                             <div class="card-body">
 									<form role="form" action="/culture/register" method="post">
 										<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
 										<input type="hidden" name="mno" value='<sec:authentication property="principal.member.mno"/>' />
 									        <div class="form-group">
-                                                <label class="small mb-1" for="cdate">날짜</label>
-                                                <input class="form-control py-4" name="cdate" id="cdate" type="date"/>
+                                                <label class="small mb-1" for="cdate">날짜<medium class="invalid">*</medium></label>
+                                                <input class="form-control py-4 chk" name="cdate" id="cdate" type="date" value="${cultureVO.cdate}"/>
+                                                <small></small>
                                             </div>
                                            	<div class="form-group">
-                                            	<label class="small mb-1" for="kind">종류</label>
+                                            	<label class="small mb-1" for="kind">종류<medium class="invalid">*</medium></label>
                                             	<div id="kind">
 	                                            	<div class="form-check-inline">
 														<label class="form-check-label">
-															<input type="radio" class="form-check-input" name="kind" value="1">공연
+															<input type="radio" class="form-check-input chk" name="kind" value="1" <c:if test="${fn:contains(cultureVO.kind, '1')}">checked</c:if>>공연
 														</label>
 													</div>
 	                                            	<div class="form-check-inline">
 														<label class="form-check-label">
-															<input type="radio" class="form-check-input" name="kind" value="2">영화
+															<input type="radio" class="form-check-input chk" name="kind" value="2" <c:if test="${fn:contains(cultureVO.kind, '2')}">checked</c:if>>영화
 														</label>
 													</div>
 	                                            	<div class="form-check-inline">
 														<label class="form-check-label">
-															<input type="radio" class="form-check-input" name="kind" value="3">독서
+															<input type="radio" class="form-check-input chk" name="kind" value="3" <c:if test="${fn:contains(cultureVO.kind, '3')}">checked</c:if>>독서
 														</label>
 													</div>	
 	                                            	<div class="form-check-inline">
 														<label class="form-check-label">
-															<input type="radio" class="form-check-input" name="kind" value="4">관람
+															<input type="radio" class="form-check-input chk" name="kind" value="4" <c:if test="${fn:contains(cultureVO.kind, '4')}">checked</c:if>>관람
 														</label>
 													</div>	
 	                                            	<div class="form-check-inline">
 														<label class="form-check-label">
-															<input type="radio" class="form-check-input" name="kind" value="5">스포츠
+															<input type="radio" class="form-check-input chk" name="kind" value="5" <c:if test="${fn:contains(cultureVO.kind, '5')}">checked</c:if>>스포츠
 														</label>
 													</div>	
 	                                            	<div class="form-check-inline">
 														<label class="form-check-label">
-															<input type="radio" class="form-check-input" name="kind" value="6">기타
+															<input type="radio" class="form-check-input chk" name="kind" value="6" <c:if test="${fn:contains(cultureVO.kind, '6')}">checked</c:if>>기타
 														</label>
-													</div>
+													</div><br>
+													<small class="kind"></small>
 												</div>																																																							                                            			
                                             </div>
                                            <div class="form-group">
-                                                <label class="small mb-1" for="title">제목</label>
-                                                <input class="form-control py-4" name="title" id="title" type="text"/>
+                                                <label class="small mb-1" for="title">제목<medium class="invalid">*</medium></label>
+                                                <input class="form-control py-4 chk" name="title" id="title" type="text" value="${cultureVO.title}" />
+                                                <small></small>
                                             </div>
                                             <div class="form-group">
                                             	<label class="small mb-1" for="rank">평점</label>
+                                            	<input type="hidden" name="rank" />
                                             	<div id="rank">
 	                                            	<div class="form-check-inline">
 														<label class="form-check-label">
-															<input type="radio" class="form-check-input" name="rank" value="1">1점
+															<input type="radio" class="form-check-input" name="crank" value="1" <c:if test="${fn:contains(cultureVO.rank, '1')}">checked</c:if>>1점
 														</label>
 													</div>
 	                                            	<div class="form-check-inline">
 														<label class="form-check-label">
-															<input type="radio" class="form-check-input" name="rank" value="2">2점
+															<input type="radio" class="form-check-input" name="crank" value="2" <c:if test="${fn:contains(cultureVO.rank, '2')}">checked</c:if>>2점
 														</label>
 													</div>
 	                                            	<div class="form-check-inline">
 														<label class="form-check-label">
-															<input type="radio" class="form-check-input" name="rank" value="3">3점
+															<input type="radio" class="form-check-input" name="crank" value="3" <c:if test="${fn:contains(cultureVO.rank, '3')}">checked</c:if>>3점
 														</label>
 													</div>	
 	                                            	<div class="form-check-inline">
 														<label class="form-check-label">
-															<input type="radio" class="form-check-input" name="rank" value="4">4점
+															<input type="radio" class="form-check-input" name="crank" value="4" <c:if test="${fn:contains(cultureVO.rank, '4')}">checked</c:if>>4점
 														</label>
 													</div>	
 	                                            	<div class="form-check-inline">
 														<label class="form-check-label">
-															<input type="radio" class="form-check-input" name="rank" value="5">5점
+															<input type="radio" class="form-check-input" name="rank" value="5" <c:if test="${fn:contains(cultureVO.rank, '5')}">checked</c:if>>5점
 														</label>
 													</div>	
 												</div>																																																							                                            			
                                             </div>
 											<div class="form-group">
                                                 <label class="small mb-1" for="content">내용</label>
-                                                <textarea class="form-control" name="content" rows="5" id="content"></textarea>
+                                                <textarea class="form-control" name="content" rows="5" id="content">${cultureVO.content}</textarea>
 											</div>
 											<div class="form-group uploadDiv">
 												<label class="small mb-1" for="upload">사진첨부</label>
@@ -100,7 +109,7 @@
                                             	<button type="submit" class="btn btn-primary">등록</button>
 												<button type="reset" class="btn btn-secondary">취소</button>
                                             </div>
-                              		</form>                            
+                              		</form>                        
                              </div> <!-- card-body 끝  -->
                         </div> <!-- card mb-4 끝 -->
                 	</div> <!-- container-fluid 끝 -->   
@@ -128,9 +137,9 @@
   </div>
 </div>            	
 <!-- The Modal 끝 -->                    	
-<script src="/resources/scripts/common.js"></script>        	
+<script src="/resources/scripts/common.js"></script>        
+<script src="/resources/scripts/culture.js"></script>   	
 <script>
-
 
 $(document).ready(function(){
 	
@@ -138,6 +147,10 @@ $(document).ready(function(){
 	var csrfHeader = "${_csrf.headerName}"; 
 	var csrfToken = "${_csrf.token}";
 	
+	$(".chk").blur(function(e){
+		cultureService.validate($(this));	
+	});
+	hasErrors();
 	$("button[type='submit']").on("click", function(e){
 		e.preventDefault(); 
 		console.log("submit clicked");
@@ -149,10 +162,56 @@ $(document).ready(function(){
 			str+="<input type='hidden' name='attachList[0].fileList["+i+"].fileName' value='"+jobj.data("filename")+"'/>"; 
 			str+="<input type='hidden' name='attachList[0].fileList["+i+"].fileType' value='"+jobj.data("type")+"'/>";
 		});
-
+	
+		$(".chk").each(function(e){
+			cultureService.validate($(this));	
+		});
+		
+		if(!checkItem($("input[name='cdate']"))) return false;
+		if(!checkItem($("input[name='kind']"))) return false;
+		if(!checkItem($("input[name='title']"))) return false;
+		
+		if(!$("input[name=crank]").is(":checked")) $("input[name=rank]").val("0"); 
+	
 		formObj.append(str).submit();
 	});
 	
+	//invalid 항목 검사
+	function checkItem(item){
+		if(item.siblings('small').hasClass("invalid")){
+			item.focus(); 
+			return false; 
+		}else {
+			return true; 
+		}	
+	}
+	
+	//서버에서 받아온 error 검사
+	function hasErrors(){
+		<spring:hasBindErrors name="cultureVO">
+		$(".chk").each(function(){
+			cultureService.validate($(this));	
+		}); 
+		var str=""; 
+		<c:forEach items="${cultureVO.attachList[0].fileList}" var="obj"> 
+			var path = "${obj.path}";
+			var decodePath = decodeURIComponent(path);
+			var fileCallPath = path+encodeURIComponent("\\s_${obj.uuid}_${obj.fileName}");  
+			var originPath = decodePath+"\\${obj.uuid}_${obj.fileName}";
+			originPath = originPath.replace(new RegExp(/\\/g),"/");  
+			
+			str+="<li class='list-group-item' data-path='"+decodePath+"'";
+			str+=" data-uuid='${obj.uuid}' data-filename='${obj.fileName}' data-type='${obj.fileType}'/>";
+			str+="<div><span>${obj.fileName}</span>";
+			str+="<button type='button' class='btn btn-warning btn-circle' data-file=\'"+fileCallPath+"\' data-type='image'><i class='fa fa-times'></i></button><br>";
+			str+="<a href=\"javascript:showImg(\'"+originPath+"')\"><img src='/display?fileName="+fileCallPath+"' /></a>";
+			str+="</div></li>"; 
+		</c:forEach>
+		$(".uploadResult ul").append(str);
+		
+		</spring:hasBindErrors>			
+	}
+		
 	$("input[type='file']").change(function(e){
 		var formData = new FormData(); 
 		var upload = $("input[name='upload']"); 
