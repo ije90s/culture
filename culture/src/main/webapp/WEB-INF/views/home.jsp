@@ -6,10 +6,10 @@
 <%@ include file="./includes/header.jsp"  %>
 
 	<div class="container-fluid">
-		<h1 class="mt-4"><sec:authentication property="principal.member.name"/> 환영합니다. 
-		<button id="regBtn" class="btn btn-secondary float-right">문화기록 등록</button></h1>
+		<h3 class="mt-4"><sec:authentication property="principal.member.name"/> 환영합니다. 
+		<button id="regBtn" class="btn btn-secondary float-right">문화기록 등록</button></h3>
 		<div class="card mb-4">
-        	<div class="card-header">문화기록 <button class="btn btn-secondary float-right move" data-oper="culture">더보기</button></div>
+        	<div class="card-header"><h6>문화기록<button class="btn btn-secondary float-right move" data-oper="culture">더보기</button></h6></div>
             <div class="card-body">
             	<table id="culture" class="table table-bordered" width="100%" cellspacing="0">
             	<thead><tr><td>종류</td><td>제목</td><td>날짜</td></tr></thead>
@@ -20,7 +20,7 @@
         
         <div class="card-deck mb-4"> 
         	<div class="card">
-	        	<div class="card-header">공지사항 <button class="btn btn-secondary float-right move" data-oper="notice">더보기</button></div>
+	        	<div class="card-header"><h6>공지사항<button class="btn btn-secondary float-right move" data-oper="notice">더보기</button></h6></div>
 	            <div class="card-body">
             	<table id="notice" class="table table-bordered" width="100%" cellspacing="0">
             	<thead><tr><td>제목</td><td>날짜</td></tr></thead>
@@ -30,7 +30,7 @@
         	</div> <!-- card 끝  -->         
         	
         	<div class="card">
-	        	<div class="card-header">자유게시판 <button class="btn btn-secondary float-right move" data-oper="free">더보기</button></div>
+	        	<div class="card-header"><h6>자유게시판<button class="btn btn-secondary float-right move" data-oper="free">더보기</button></h6></div>
 	            <div class="card-body">
             	<table id="free" class="table table-bordered" width="100%" cellspacing="0">
             	<thead><tr><td>제목</td><td>날짜</td></tr></thead>
@@ -47,18 +47,17 @@
 <script>
 $(document).ready(function(){
 	var formObj = $("form"); 
+	var mno = formObj.find("input[name='mno']").val(); 
 	$("#regBtn").click(function(){
-		//console.log("클릭함");
 		self.location="/culture/register";
 	});
 	
 	$(".move").click(function(){
 		var oper = $(this).data("oper");
 		if(oper=="culture"){
-			formObj.attr("action","/culture/list").submit(); 
+			self.location="/culture/list/"+mno;
 		}else{
-			formObj.find("input[name='mno']").remove();
-			formObj.attr("action","/board/list").submit(); 
+			self.location="/board/list/"+oper;
 		}
 	});
 		
@@ -71,7 +70,7 @@ $(document).ready(function(){
 		var str="", kind=""; 
 		if(category=="culture"){
 			var top = {
-				mno : formObj.find("input[name='mno']").val(),	
+				mno : mno,	
 				category : category
 			};	
 			homeService.cultureList(top, function(culture){				

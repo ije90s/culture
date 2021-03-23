@@ -56,13 +56,13 @@ public class CultureController {
 		d.addAttribute("list", service.getList()); 
 	}*/
 	
-	@GetMapping("/list")
+	@GetMapping("/list/{mno}")
 	@PreAuthorize("isAuthenticated()")
-	public void list(@RequestParam("mno") Long mno, Criteria cri, Model d) {
+	public String list(@PathVariable("mno") Long mno, Criteria cri, Model d) {
 		log.info("페이징 호출..............................................");
-		cri.setMno(mno);
-		d.addAttribute("list", service.getListPaging(cri)); 
-		d.addAttribute("page", new PageVO(cri, service.getCount(cri)));
+		d.addAttribute("list", service.getListPaging(cri,mno)); 
+		d.addAttribute("page", new PageVO(cri, service.getCount(cri,mno)));
+		return "/culture/list";
 	}
 		
 	@GetMapping("/get")
@@ -75,7 +75,7 @@ public class CultureController {
 	
 	@GetMapping("/register")
 	@PreAuthorize("isAuthenticated()")
-	public void register() {
+	public void register(Model d) {
 		log.info("입력폼 호출..........................................");
 	}
 	
@@ -118,8 +118,7 @@ public class CultureController {
 		service.registerKey(ins);
 		log.info("register : " + ins);
 		rttr.addFlashAttribute("result", "1");
-		rttr.addAttribute("mno", ins.getMno()); 
-		return "redirect:/culture/list"; 
+		return "redirect:/culture/list/"+ins.getMno(); 
 	}
 	
 	@GetMapping("/modify")
@@ -165,10 +164,7 @@ public class CultureController {
 		if(service.modify(upt) > 0) {
 			rttr.addFlashAttribute("result", service.modify(upt));
 		}
-		//rttr.addAttribute("pageNum", cri.getPageNum()); 
-		//rttr.addAttribute("amount", cri.getAmount());
-		//rttr.addAttribute("mno", upt.getMno()); 
-		return "redirect:/culture/list"+cri.getListLink();
+		return "redirect:/culture/list/"+upt.getMno()+cri.getListLink();
 	}
 	
 	private void deleteFiles(List<AttachFileVO> attachList) {
@@ -201,6 +197,7 @@ public class CultureController {
 		log.info("삭제하기 호출...............................................");
 		log.info("cno : " + cno);
 		log.info("...........................................");
+		CultureVO vo = service.get(cno);
 		List<AttachVO> attachList = service.getAttachList(cno); 
 		if(service.remove(cno) > 0) {
 			if(attachList !=null && attachList.size() > 0) {
@@ -209,10 +206,7 @@ public class CultureController {
 			}
 			rttr.addFlashAttribute("result", service.remove(cno)); 
 		}
-		//rttr.addAttribute("pageNum", cri.getPageNum()); 
-		//rttr.addAttribute("amount", cri.getAmount()); 
-		//rttr.addAttribute("mno", mno);
-		return "redirect:/culture/list"+cri.getListLink();
+		return "redirect:/culture/list/"+vo.getMno()+cri.getListLink();
 	}	
 	
 	@GetMapping(value="/getAttachList", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
@@ -224,10 +218,11 @@ public class CultureController {
 		return new ResponseEntity<>(service.getAttachList(cno), HttpStatus.OK);
 	}
 	
-	@GetMapping("/stats")
+	@GetMapping("/stats/{mno}")
 	@PreAuthorize("isAuthenticated()")
-	public void stats(Criteria cri, Model d) {
+	public String stats(@PathVariable("mno") Long mno, Criteria cri, Model d) {
 		log.info("통계..............................................");
+		return "/culture/stats";
 	}
 	
 
@@ -237,14 +232,13 @@ public class CultureController {
 		log.info("통계..............................................");
 		cri.setSdate(sdate);
 		cri.setEdate(edate);
-		cri.setMno(mno);
 		List<CultureVO> list = new ArrayList<CultureVO>(); 
 		if(tab.equals("mon")) {
-			list = service.getMonList(cri);
+			list = service.getMonList(cri,mno);
 		}else if(tab.equals("year")) {
-			list = service.getYearList(cri); 
+			list = service.getYearList(cri,mno); 
 		}else {
-			list = service.getChartList(cri);
+			list = service.getChartList(cri,mno);
 		}
 		log.info(list);
 		return new ResponseEntity<>(list, HttpStatus.OK);
@@ -254,8 +248,7 @@ public class CultureController {
 	public ResponseEntity<List<CultureVO>> get(@PathVariable("mno") Long mno, @PathVariable("sdate") String sdate, Criteria cri){
 		log.info("get : " + sdate);
 		cri.setSdate(sdate);
-		cri.setMno(mno);
-		return new ResponseEntity<>(service.getBySdate(cri), HttpStatus.OK);
+		return new ResponseEntity<>(service.getBySdate(cri,mno), HttpStatus.OK);
 	}
 	
 	
@@ -264,7 +257,6 @@ public class CultureController {
 	public ResponseEntity<List<CultureVO>> top(@PathVariable("mno") Long mno){
 		log.info("최근 글 10기만 가져오기"); 
 		Criteria cri = new Criteria(); 
-		cri.setMno(mno);
-		return new ResponseEntity<>(service.getListPaging(cri), HttpStatus.OK); 
+		return new ResponseEntity<>(service.getListPaging(cri,mno), HttpStatus.OK); 
 	}	
 }

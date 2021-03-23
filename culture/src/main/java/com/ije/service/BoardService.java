@@ -14,8 +14,8 @@ public interface BoardService {
 	public int remove(Long bno); 
 	public int modify(BoardVO upt);
 	
-	public List<BoardVO> getListPaging(Criteria cri);
-	public int getCount();
+	public List<BoardVO> getListPaging(Criteria cri, String kind);
+	public int getCount(Criteria cri, String kind);
 	
 	public List<BoardVO> topList(String kind);
 	

@@ -2,7 +2,7 @@
     pageEncoding="UTF-8"%>
 <%@ taglib prefix="c"  uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt"  uri="http://java.sun.com/jsp/jstl/fmt" %>   
-<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>   
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>    
 <%@ include file="../includes/header.jsp"  %>
 
                     <div class="container-fluid">
@@ -24,7 +24,6 @@
                                 	<input type="text" name="keyword" value='<c:out value="${page.cri.keyword}"/>' />
                                 	<input type="hidden" name="pageNum" value='<c:out value="${page.cri.pageNum }"/>' />
 									<input type="hidden" name="amount" value='<c:out value="${page.cri.amount }"/>' />
-									<input type="hidden" name="mno" value='${page.cri.mno }' />
 									<button class="btn btn-primary" data-oper="search">검색</button>
 									<button class="btn btn-secondary float-right" data-oper="regiter">등록</button>
                                 </form>
@@ -84,12 +83,11 @@
                         </div> <!-- card mb-4 끝 -->                            
                 	</div> <!-- container-fluid 끝 -->   
 <!-- form -->
-<form id="listForm" role="form" action="/culture/list" method="get">
+<form id="listForm" role="form"  method="get">
 	<input type="hidden" name="pageNum" value="${page.cri.pageNum }" />
 	<input type="hidden" name="amount" value="${page.cri.amount }" />
 	<input type="hidden" name="type" value="${page.cri.type }" />
 	<input type="hidden" name="keyword" value="${page.cri.keyword }" />
-	<input type="hidden" name="mno" value='${page.cri.mno}' />
 </form>
 <!-- form 끝 -->                        
 <!-- The Modal -->
@@ -116,11 +114,11 @@
     </div>
   </div>
 </div>            	
-<!-- The Modal 끝 -->                                  
-                          	
+<!-- The Modal 끝 -->                                                   	
 <script type="text/javascript">
 $(document).ready(function(){
 	var result = '<c:out value="${result}"/>';
+	var mno = '<sec:authentication property="principal.member.mno"/>'; 
 	var form = $("#listForm"); 
 	checkModal(result); 
 	history.replaceState({}, null, null);
@@ -138,11 +136,9 @@ $(document).ready(function(){
 		e.preventDefault(); 
 		
 		console.log("click");
-		var type = '<c:out value ="${page.cri.type}"/>';
-		var keyword = '<c:out value ="${page.cri.keyword}"/>';
-		
+	
 		form.find("input[name='pageNum']").val($(this).attr("href"));
-		form.submit();
+		form.attr("action", "/culture/list/"+mno).submit();
 	});
 	
 	//상세페이지 이동
@@ -154,11 +150,10 @@ $(document).ready(function(){
 	$(".btn-group").on("click", "button", function(e){
 		e.preventDefault(); 
 		var text = $(this).text(); 
-		var mno = '<sec:authentication property="principal.member.mno"/>';
 		if(text == "리스트"){
-			self.location="/culture/list?mno="+mno; 	
+			self.location="/culture/list/"+mno; 	
 		}else{
-			self.location="/culture/stats?mno="+mno; 	
+			self.location="/culture/stats/"+mno; 	
 		}
 	});
 	var search = $("#searchForm"); 
@@ -176,9 +171,7 @@ $(document).ready(function(){
 				return false; 
 			}
 			search.find("input[name='pageNum']").val("1");
-			
-			
-			search.submit();			
+			search.attr("action", "/culture/list/"+mno).submit();			
 		}else{
 			self.location="/culture/register";
 		}

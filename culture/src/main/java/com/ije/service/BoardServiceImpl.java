@@ -76,14 +76,14 @@ public class BoardServiceImpl implements BoardService {
 	}
 
 	@Override
-	public List<BoardVO> getListPaging(Criteria cri) {
-		log.info("페이징 : "+cri);
-		return mapper.getListPaging(cri);
+	public List<BoardVO> getListPaging(Criteria cri, String kind) {
+		log.info("페이징 : "+cri+" kind : "+kind);
+		return mapper.getListPaging(cri, kind);
 	}
 
 	@Override
-	public int getCount() {
-		return mapper.getCount();
+	public int getCount(Criteria cri, String kind) {
+		return mapper.getCount(cri, kind);
 	}
 
 	@Override

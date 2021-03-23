@@ -1,13 +1,35 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <%@ taglib prefix="c"  uri="http://java.sun.com/jsp/jstl/core" %>
-<%@ taglib prefix="fmt"  uri="http://java.sun.com/jsp/jstl/fmt" %>    
+<%@ taglib prefix="fmt"  uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>      
 <%@ include file="../includes/header.jsp"  %>
                     <div class="container-fluid">
-                        <h1 class="mt-4">게시판</h1>
+                        <h3 class="mt-4">
+	                        <c:if test="${kind eq 'notice' }">공지사항</c:if>
+	                        <c:if test="${kind eq 'free' }">자유게시판</c:if>
+	                        <c:if test="${kind eq 'question' }">질문&답변</c:if>
+	                        <c:if test="${kind eq 'review' }">문화후기</c:if>
+                        </h3>
                         <div class="card mb-4">
                             <div class="card-header">
-                                <button id="regBtn" class="btn btn-secondary float-right">등록</button>
+                                 <form id="searchForm" action="/board/list" method="get">
+                                	<select name="type">
+                                	<option value="" <c:out value="${page.cri.type==null?'selected':''}"/>>선택</option>
+                                	<option value="T" <c:out value="${page.cri.type eq 'T'?'selected':''}"/>>제목</option>
+                                	<option value="C" <c:out value="${page.cri.type eq 'C'?'selected':''}"/>>내용</option>
+                                	<option value="W" <c:out value="${page.cri.type eq 'W'?'selected':''}"/>>작성자</option>
+                                	<option value="TC" <c:out value="${page.cri.type eq 'TC'?'selected':''}"/>>제목 or 내용</option>
+                                	<option value="TW" <c:out value="${page.cri.type eq 'TW'?'selected':''}"/>>제목 or 작성자</option>
+                                	<option value="WC" <c:out value="${page.cri.type eq 'WC'?'selected':''}"/>>작성자 or 내용</option>
+                                	<option value="TWC" <c:out value="${page.cri.type eq 'TWC'?'selected':''}"/>>제목 or 작성자 or 내용</option>
+                                	</select>
+                                	<input type="text" name="keyword" value='<c:out value="${page.cri.keyword}"/>' />
+                                	<input type="hidden" name="pageNum" value='<c:out value="${page.cri.pageNum }"/>' />
+									<input type="hidden" name="amount" value='<c:out value="${page.cri.amount }"/>' />
+									<button class="btn btn-primary" data-oper="search">검색</button>
+									<button class="btn btn-secondary float-right" data-oper="regiter">등록</button>
+                                </form>
                             </div>
                             <div class="card-body">
                                 <div class="table-responsive">
@@ -24,7 +46,7 @@
 										<c:forEach items="${list}" var="list">
 										<tr>
 											<td>${list.bno}</td>
-											<td><a class="move" href="${list.bno}">${list.title}</a></td>
+											<td><a class="move" href="${list.bno}">${list.title} <b>[<c:out value="${list.replyCnt}"/>]</b></a></td>
 											<td>${list.writer}</td>
 											<td><fmt:formatDate value="${list.rdate}" pattern="yyyy-MM-dd"/></td>
 										</tr>
@@ -51,10 +73,12 @@
                             </div> <!-- card-body 끝  -->
                         </div> <!-- card mb-4 끝 -->                            
                 	</div> <!-- container-fluid 끝 -->   
-                	
-<form action="/board/list" method="get">
+       	
+<form id="listForm" method="get">
 	<input type="hidden" name="pageNum" value="${page.cri.pageNum }"/>
 	<input type="hidden" name="amount" value="${page.cri.amount }"/>
+	<input type="hidden" name="type" value="${page.cri.type }"/>
+	<input type="hidden" name="keyword" value="${page.cri.keyword }"/>
 </form>                	
 <!-- The Modal -->
 <div class="modal fade" id="myModal" role="dialog">
@@ -86,6 +110,7 @@
 $(document).ready(function(){
 	
 	var result = '<c:out value="${result}"/>'; 
+	var kind = '<c:out value="${kind}"/>';
 	
 	checkModal(result); 
 	history.replaceState({}, null, null);
@@ -98,17 +123,38 @@ $(document).ready(function(){
 		$("#myModal").modal("show");
 	}
 	
-
-	$("#regBtn").click(function(){
-		self.location="/board/register";
+	var search = $("#searchForm"); 
+	$("#searchForm button").on("click", function(e){
+		e.preventDefault(); 
+		var oper = $(this).data("oper"); 	
+		if(oper == "search"){
+			if(!search.find("option:selected").val()){
+				alert("종류를 선택하세요."); 
+				return false; 
+			}
+			
+			if(!search.find("input[name='keyword']").val()){
+				alert("키워드를 입력하세요."); 
+				return false; 
+			}
+			search.find("input[name='pageNum']").val("1");
+			search.attr("action", "/board/list/"+kind).submit();			
+		}else{
+			search.empty();
+			search.append("<input type='hidden' name='kind' value='"+kind+"'/>");
+			search.attr("action", "/board/register").submit();			
+		}
+		
 	});
+
 	
-	var form = $("form");
+	var form = $("#listForm");
 	$(".move").click(function(e){
 		e.preventDefault();
 		var bno = $(this).attr("href");
 		console.log(bno);
 		form.append("<input type='hidden' name='bno' value='"+bno+"'/>");
+		form.append("<input type='hidden' name='kind' value='"+kind+"'/>");
 		form.attr("action", "/board/get").submit();
 	}); 
 	
@@ -117,7 +163,7 @@ $(document).ready(function(){
 		e.preventDefault(); 
 		var selectedPageNum = $(this).attr("href"); 
 		form.find("input[name='pageNum']").val(selectedPageNum);
-		form.submit();
+		form.attr("action", "/board/list/"+kind).submit();
 	});
 });
 </script>               	

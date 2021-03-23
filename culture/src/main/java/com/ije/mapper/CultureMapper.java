@@ -20,12 +20,12 @@ public interface CultureMapper {
 	public int delete(Long cno);
 	
 	//페이징 처리 
-	public List<CultureVO> getListPaging(Criteria cri);
-	public int getCount(Criteria cri); 
+	public List<CultureVO> getListPaging(@Param("cri") Criteria cri, @Param("mno") Long mno);
+	public int getCount(@Param("cri") Criteria cri, @Param("mno") Long mno); 
 	
 	//통계 
-	public List<CultureVO> getMonList(Criteria cri); 
-	public List<CultureVO> getYearList(Criteria cri);
-	public List<CultureVO> getChartList(Criteria cri);
-	public List<CultureVO> read2(Criteria cri); 
+	public List<CultureVO> getMonList(@Param("cri") Criteria cri, @Param("mno") Long mno); 
+	public List<CultureVO> getYearList(@Param("cri") Criteria cri, @Param("mno") Long mno);
+	public List<CultureVO> getChartList(@Param("cri") Criteria cri, @Param("mno") Long mno);
+	public List<CultureVO> read2(@Param("cri") Criteria cri, @Param("mno") Long mno); 
 }

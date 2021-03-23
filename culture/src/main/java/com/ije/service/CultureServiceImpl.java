@@ -86,15 +86,15 @@ public class CultureServiceImpl implements CultureService {
 	}
 
 	@Override
-	public List<CultureVO> getListPaging(Criteria cri) {
+	public List<CultureVO> getListPaging(Criteria cri, Long mno) {
 		log.info("paging.......................");
-		return mapper.getListPaging(cri);
+		return mapper.getListPaging(cri, mno);
 	}
 
 	@Override
-	public int getCount(Criteria cri) {
+	public int getCount(Criteria cri, Long mno) {
 		log.info("count.......................");
-		return mapper.getCount(cri);
+		return mapper.getCount(cri, mno);
 	}
 
 
@@ -106,29 +106,29 @@ public class CultureServiceImpl implements CultureService {
 
 
 	@Override
-	public List<CultureVO> getMonList(Criteria cri) {
+	public List<CultureVO> getMonList(Criteria cri, Long mno) {
 		log.info("월별 조회 : " + cri);
-		return mapper.getMonList(cri);
+		return mapper.getMonList(cri,mno);
 	}
 
 
 	@Override
-	public List<CultureVO> getYearList(Criteria cri) {
+	public List<CultureVO> getYearList(Criteria cri, Long mno) {
 		log.info("연별 조회 : " + cri);
-		return mapper.getYearList(cri);
+		return mapper.getYearList(cri,mno);
 	}
 
 
 	@Override
-	public List<CultureVO> getChartList(Criteria cri) {
+	public List<CultureVO> getChartList(Criteria cri, Long mno) {
 		log.info("차트 조회 : " + cri);
-		return mapper.getChartList(cri);
+		return mapper.getChartList(cri,mno);
 	}
 
 
 	@Override
-	public List<CultureVO> getBySdate(Criteria cri) {
+	public List<CultureVO> getBySdate(Criteria cri, Long mno) {
 		log.info("일별 자세히 조회 : "+cri);
-		return mapper.read2(cri);
+		return mapper.read2(cri,mno);
 	}
 }

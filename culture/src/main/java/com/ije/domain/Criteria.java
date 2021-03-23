@@ -21,8 +21,6 @@ public class Criteria {
 	private String sdate; 
 	private String edate;
 	
-	private Long mno; 
-	
 	public Criteria() {
 		this(1,10);
 	}
@@ -42,8 +40,7 @@ public class Criteria {
 				.queryParam("pageNum", this.pageNum)
 				.queryParam("amout", this.getAmount())
 				.queryParam("type", this.getType())
-				.queryParam("keyword", this.getKeyword())
-				.queryParam("mno", this.getMno()); 
+				.queryParam("keyword", this.getKeyword());
 		return builder.toUriString();
 	}
 

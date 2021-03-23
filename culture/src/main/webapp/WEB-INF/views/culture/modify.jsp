@@ -175,6 +175,7 @@
 
 $(document).ready(function(){
 	var formObj = $("form"); 
+	var mno = '<sec:authentication property="principal.member.mno"/>'; 
 	var csrfHeader = "${_csrf.headerName}"; 
 	var csrfToken = "${_csrf.token}";
 	
@@ -292,24 +293,22 @@ $(document).ready(function(){
 				
 				$("input[name='rank']").val("0");
 				var crank = $("input[name='crank']:checked"); 
-				if(crank.val() == ""){
+				if(crank.val() != ""){
 					$("input[name='rank']").val(crank.val()); 
 				}
 					
 				formObj.append(str).submit();
 			}
 		}else{
-			formObj.attr("action", "/culture/list").attr("method", "get"); 
+			formObj.attr("action", "/culture/list/"+mno).attr("method", "get"); 
 			var pageNum = $("input[name='pageNum']").clone(); 
 			var amount = $("input[name='amount']").clone(); 
-			var mno = $("input[name='mno']").clone(); 
 			var type = $("input[name='type']").clone(); 
 			var keyword = $("input[name='keyword']").clone(); 
 			
 			formObj.empty(); 
 			formObj.append(pageNum); 
 			formObj.append(amount); 
-			formObj.append(mno);
 			formObj.append(type);
 			formObj.append(keyword);
 			formObj.submit();

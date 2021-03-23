@@ -7,14 +7,14 @@
 
 	<sql id="criteria">
 		<trim prefix="(" suffix=") And " prefixOverrides="OR">
-		<foreach item="type" collection="typeArr">
+		<foreach item="type" collection="cri.typeArr">
 			<trim prefix="OR">
 				<choose>
 					<when test="type == 'T'.toString()">
-						title like '%'||#{keyword}||'%'
+						title like '%'||#{cri.keyword}||'%'
 					</when>
 					<when test="type == 'C'.toString()">
-						content like '%'||#{keyword}||'%'
+						content like '%'||#{cri.keyword}||'%'
 					</when>
 				</choose>
 			</trim>
@@ -40,8 +40,8 @@
 	]]>	
 	<include refid="criteria"></include>
 	<![CDATA[
-		ROWNUM <= #{pageNum}*#{amount} and mno=#{mno}
-	) where rn > (#{pageNum}-1)*#{amount}
+		ROWNUM <= #{cri.pageNum}*#{cri.amount} and mno=#{mno}
+	) where rn > (#{cri.pageNum}-1)*#{cri.amount}
 	]]>
 	</select>
 	
@@ -49,7 +49,7 @@
 	<![CDATA[
 	SELECT TO_CHAR(TO_DATE(cdate), 'yyyy-MM-dd') As day, kind, count(*) AS sum
 	FROM tb_culture
-	WHERE 1=1 AND TO_CHAR(TO_DATE(cdate), 'yyyy-MM-dd') between #{sdate} and #{edate} And mno=#{mno}
+	WHERE 1=1 AND TO_CHAR(TO_DATE(cdate), 'yyyy-MM-dd') between #{cri.sdate} and #{cri.edate} And mno=#{mno}
 	GROUP BY TO_CHAR(TO_DATE(cdate), 'yyyy-MM-dd'), kind
 	ORDER BY TO_CHAR(TO_DATE(cdate), 'yyyy-MM-dd'), kind 
 	]]>
@@ -59,7 +59,7 @@
 	<![CDATA[
 	SELECT TO_CHAR(cdate, 'yyyy-MM') As day, kind, COUNT(*) AS sum
 	FROM tb_culture
-	WHERE 1=1 AND TO_CHAR(TO_DATE(cdate), 'yyyy-MM-dd') between #{sdate} and #{edate} And mno=#{mno}
+	WHERE 1=1 AND TO_CHAR(TO_DATE(cdate), 'yyyy-MM-dd') between #{cri.sdate} and #{cri.edate} And mno=#{mno}
 	GROUP BY TO_CHAR(cdate, 'yyyy-MM'), kind
 	ORDER BY TO_CHAR(cdate, 'yyyy-MM'), kind
 	]]>
@@ -69,14 +69,14 @@
 	SELECT kind, count(*) AS sum, 
 	ROUND(RATIO_TO_REPORT(count(*)) over(PARTITION BY GROUPING_ID(kind)) * 100,0) as ratio
 	FROM tb_culture
-	WHERE 1=1 AND TO_CHAR(TO_DATE(cdate), 'yyyy-MM-dd') between #{sdate} and #{edate} And mno=#{mno}
+	WHERE 1=1 AND TO_CHAR(TO_DATE(cdate), 'yyyy-MM-dd') between #{cri.sdate} and #{cri.edate} And mno=#{mno}
 	GROUP BY ROLLUP(kind)	
 	</select>
 	
 	<select id="read2" resultType="com.ije.domain.CultureVO">
 	Select cno, cdate, kind, title, content, rank, rdate, udate, mno 
 	From tb_culture
-	Where 1=1 AND TO_CHAR(TO_DATE(cdate), 'yyyy-MM-dd') = #{sdate} and mno=#{mno}
+	Where 1=1 AND TO_CHAR(TO_DATE(cdate), 'yyyy-MM-dd') = #{cri.sdate} and mno=#{mno}
 	</select>
 	
 	<insert id="insert">

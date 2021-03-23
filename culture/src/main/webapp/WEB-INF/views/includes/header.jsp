@@ -65,8 +65,8 @@
                             </a>
                             <div class="collapse" id="collapseLayouts" aria-labelledby="headingOne" data-parent="#sidenavAccordion">
                                 <nav class="sb-sidenav-menu-nested nav">
-                                    <a class="nav-link" href='/culture/list?mno=<sec:authentication property="principal.member.mno"/>'>리스트</a>
-                                    <a class="nav-link" href='/culture/stats?mno=<sec:authentication property="principal.member.mno"/>'>통계</a>
+                                    <a class="nav-link" href='/culture/list/<sec:authentication property="principal.member.mno"/>'>리스트</a>
+                                    <a class="nav-link" href='/culture/stats/<sec:authentication property="principal.member.mno"/>'>통계</a>
                                 </nav>
                             </div>
                             <!-- a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapsePages" aria-expanded="false" aria-controls="collapsePages">
@@ -101,10 +101,10 @@
                                 </nav>
                             </div>
                             <div class="sb-sidenav-menu-heading">게시판</div>
-                            <a class="nav-link" href="/board/list?bcode=1">공지사항</a>
-                            <a class="nav-link" href="/board/list?bcode=2">자유게시판</a>
-                            <a class="nav-link" href="/board/list?bcode=3">질문&답변</a>
-                            <a class="nav-link" href="/board/list?bcode=4">문화후기</a>
+                            <a class="nav-link" href="/board/list/notice">공지사항</a>
+                            <a class="nav-link" href="/board/list/free">자유게시판</a>
+                            <a class="nav-link" href="/board/list/question">질문&답변</a>
+                            <a class="nav-link" href="/board/list/review">문화후기</a>
                         </div>
                     </div>
                 </nav>

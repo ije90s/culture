@@ -3,33 +3,59 @@
 <%@ taglib prefix="c"  uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt"  uri="http://java.sun.com/jsp/jstl/fmt" %>   
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>   
+<%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>   
 <%@ include file="../includes/header.jsp"  %>
+					<style>
+        			.invalid{color:red !important;}
+					.originPictureWrapper{
+						position:absolute; 
+						display:none; 
+						justify-content:center; 
+						align-items:center; 
+						top:0%;
+						width:100%; 
+						height:100%; 
+						background-color:gray; 
+						z-index:100; 
+						background:rgba(255,255,255,0.5); 
+					}
+					.originPicture{
+						position:relative; 
+						display:flex; 
+						justify-content:center; 
+						align-items:center; 
+					}
+					.originPicture img{
+						width:600px; 
+					}        			
+        			</style>
                     <div class="container-fluid">
-                        <h1 class="mt-4">나의 기록 수정</h1>
+                        <h3 class="mt-4">                        
+                         <c:if test="${board.kind eq 'notice' }">공지사항</c:if>
+	                     <c:if test="${board.kind eq 'free' }">자유게시판</c:if>
+	                     <c:if test="${board.kind eq 'question' }">질문&답변</c:if>
+	                     <c:if test="${board.kind eq 'review' }">문화후기</c:if> 수정</h3>
                         <div class="card mb-4">
-                            <div class="card-header"><i class="fa fa-check-circle"></i> 자유롭게 수정하세요</div>
+                            <div class="card-header"><h6><medium class="invalid">*</medium>(별표)가 있는 항목만 필수값입니다.</h6></div>
                             <div class="card-body">
                             	<form role="form" action="/board/modify" method="post">
                             		<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
-                            		<input type="hidden" name="writer" value="${board.writer}" />
                             		<input type="hidden" name="pageNum" value="${cri.pageNum}" />
                             		<input type="hidden" name="amount" value="${cri.amount}" />
+                            		<input type="hidden" name="type" value="${cri.type}" />
+                            		<input type="hidden" name="keyword" value="${cri.keyword}" />
 									<input type="hidden" name="bno" value="${board.bno}" />
-                            		<div class="form-group">
-                            			<label class="small mb-1" for="kind">구분</label>
-                            			<select name="kind" id="kind">
-                            				<option value="">선택</option>
-                            				<option value="free" <c:if test="${board.kind eq 'free'}">selected</c:if>>자유게시판</option>
-                            				<option value="question" <c:if test="${board.kind eq 'question'}">selected</c:if>>문의사항</option>
-                            			</select>
-                            		</div>									
+									<input type="hidden" name="writer" value="${board.writer}" />
+                         			<input type="hidden" name="kind" value="${board.kind}" />								
 	                            	<div class="form-group">
-	                                	<label class="small mb-1" for="cdate">제목 </label>
+	                                	<label class="small mb-1" for="title">제목<medium class="invalid">*</medium></label>
 	                                    <input class="form-control py-4" name="title" id="title" value="${board.title}" type="text"/>
+	                                    <small></small>
 	                                </div>
 	                                <div class="form-group">
-	                                	<label class="small mb-1" for="content">내용</label>
+	                                	<label class="small mb-1" for="content">내용<medium class="invalid">*</medium></label>
 	                                    <textarea class="form-control" name="content" rows="5" id="content">${board.content}</textarea>
+	                                    <small></small>
 									</div>
 									<div class="form-group uploadDiv">
 										<label class="small mb-1" for="upload">사진첨부</label>
@@ -52,13 +78,22 @@
                             </div> <!-- card-body 끝  -->
                         </div> <!-- card mb-4 끝 -->
                 	</div> <!-- container-fluid 끝 -->   
-                	
+<div class="originPictureWrapper">
+	<div class="originPicture"></div>
+</div>                  	
 <script src="/resources/scripts/common.js"></script>   
+<script src="/resources/scripts/board.js"></script>
 <script>
 $(document).ready(function(){
 	var form = $("form");
 	var csrfHeader = "${_csrf.headerName}"; 
 	var csrfToken = "${_csrf.token}";
+	
+	
+	$(".form-control").blur(function(e){
+		boardService.validate($(this)); 
+	});
+	hasErrors();
 	
 	 (function(){
 			var bno = '<c:out value="${board.bno}" />';
@@ -145,18 +180,55 @@ $(document).ready(function(){
 					str+="<input type='hidden' name='attachList[0].fileList["+i+"].fileName' value='"+jobj.data("filename")+"'/>"; 
 					str+="<input type='hidden' name='attachList[0].fileList["+i+"].fileType' value='"+jobj.data("type")+"'/>";
 				});
+				
+				$(".form-control").each(function(e){
+					boardService.validate($(this));	
+				});
+			
+				if(!checkItem($("input[name='title']"))) return false; 
+				if(!checkItem($("input[name='content']"))) return false; 
+				
 				form.append(str).submit();
 			}
 		}else{
-			var pageNumObj = $("input[name='pageNum']").clone(); 
-			var amountObj = $("input[name='amount']").clone(); 
-			console.log(pageNumObj);
+			var pageNum = $("input[name='pageNum']").clone(); 
+			var amount = $("input[name='amount']").clone(); 
+			var type = $("input[name='type']").clone(); 
+			var keyword = $("input[name='keyword']").clone(); 
+			var kind = $("input[name='kind']").val(); 
 			form.empty();
-			form.append(pageNumObj);
-			form.append(amountObj);
-			form.attr("method","get").attr("action", "/board/list").submit();
+			form.append(pageNum);
+			form.append(amount);
+			form.append(type);
+			form.append(keyword);
+			form.attr("method","get").attr("action", "/board/list/"+kind).submit();
 		}
-	})
+	});
+	 $(".originPictureWrapper").on("click", function(e){
+			$(".originPicture").animate({width:'0%', height:'0%'}, 1000); 
+			setTimeout(function(){
+				$(".originPictureWrapper").hide();
+			},1000);
+		 });	
 });
+
+//invalid 항목 검사
+function checkItem(item){
+	if(item.siblings('small').hasClass("invalid")){
+		item.focus(); 
+		return false; 
+	}else {
+		return true; 
+	}	
+}	
+
+//서버에서 받아온 error 검사
+function hasErrors(){
+	<spring:hasBindErrors name="board">
+	$(".form-control").each(function(){
+		boardService.validate($(this));	
+	}); 	
+	</spring:hasBindErrors>			
+}	
 </script>                                                        
 <%@ include file="../includes/footer.jsp"  %>                            

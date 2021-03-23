@@ -131,7 +131,6 @@
 </div>                	               	
  <form role="form" method="post">
  	<input type="hidden" id="cno" name="cno" value="${culture.cno}" />
- 	<input type="hidden" name="mno" value="${culture.mno }" />
  	<input type="hidden" name="pageNum" value="${cri.pageNum}" />
  	<input type="hidden" name="amount" value="${cri.amount}" />
  	<input type="hidden" name="type" value="${cri.type }"/>
@@ -142,7 +141,7 @@
  $(document).ready(function(){
 	 
 	 var formObj = $("form"); 
-	 
+	 var mno = '<sec:authentication property="principal.member.mno"/>'; 
 	 (function(){
 			var cno = '<c:out value="${culture.cno}" />';
 			$.getJSON("/culture/getAttachList", {cno : cno}, function(arr){
@@ -186,10 +185,11 @@
 			 formObj.attr("action", "/culture/modify").attr("method", "get").submit();
 		 }else if(oper === "remove"){
 			 formObj.append('<input type="hidden" id="${_csrf.parameterName}" name="${_csrf.parameterName}" value="${_csrf.token}" />');
+			 formObj.append('<input type="hidden" name="mno" value="'+mno+'"/>');
 			 formObj.attr("action", "/culture/remove").submit();
 		 }else if(oper === "list"){
 			 formObj.find("#cno").remove();
-			 formObj.attr("action", "/culture/list").attr("method","get").submit();
+			 formObj.attr("action", "/culture/list/"+mno).attr("method","get").submit();
 		 } 
 	 });
 	 

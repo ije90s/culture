@@ -171,7 +171,11 @@ $(document).ready(function(){
 		if(!checkItem($("input[name='kind']"))) return false;
 		if(!checkItem($("input[name='title']"))) return false;
 		
-		if(!$("input[name=crank]").is(":checked")) $("input[name=rank]").val("0"); 
+		$("input[name='rank']").val("0");
+		var crank = $("input[name='crank']:checked"); 
+		if(crank.val() != ""){
+			$("input[name='rank']").val(crank.val()); 
+		}
 	
 		formObj.append(str).submit();
 	});

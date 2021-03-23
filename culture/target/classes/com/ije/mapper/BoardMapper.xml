@@ -5,6 +5,27 @@
 	
 <mapper namespace="com.ije.mapper.BoardMapper">
 
+	<sql id="criteria">
+		<trim prefix="(" suffix=") And " prefixOverrides="OR">
+		<foreach item="type" collection="cri.typeArr">
+			<trim prefix="OR">
+				<choose>
+					<when test="type == 'T'.toString()">
+						title like '%'||#{cri.keyword}||'%'
+					</when>
+					<when test="type == 'C'.toString()">
+						content like '%'||#{cri.keyword}||'%'
+					</when>
+					<when test="type == 'W'.toString()">
+						writer like '%'||#{cri.keyword}||'%'
+					</when>
+				</choose>
+			</trim>
+		</foreach>
+		</trim>
+	</sql>
+
+
 	<select id="getList" resultType="com.ije.domain.BoardVO">
 	Select * from tb_board where bno > 0 
 	</select>
@@ -13,15 +34,20 @@
 	<![CDATA[
 	Select * from (
 		Select /*+ INDEX_DESC(tb_board pk_board) */
-		ROWNUM rn, bno, kind, title, content, writer, rdate, udate 
-		From tb_board
-		Where bno > 0 and #{pageNum}*#{amount} >= ROWNUM
-	) Where rn > (#{pageNum}-1)*#{amount} 
+		ROWNUM rn, bno, kind, title, content, writer, rdate, udate, replycnt
+		From tb_board Where 
+	]]>	
+	<include refid="criteria"></include>
+	<![CDATA[
+	kind=#{kind} and #{cri.pageNum}*#{cri.amount} >= ROWNUM
+	) Where rn > (#{cri.pageNum}-1)*#{cri.amount} 
 	]]>
 	</select>
 	
 	<select id="getCount" resultType="int">
-	Select count(*) From tb_board
+	Select count(*) From tb_board where
+	<include refid="criteria"></include>
+	kind=#{kind}
 	</select>
 	
 	<insert id="insert">
@@ -60,4 +86,8 @@
 	) Where rn <= 5
 	]]>
 	</select>
+	
+	<update id="updateReplyCnt">
+	update tb_board set replycnt = replycnt+#{amount} where bno=#{bno}
+	</update>
 </mapper>

@@ -4,19 +4,38 @@
 <%@ taglib prefix="fmt"  uri="http://java.sun.com/jsp/jstl/fmt" %>   
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>  
 <%@ include file="../includes/header.jsp"  %>
+					<style>
+					.originPictureWrapper{
+						position:absolute; 
+						display:none; 
+						justify-content:center; 
+						align-items:center; 
+						top:0%;
+						width:100%; 
+						height:100%; 
+						background-color:gray; 
+						z-index:100; 
+						background:rgba(255,255,255,0.5); 
+					}
+					.originPicture{
+						position:relative; 
+						display:flex; 
+						justify-content:center; 
+						align-items:center; 
+					}
+					.originPicture img{
+						width:600px; 
+					}
+					</style>
                     <div class="container-fluid">
-                        <h1 class="mt-4">게시판 상세</h1>
+                        <h3 class="mt-4">
+                         <c:if test="${board.kind eq 'notice' }">공지사항</c:if>
+	                     <c:if test="${board.kind eq 'free' }">자유게시판</c:if>
+	                     <c:if test="${board.kind eq 'question' }">질문&답변</c:if>
+	                     <c:if test="${board.kind eq 'review' }">문화후기</c:if> 상세</h3>
                         <div class="card mb-4">
-                            <div class="card-header">자세한 내용을 확인하세요.</div>
-                            <div class="card-body">
-                        		<div class="form-group">
-                            		<label class="small mb-1" for="kind">구분</label>
-                            		<select name="kind" id="kind" disabled>
-                            			<option value="">선택</option>
-                            			<option value="free" <c:if test="${board.kind eq 'free'}">selected</c:if>>자유게시판</option>
-                            			<option value="question" <c:if test="${board.kind eq 'question'}">selected</c:if>>문의사항</option>
-                            		</select>
-                            	</div>                            
+                            <div class="card-header"></div>
+                            <div class="card-body">                            
                             	<div class="form-group">
                                 	<label class="small mb-1" for="title">제목 </label>
                                     <input class="form-control py-4" name="title" id="title" type="text" value='${board.title}' readonly/>
@@ -36,7 +55,7 @@
 		                                    <button type="button" class="btn btn-danger" data-oper="remove">삭제</button>
 	                                    </c:if>
                                     </sec:authorize>
-									<button type="button" class="btn btn-secondary"  data-oper="list">목록</button>
+									<button type="button" class="btn btn-secondary"  data-oper="list" data-kind="${board.kind}">목록</button>
                                 </div>                  				
                             </div> <!-- card-body 끝  -->
                             <!-- 댓글 시작 -->
@@ -64,11 +83,16 @@
                             <!-- 댓글 끝 -->
                             
                         </div> <!-- card mb-4 끝 -->                            
-                	</div> <!-- container-fluid 끝 --> 
+                	</div> <!-- container-fluid 끝 -->
+<div class="originPictureWrapper">
+	<div class="originPicture"></div>
+</div>                	 
 <form role="form" method="get">
 	<input type="hidden" name="bno" value="${board.bno}" />
 	<input type="hidden" name="pageNum" value="${cri.pageNum}" />
 	<input type="hidden" name="amount" value="${cri.amount}" />
+	<input type="hidden" name="type" value="${cri.type}" />
+	<input type="hidden" name="keyword" value="${cri.keyword}" />
 </form>           
 <!-- The Modal -->
 <div class="modal fade" id="myModal" role="dialog">
@@ -85,15 +109,15 @@
       <div class="modal-body">
      	<div class="form-group reply">
      		<label>댓글</label>
-     		<input class="form-control reply" name="reply" />
+     		<input class="form-control" name="reply" />
      	</div>
    		<div class="form-group">
      		<label>아이디</label>
-     		<input class="form-control reply" name="replyer" readonly />
+     		<input class="form-control" name="replyer" readonly />
      	</div>
      	<div>
   			<label>작성일</label>
-     		<input class="form-control reply" name="rdate" />   	
+     		<input class="form-control" name="rdate" />   	
      	</div>
       </div>
       <!-- Modal footer -->
@@ -160,8 +184,9 @@ $(document).ready(function(){
 			form.append('<input type="hidden" id="${_csrf.parameterName}" name="${_csrf.parameterName}" value="${_csrf.token}" />');
 			form.attr("method", "post").attr("action", "/board/remove").submit();
 		}else if(oper === "list"){
+			var kind = $(this).data("kind"); 
 			form.find("input[name='bno']").remove();
-			form.attr("action", "/board/list").submit();
+			form.attr("action", "/board/list/"+kind).submit();
 		}
 	});
 		
@@ -186,10 +211,6 @@ $(document).ready(function(){
 			}
 			
 			var str=""; 
-			/*if(list==null || list.length==0){
-				//replyUL.html(""); 
-				return; 
-			}*/
 			for(var i=0;i<list.length;i++){
 				str+="<li class='list-group-item' data-rno='"+list[i].rno+"'>";
 				str+="<div><div class='header'>";
@@ -245,9 +266,6 @@ $(document).ready(function(){
 	</sec:authorize>
 	
 	var modal = $(".modal"); 
-	var modalTitle = $(".modal-title");
-	var modalBody = $(".modal-body");
-	var modalReplys = modal.find(".reply"); 
 	var modalReply = $(".modal").find("input[name='reply']"); 
 	var modalReplyer = $(".modal").find("input[name='replyer']"); 
 	var modalRdate = $(".modal").find("input[name='rdate']"); 
@@ -262,8 +280,6 @@ $(document).ready(function(){
 	});
 	
 	$("#regBtn").click(function(){
-		modalTitle.html("댓글");
-		modalBody.html(modalReplys); 
 		modalReply.val(""); 
 		modalReplyer.val(replyer);
 		modalRdate.closest("div").hide(); 
@@ -356,7 +372,6 @@ $(document).ready(function(){
 		var rno = $(this).data("rno"); 
 		
 		replyService.get(rno, function(data){
-			modalTitle.html("댓글");
 			modalReply.val(data.reply); 
 			modalReplyer.val(data.replyer); 
 			modalRdate.attr("readonly", "readonly").val(replyService.displyTime(data.rdate));
@@ -377,7 +392,14 @@ $(document).ready(function(){
 		pageNum = targetPageNum;
 		showList(targetPageNum);
 	});
+
 	
+	 $(".originPictureWrapper").on("click", function(e){
+			$(".originPicture").animate({width:'0%', height:'0%'}, 1000); 
+			setTimeout(function(){
+				$(".originPictureWrapper").hide();
+			},1000);
+		 });	
 });
 </script>                	
 <%@ include file="../includes/footer.jsp"  %> 
