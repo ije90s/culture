@@ -28,7 +28,7 @@
 					}
 					</style>
                     <div class="container-fluid">
-                        <h1 class="mt-4">나의 기록 상세</h1>
+                        <h3 class="mt-4">나의 기록 상세</h3>
                         <div class="card mb-4">
                             <div class="card-header"></div>
                             <div class="card-body">

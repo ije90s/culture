@@ -3,9 +3,15 @@
 <%@ taglib prefix="c"  uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt"  uri="http://java.sun.com/jsp/jstl/fmt" %>    
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %> 
+<%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>   
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %> 
 <%@ include file="../includes/header.jsp"  %>
+			        <style>
+			        .invalid{color:red !important;}
+			        .valid{color:green !important;}
+			        </style>
 					<div class="container">
-						<h1>회원정보</h1>
+						<h3 class="mt-4">회원정보</h3>
 						<div class="card mb-4">
                             <div class="card-header">
                             	<div class="float-right"> 
@@ -18,12 +24,10 @@
                             	</div>
                             </div>
                             <div class="card-body">
-                            	<div class="form-group uploadDiv">
-									<label class="small mb-1" for="upload">사진첨부</label>
-									<input type="file" id="upload" name="upload" data-folder="member" />
-								</div>
-								<div class="form-group uploadResult">
-									<ul class="list-group list-group-horizontal"></ul>
+                            	<div class="form-group uploadDiv text-center">
+                            		<img class="rounded-circle photo uploadResult">
+									<input type="file" id="upload" name="upload" data-folder="member" style="display:none;" />
+									<i class="fas fa-user fa-fw photo default" style="font-size:200px; cursor:pointer;"></i>
 								</div>
                             	<div class="form-group">
                                 	<label class="small mb-1" for="name">이름</label>
@@ -42,32 +46,32 @@
                                     <div id="favorites">
 	                                	<div class="form-check-inline">
 											<label class="form-check-label">
-											<input type="checkbox" class="form-check-input" name="favorites1" value="1"  disabled>공연
+											<input type="checkbox" class="form-check-input" name="favorites" value="1" <c:if test="${fn:contains(member.favorites, '1')}">checked</c:if>  disabled>공연
 											</label>
 										</div>
 	                                    <div class="form-check-inline">
 											<label class="form-check-label">
-											<input type="checkbox" class="form-check-input" name="favorites2" value="2" disabled>영화
+											<input type="checkbox" class="form-check-input" name="favorites" value="2" <c:if test="${fn:contains(member.favorites, '2')}">checked</c:if> disabled>영화
 											</label>
 										</div>
 	                                    <div class="form-check-inline">
 											<label class="form-check-label">
-											<input type="checkbox" class="form-check-input" name="favorites3" value="3" disabled>독서
+											<input type="checkbox" class="form-check-input" name="favorites" value="3" <c:if test="${fn:contains(member.favorites, '3')}">checked</c:if> disabled>독서
 											</label>
 										</div>	
 	                                    <div class="form-check-inline">
 											<label class="form-check-label">
-											<input type="checkbox" class="form-check-input" name="favorites4" value="4" disabled>관람
+											<input type="checkbox" class="form-check-input" name="favorites" value="4" <c:if test="${fn:contains(member.favorites, '4')}">checked</c:if> disabled>관람
 											</label>
 										</div>	
 	                                    <div class="form-check-inline">
 											<label class="form-check-label">
-											<input type="checkbox" class="form-check-input" name="favorites5" value="5" disabled>스포츠
+											<input type="checkbox" class="form-check-input" name="favorites" value="5" <c:if test="${fn:contains(member.favorites, '5')}">checked</c:if> disabled>스포츠
 											</label>
 										</div>	
 	                                    <div class="form-check-inline">
 											<label class="form-check-label">
-											<input type="checkbox" class="form-check-input" name="favorites6" value="6" disabled>기타
+											<input type="checkbox" class="form-check-input" name="favorites" value="6" <c:if test="${fn:contains(member.favorites, '6')}">checked</c:if> disabled>기타
 											</label>
 										</div>
 									</div> <!-- id="favorites" 끝  -->								
@@ -88,72 +92,76 @@
 
       <!-- Modal body -->
       <div class="modal-body"> 	
-      	<form id="modalForm" method="post">
-      	<input type="hidden" name="mno" value="${member.mno }" />
-      	<input type="hidden" name="id" value="${member.id }" />
-      	<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
+      	<input type="hidden" name="id" id="id" value="${member.id}" />
+      	<input type="hidden" name="mno" id="mno" value="${member.mno}" />
  		<div class="form-group modify">
-     		<label>이름</label>
-     		<input class="form-control" name="name" value="${member.name }"/>
+     		<label>이름<medium class="invalid">*</medium></label>
+     		<input class="form-control chk" name="name" value="${member.name }"/>
+     		<small></small>
      	</div>
    		<div class="form-group modify">
      		<label>휴대폰</label>
-     		<input class="form-control" name="phone" value="${member.phone }"/>
+     		<input class="form-control chk" name="phone" type="phone" value="${member.phone }"/>
+     		<small></small>
      	</div>
      	<div class="form-group modify">
   			<label>이메일</label>
-     		<input class="form-control" name="email" value="${member.email }"/>   	
+     		<input class="form-control chk" name="email" type="email" value="${member.email}"/>   	
+     		<small></small>
      	</div>    	
         <div class="form-group modify">
             <label class="small mb-1" for="favorites">관심사</label>
+            <input type="hidden" name="favorites" value="${member.favorites}"/>
             <div id="favorites">
 	            <div class="form-check-inline">
 	            	<label class="form-check-label">
-					<input type="checkbox" class="form-check-input" id="favorites1" name="favorites" value="1">공연
+					<input type="checkbox" class="form-check-input" name="favorite" value="1" <c:if test="${fn:contains(member.favorites, '1')}">checked</c:if>>공연
 					</label>
 				</div>
 	            <div class="form-check-inline">
 					<label class="form-check-label">
-					<input type="checkbox" class="form-check-input" id="favorites2" name="favorites" value="2">영화
+					<input type="checkbox" class="form-check-input" name="favorite" value="2" <c:if test="${fn:contains(member.favorites, '2')}">checked</c:if>>영화
 					</label>
 			    </div>
 	            <div class="form-check-inline">
 					<label class="form-check-label">
-					<input type="checkbox" class="form-check-input" id="favorites3" name="favorites" value="3">독서
+					<input type="checkbox" class="form-check-input" name="favorite" value="3" <c:if test="${fn:contains(member.favorites, '3')}">checked</c:if>>독서
 					</label>
 			    </div>	
 	            <div class="form-check-inline">
 					<label class="form-check-label">
-					<input type="checkbox" class="form-check-input" id="favorites4" name="favorites" value="4">관람
+					<input type="checkbox" class="form-check-input" name="favorite" value="4" <c:if test="${fn:contains(member.favorites, '4')}">checked</c:if>>관람
 					</label>
 				</div>	
 	            <div class="form-check-inline">
 					<label class="form-check-label">
-					<input type="checkbox" class="form-check-input" id="favorites5" name="favorites" value="5">스포츠
+					<input type="checkbox" class="form-check-input" name="favorite" value="5" <c:if test="${fn:contains(member.favorites, '5')}">checked</c:if>>스포츠
 					</label>
 				</div>	
 	            <div class="form-check-inline">
 					<label class="form-check-label">
-					<input type="checkbox" class="form-check-input" id="favorites6" name="favorites" value="6">기타
+					<input type="checkbox" class="form-check-input" name="favorite" value="6" <c:if test="${fn:contains(member.favorites, '6')}">checked</c:if>>기타
 					</label>
 				</div>
 			</div> <!-- id="favorites" 끝  -->	  
 		</div>
 		<div class="form-group changePw">
   			<label>기존 비밀번호</label>
-     		<input class="form-control" name="originPw" type="password" value="${member.pw}" readonly/>   	
+     		<input class="form-control chk" name="originPw" type="password" value="${member.pw}" readonly/> 
+     		<small></small>	  	
      	</div>    	
 		<div class="form-group changePw">
-  			<label>새 비밀번호</label>
-     		<input class="form-control" name="pw" type="password"/>   	
+  			<label>새 비밀번호<medium class="invalid">*</medium></label>
+     		<input class="form-control chk" name="pw" id="pw" type="password"/>   
+     		<small></small>	
      	</div>  
 		<div class="form-group changePw">
-  			<label>새 비밀번호 확인</label>
-     		<input class="form-control" name="pwConfirm" type="password"/>   	
-     	</div> 
-     	<div id="chkPw" class="changePw"></div>      	
+  			<label>새 비밀번호 확인<medium class="invalid">*</medium></label>
+     		<input class="form-control chk" name="pw2" id="pw2" type="password"/>   	
+			<small></small>     	
+     	</div>       	
      	<div class="form-group unjoin">
-     		<label class="small mb-1" for="reason">탈퇴사유</label>
+     		<label class="small mb-1" for="reason">탈퇴사유<medium class="invalid">*</medium></label>
      		<select name="reason" id="reason">
      			<option value="">선택</option>
      			<option value="1">서비스 불만족</option>
@@ -162,17 +170,17 @@
      			<option value="4">사용 자주 하지 않음</option>
      			<option value="5">기타</option>
      		</select>
+     		<p><small id="reasonChk"></small></p>
      	</div>
      	<div class="form-group unjoin"> 
      		<label class="small mb-1" for="memo">내용</label>
      		<textarea class="form-control" name="memo" rows="5" id="memo"></textarea>
      	</div>     			
-		</form>   	
       </div>
       
       <!-- Modal footer -->
       <div class="modal-footer">
-      	<button type="button" class="btn btn-warning">수정</button>
+      	<button type="button" class="btn btn-primary">수정</button>
         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
       </div>
     </div>
@@ -184,38 +192,42 @@
 <input type="hidden" name="id" value="${member.id}" />
 <input type="hidden" name="mno" value="${member.mno}" />
 </form>			
-<script src="/resources/scripts/common.js"></script>  		
+<script src="/resources/scripts/common.js"></script>  	
+<script src="/resources/scripts/member.js"></script>	
 <script>
 $(document).ready(function(){
-	var favorites = '<c:out value="${member.favorites}" />';
 	var csrfHeader = "${_csrf.headerName}"; 
 	var csrfToken = "${_csrf.token}";
-		
-	showFavorte('main', favorites);
-	function showFavorte(tab, favorites){
-		
-		for(var i=1; i<7;i++){
-			if(favorites.includes(i)){
-				if(tab == "main"){
-					$("input[name='favorites"+i+"']").attr("checked", true);
-				}else{
-					$("#favorites"+i).attr("checked", true);
-				}
-				
+
+	(function(){
+		var mno = '<c:out value="${member.mno}" />';
+		$.getJSON("/member/getAttachList", {mno : mno}, function(arr){
+	 	
+			if(arr==null || arr.length==0){
+				return;
 			}
-		}		
-	}
+			$(arr[0].fileList).each(function(i, attach){
+				var fileCallPath = encodeURIComponent(attach.path+"/s_"+attach.uuid+"_"+attach.fileName); 
+				$(".uploadResult").attr('src', '/display?fileName='+fileCallPath).attr("style","width:175px;height:200px;");
+				$(".default").hide();	
+			});				
+		});
+	})();	
+	
+	$(".chk").blur(function(){
+		memberService.validate($(this));
+	});
+	
 	var modal = $(".modal"); 
 	var modalTitle = $(".modal-title");
 	var modalBody = $(".modal-body"); 
-	var modalBtn = $(".btn-warning"); 
+	var modalBtn = $(".btn-primary"); 
 	$(".move").on("click", function(e){
 		e.preventDefault();
 		var href = $(this).attr("href"); 
 		modal.data("link", href); 
 		if(href=="modify"){
 			modalTitle.html("정보변경");
-			showFavorte("modal", favorites);
 			modalBtn.text("수정");
 			modal.find(".modify").show(); 
 			modal.find(".changePw").hide(); 
@@ -242,104 +254,141 @@ $(document).ready(function(){
 		}
 	});	
 	
-	var form = $("#modalForm"); 
-	var pw = modal.find("input[name='pw']"); 
-	var pwConfirm = modal.find("input[name='pwConfirm']");
-	$(".btn").on("click",function(e){
-		e.preventDefault(); 
-		var link = modal.data("link");
-		var msg = ""; 
-		if(link == "modify"){
-			msg = "수정하시겠습니까?"; 
-		}else if(link == "changePw"){
-			msg = "변경하시겠습니까?"; 
-		}else {
-			msg = "탈퇴하시겠습니까?"; 
-		}
-		if(confirm(msg)){
-			form.attr("action", "/member/"+link).submit();
-		}
-		
-	});
-	
-	pw.on("blur", function(e){
-		if($(this).val() == ""){
-			$("#chkPw").html("새 비밀번호 또는 새 비밀번호확인을 입력하세요.");
-		}
-	});
-	pwConfirm.on("blur", function(e){
-		if($(this).val() == ""){
-			$("#chkPw").html("새 비밀번호 또는 새 비밀번호확인을 입력하세요.");
-		}
-		
-		if(pw.val()!=pwConfirm.val()){
-			$("#chkPw").html("새 비밀번호와 확인이 일치하지 않습니다.");
-		}else{
-			$("#chkPw").html("새 비밀번호 등록 가능합니다.");
-		}
+	$(document).ajaxSend(function(e, xhr, options){
+		xhr.setRequestHeader(csrfHeader, csrfToken);
 	});	
 	
-	
-	
-	
-	 (function(){
-			var mno = '<c:out value="${member.mno}" />';
-			$.getJSON("/member/getAttachList", {mno : mno}, function(arr){
-				var str = ""; 
-				
-				if(arr==null || arr.length==0){
-					$(".uploadResult ul").html("");
-					return;
-				}
-				
-				console.log(arr);
-				
-				$(arr.fileList).each(function(i, attach){
-					
-					if(!attach.fileType){	
-					}else{
-						var fileCallPath = encodeURIComponent(attach.path+"/s_"+attach.uuid+"_"+attach.fileName); 
-						var originPath = attach.path+"\\"+attach.uuid+"_"+attach.fileName;
-						originPath = originPath.replace(new RegExp(/\\/g),"/");  
-						str+="<li class='list-group-item' data-path='"+attach.path+"'";
-						str+=" data-uuid='"+attach.uuid+"' data-filename='"+attach.fileName+"' data-type='"+attach.fileType+"'>";
-						//str+="<div><span>"+attach.fileName+"</span>";
-						//str+="<button type='button' class='btn btn-warning btn-circle' data-file=\'"+attach.path+"\' data-type='image'><i class='fa fa-times'></i></button><br>";
-						str+="<img src='/display?fileName="+fileCallPath+"' />";
-						str+="</div></li>"; 
-					}
-				});
-				$(".uploadResult ul").html(str);
-			});
-	 })();	
-	
-	 
-		/* 파일 첨부 List Group 보여주기 */
-		function showUploadResult2(uploadResultArr){
-			var str="";  
-			$(uploadResultArr).each(function(i, obj){
-				
-				if(!obj.image){			
-				}else{
-					var fileCallPath = encodeURIComponent(obj.uploadPath+"/s_"+obj.uuid+"_"+obj.fileName); 
-					var originPath = obj.uploadPath+"\\"+obj.uuid+"_"+obj.fileName;
-					originPath = originPath.replace(new RegExp(/\\/g),"/");  
-					str+="<li class='list-group-item' data-path='"+obj.uploadPath+"'";
-					str+=" data-uuid='"+obj.uuid+"' data-filename='"+obj.fileName+"' data-type='"+obj.image+"'/>";
-					//str+="<div><span>"+obj.fileName+"</span>";
-					str+="<img src='/display?fileName="+fileCallPath+"' />";
-					str+="</div></li>"; 
-				}
-			});
+	var mno = modal.find("input[name='mno']"); 
+	var id = modal.find("input[name='id']"); 
+	var pw = modal.find("input[name='pw']"); 
+	var name = modal.find("input[name='name']"); 
+	var phone = modal.find("input[name='phone']"); 
+	var email = modal.find("input[name='email']"); 
+	var favorites = modal.find("input[name='favorites']"); 
+	var originPw = modal.find("input[name='originPw']"); 
+	$(".btn-primary").click(function(e){
+		e.preventDefault(); 
+		var link = modal.data("link");
+		var member;
 		
-			$(".uploadResult ul").append(str);
-		}	 
-	 
-	$("input[type='file']").change(function(e){
+		//invalid 한번 더 체크
+		$(".chk").each(function(e){
+			memberService.validate($(this));
+		});		
+		if(link == "modify"){
+			
+			if(!checkItem($("input[name='name']"))) return false;			
+			//이메일, 휴대폰번호 체크
+			if($("input[name='phone']").val() != "") {	
+				if(!checkItem($("input[name='phone']"))) return false;
+			}else{$("input[name='phone']").val("");}
+			if($("input[name='email']").val() != "") {
+				if(!checkItem($("input[name='email']"))) return false;
+			}else{$("input[name='email']").val("");}
+			
+			//체크된 관심사만 저장
+			var checked =""; 
+			$("input:checkbox[name=favorite]:checked").each(function() {
+				checked+=$(this).val()+","; 
+			});
+			if(checked.includes(",")) checked = checked.substr(0, checked.length-1);
+			$("input[name='favorites']").val(checked);	
+			
+			member={
+				mno :  mno.val(), 
+				id :  id.val(), 
+				pw :  originPw.val(), 
+				name : name.val(), 
+				phone : phone.val(), 
+				email : email.val(), 
+				favorites : favorites.val()
+			};			
+			memberService.modify(member,function(data){
+				console.log(data);
+				alert("수정되었습니다."); 
+				modal.modal("hide"); 
+				location.reload();
+				
+			}, function(error){
+				alert("입력값을 확인하세요.");
+				$(".chk").each(function(){
+					memberService.validate($(this));
+				})
+			});
+	
+		}else if(link == "changePw"){
+			if(!checkItem($("input[name='pw']"))) return false;				
+			if(!checkItem($("input[name='pw2']"))) return false;	
+			member={
+					mno : mno.val(), 
+					id : id.val(), 
+					pw : pw.val(), 
+					name : name.val(), 
+					phone : phone.val(), 
+					email : email.val(), 
+					favorites : favorites.val()
+			};
+			memberService.changePw(member,function(data){
+				console.log(data);
+				alert("수정되었습니다."); 
+				modal.modal("hide"); 
+				location.reload();
+				
+			}, function(error){
+				alert("입력값을 확인하세요.");
+				$(".chk").each(function(){
+					memberService.validate($(this));
+				})
+			});
+		}else {
+			var reason = modal.find("#reason option:selected"); 
+			var memo = modal.find("#memo");
+			if(reason.val()==""){
+				$("#reasonChk").html("항목을 선택하세요."); 
+				$("#reasonChk").addClass("invalid"); 
+				return false;
+			}
+			$("#reasonChk").html(""); 
+			$("#reasonChk").removeClass();
+			member = {
+				id : id.val(), 
+				reason : reason.val(), 
+				memo : memo.val()
+			}, 
+			memberService.unjoin(member, function(data){
+				console.log(data);
+				if(data=="success"){
+					alert("탈퇴되었습니다."); 
+					modal.modal("hide"); 
+					$("#logoutForm").submit();
+				}	
+			}, function(error){
+				console.log(error.status); 
+			});
+		}
+		
+		
+	});
+	
+	//invalid 항목 검사
+	function checkItem(item){
+		if(item.siblings('small').hasClass("invalid")){
+			item.focus(); 
+			return false; 
+		}else {
+			return true; 
+		}	
+	}
+	
+	$(".photo").click(function(e){
+		e.preventDefault(); 
+		 $("input[name='upload']").click();
+	});
+	
+	$("input[type='file']").change(function(){
 		var formData = new FormData(); 
 		var upload = $("input[name='upload']"); 
 		var files = upload[0].files; 
-			
 		formData.append("folder", $(this).data("folder"));		
 		
 		for(var i=0;i<files.length;i++){
@@ -348,7 +397,6 @@ $(document).ready(function(){
 			}
 			formData.append("upload",files[i]); 
 		}
-
 		$.ajax({
 			url : '/uploadAction', 
 			processData: false, 
@@ -360,48 +408,33 @@ $(document).ready(function(){
 				xhr.setRequestHeader(csrfHeader, csrfToken);
 			},
 			success: function(result){
-				console.log(result);
-				showUploadResult2(result);
-				PhotoAction(); 
-			}
-		});		
-	});
-	
-	$(".uploadResult").on("click", "button", function(e){
-		console.log("deleted file");
-		
-		var targetFile = $(this).data("file"); 
-		var type=$(this).data("type"); 
-		var targetLi = $(this).closest("li"); 
-		
-		$.ajax({
-			url : '/deleteFile', 
-			data : {fileName:targetFile, type:type}, 
-			dataType : 'text', 
-			type : 'POST', 
-			beforeSend : function(xhr){
-				xhr.setRequestHeader(csrfHeader, csrfToken);
-			},
-			success : function(result){
-				targetLi.remove();
-				alert("삭제되었습니다.");
-				
+				showUploadProfile(result);
 			}
 		});
-	});		
-	
-	function PhotoAction(){
-		var form = $("#photoForm");
-		var str="";
-		$(".uploadResult ul li").each(function(i, obj){
-			var jobj = $(obj);
-			str+="<input type='hidden' name='attachList[0].fileList["+i+"].path' value='"+jobj.data("path")+"' />";
-			str+="<input type='hidden' name='attachList[0].fileList["+i+"].uuid' value='"+jobj.data("uuid")+"' />";
-			str+="<input type='hidden' name='attachList[0].fileList["+i+"].fileName' value='"+jobj.data("filename")+"'/>"; 
-			str+="<input type='hidden' name='attachList[0].fileList["+i+"].fileType' value='"+jobj.data("type")+"'/>";
+	});	
+
+	function showUploadProfile(uploadResultArr){
+		var str="";  
+		$(uploadResultArr).each(function(i, obj){	
+			var fileCallPath = encodeURIComponent(obj.uploadPath+"/s_"+obj.uuid+"_"+obj.fileName); 
+			var originPath = obj.uploadPath+"\\"+obj.uuid+"_"+obj.fileName;
+			originPath = originPath.replace(new RegExp(/\\/g),"/");  
+			$(".uploadResult").attr('src', '/display?fileName='+fileCallPath).attr("style","width:175px;height:200px;");			
+			
+			var files={
+					path : obj.uploadPath, 
+					uuid : obj.uuid,
+					fileName : obj.fileName, 
+					fileType : obj.image	
+			};
+			
+			memberService.modifyPhoto(mno.val(), files,  function(data){
+				alert("프로필이 변경되었습니다."); 
+				location.reload();
+			});
 		});
-		form.append(str).submit();		
-	}
+	}	 
+	 
 });
 </script>					
 <%@ include file="../includes/footer.jsp"  %>

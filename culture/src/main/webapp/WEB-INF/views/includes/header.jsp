@@ -41,7 +41,7 @@
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" id="userDropdown" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fas fa-user fa-fw"></i></a>
                     <div class="dropdown-menu dropdown-menu-right" aria-labelledby="userDropdown">
-                        <a class="dropdown-item" href='/member/myprofile?id=<sec:authentication property="principal.username"/>'>나의 정보</a>
+                        <a class="dropdown-item" href='/member/myprofile/<sec:authentication property="principal.member.mno"/>'>나의 정보</a>
                         <div class="dropdown-divider"></div>
                         <sec:authorize access="isAuthenticated()">
                         	<a class="dropdown-item" href="#" onclick="document.getElementById('logoutForm').submit();"><i class="fa fa-sign-out"></i> Logout</a>

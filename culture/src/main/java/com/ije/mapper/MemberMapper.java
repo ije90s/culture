@@ -9,9 +9,7 @@ public interface MemberMapper {
 	
 	public MemberVO read(String id);
 	public void insert(List<MemberVO> ins);
+	public MemberVO get(Long mno);
 	public int update(MemberVO upt);
-	public int updatePw(MemberVO upt);
-	public int delete(Long mno);
-	
-	public void insert2(UnjoinVO ins);
+	public int delete(String id);
 }

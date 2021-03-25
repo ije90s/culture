@@ -120,12 +120,12 @@
                 
             </div>
         </div>
-        <script src="/resources/scripts/join.js"></script>
+        <script src="/resources/scripts/member.js"></script>
 		<script>
 		$(document).ready(function(){
 			var form = $("form"); 
 			$(".form-control").on("blur",function(){
-				joinService.validate($(this));	
+				memberService.validate($(this));	
 			});
 			hasErrors();
 		});
@@ -134,7 +134,7 @@
 			
 			//invalid 한번 더 체크
 			$(".form-control").each(function(i){
-				joinService.validate($(this));
+				memberService.validate($(this));
 			});				
 			
 			//필수항목 체크
@@ -179,7 +179,7 @@
 		function hasErrors(){
 			<spring:hasBindErrors name="memberVO">
 			$(".form-control").each(function(){
-				joinService.validate($(this));	
+				memberService.validate($(this));	
 			}); 
 			</spring:hasBindErrors>			
 		}

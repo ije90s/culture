@@ -29,6 +29,12 @@
 	where id=#{id}
 	</select>
 	
+	<select id="get" resultMap="memberMap">
+	select a.mno, id, pw, name, phone, email, favorites, rdate, udate, auth 
+	from tb_member a left outer join tb_member_auth b on a.mno=b.mno 
+	where a.mno=#{mno}
+	</select>
+	
 	<insert id="insert" parameterType="java.util.List">
 		<foreach collection="list" item="item" open="INSERT ALL" close="select * from dual" separator=" " >
 		Into tb_member(mno, id, pw, name, phone, email, favorites)
@@ -39,22 +45,12 @@
 	
 	<update id="update">
 	update tb_member 
-	set name=#{name}, phone=#{phone}, email=#{email}, favorites=#{favorites}, udate=sysdate
+	set name=#{name}, phone=#{phone}, email=#{email}, favorites=#{favorites}, pw=#{pw}, udate=sysdate
 	where mno=#{mno}
 	</update>
-	
-	<update id="updatePw">
-	update tb_member
-	set pw=#{pw}, udate=sysdate 
-	where mno=#{mno}
-	</update>
-	
+
 	<delete id="delete">
-	delete tb_member where mno=#{mno}
+	delete tb_member where id=#{id}
 	</delete>
 	
-	<insert id="insert2">
-	insert into tb_unjoin(reason, memo, id)
-	values (#{reason}, #{memo}, #{id})
-	</insert>
 </mapper>

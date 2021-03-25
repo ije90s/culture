@@ -91,7 +91,7 @@
                                             </div>
                                             <div class="form-group">
                                             	<label class="small mb-1" for="rank">평점</label>
-                                            	<input type="hidden" name="rank" />
+                                            	<input type="hidden" name="rank" value="${culture.rank}" />
                                             	<div id="rank"> 
 	                                            	<div class="form-check-inline">
 														<label class="form-check-label">
@@ -291,9 +291,9 @@ $(document).ready(function(){
 				if(!checkItem($("input[name='kind']"))) return false;
 				if(!checkItem($("input[name='title']"))) return false;
 				
-				$("input[name='rank']").val("0");
+				
 				var crank = $("input[name='crank']:checked"); 
-				if(crank.val() != ""){
+				if(crank.length > 0){
 					$("input[name='rank']").val(crank.val()); 
 				}
 					

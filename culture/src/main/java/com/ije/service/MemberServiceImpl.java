@@ -3,8 +3,8 @@ package com.ije.service;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.ije.domain.AttachVO;
 import com.ije.domain.MemberVO;
@@ -22,12 +22,10 @@ public class MemberServiceImpl implements MemberService {
 	
 	private final MemberMapper mapper; 
 	private final AttachMapper attachMapper; 
-	private final PasswordEncoder pw; 
 	
 	@Override
 	public void register(MemberVO vo) {
 		log.info("회원 등록하기");
-		vo.setPw(pw.encode(vo.getPw()));
 		List<MemberVO> ins = new ArrayList<>(); 
 		ins.add(vo); 
 		mapper.insert(ins);
@@ -45,30 +43,12 @@ public class MemberServiceImpl implements MemberService {
 		return mapper.update(upt);
 	}
 
-	@Override
-	public int modifyPW(MemberVO upt) {
-		log.info("비밀번호 변경하기......................");
-		upt.setPw(pw.encode(upt.getPw()));
-		//upt.setPw(upt.getPw());
-		return mapper.updatePw(upt);
-	}
-
-	@Override
-	public int remove(Long mno) {
-		log.info("탈퇴하기......................");
-		return mapper.delete(mno);
-	}
-
-	@Override
-	public void registerUnjoin(UnjoinVO ins) {
-		log.info("탈퇴사유 추가......................");
-		mapper.insert2(ins);
-	}
-
+	@Transactional
 	@Override
 	public void modifyPhoto(MemberVO vo) {
 		log.info("사진 번경......................");
 		attachMapper.deleteByMno(vo.getMno());
+		
 		if(vo.getAttachList()!=null && vo.getAttachList().size() >0) {
 			vo.getAttachList().forEach(attach ->{
 				attach.setCno(0L);
@@ -80,9 +60,23 @@ public class MemberServiceImpl implements MemberService {
 	}
 
 	@Override
-	public AttachVO getAttach(Long mno) {
+	public List<AttachVO> getAttach(Long mno) {
 		// TODO Auto-generated method stub
 		return attachMapper.findByMno(mno);
 	}
+
+	@Override
+	public MemberVO read2(Long mno) {
+		// TODO Auto-generated method stub
+		return mapper.get(mno);
+	}
+
+	@Override
+	public int remove(String id) {
+		// TODO Auto-generated method stub
+		return mapper.delete(id);
+	}
+
+
 
 }

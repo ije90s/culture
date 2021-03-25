@@ -1,7 +1,7 @@
 console.log("회원가입 유효성 검사"); 
 
 
-var joinService = (function(){
+var memberService = (function(){
 	function validate(t){
 		var space = /\s/g;
 		var reg = /[^a-z0-9]/g;		
@@ -74,7 +74,7 @@ var joinService = (function(){
 					if(value != $("#pw").val()){
 						msg = "비밀번호 일치하지 않습니다.";
 						tag = "invalid"; 
-					}else{
+					}else{						
 						msg = "비밀번호 일치합니다.";
 						tag = "valid"; 
 					}
@@ -109,14 +109,124 @@ var joinService = (function(){
 				msg = "이메일 주소를 재확인 해보세요."; 
 				tag = "invalid"; 
 			}
+		}else if(name =="originPw"){
+				var pw = $("#pw").val(); 
+				var id = $("#id").val();
+				pw = encodeURIComponent(pw);
+				$.ajax({
+					type : 'get', 
+					url : '/member/'+id+'/'+pw, 
+					success : function(data){
+						console.log(data);
+						if(data!="ok"){
+							msg = "원래비밀번호와 일치합니다.";
+							tag = "invalid"; 
+						}else{
+							msg = "";
+							tag = ""; 	
+						}
+						small.text(msg); 
+						small.removeClass();
+						small.addClass(tag);	
+					}, 
+					error : function(xhr, status, err){
+						console.log(error()); 
+					}
+				});			
 		}
 		small.text(msg); 
 		small.removeClass();
 		small.addClass(tag);
 		
-	}		
+	};	
+	
+	function modify(member, callback, error){
+		console.log("modify................"); 
+		$.ajax({
+			type : 'put', 
+			url : '/member/modify', 
+			data : JSON.stringify(member), 
+			contentType : "application/json; charset=UTF-8", 
+			success : function(result, status, xhr){
+				if(callback){
+					callback(result); 
+				}
+			}, 
+			error : function(xhr, status, er){
+				if(error){
+					error(xhr);
+				}
+			}
+		});		
+	};	
+	
+	function changePw(member, callback, error){
+		console.log("changePw................"); 
+		$.ajax({
+			type : 'patch', 
+			url : '/member/changePw', 
+			data : JSON.stringify(member), 
+			contentType : "application/json; charset=UTF-8", 
+			success : function(result, status, xhr){
+				if(callback){
+					callback(result); 
+				}
+			}, 
+			error : function(xhr, status, er){
+				if(error){
+					error(xhr);
+				}
+			}
+		});				
+	};
+	
+	function unjoin(member, callback, error){
+		console.log("unjoin................"); 
+		$.ajax({
+			type : 'delete', 
+			url : '/member/unjoin', 
+			data : JSON.stringify(member), 
+			contentType : "application/json; charset=UTF-8", 
+			success : function(result, status, xhr){
+				if(callback){
+					callback(result); 
+				}
+			}, 
+			error : function(xhr, status, er){
+				if(error){
+					error(xhr);
+				}
+			}
+		});						
+	}
+	
+	function modifyPhoto(mno, files, callback, error){
+		console.log("modifyPhoto................"); 
+		console.log(JSON.stringify(files));	
+		$.ajax({
+			type : 'put', 
+			url : '/member/modifyPhoto/'+mno, 
+			data : JSON.stringify(files), 
+			contentType : "application/json; charset=UTF-8", 
+			success : function(result, status, xhr){
+				if(callback){
+					callback(result); 
+				}
+			}, 
+			error : function(xhr, status, er){
+				if(error){
+					error(xhr);
+				}
+			}
+		});			
+	}
+	
 	return {
-		validate : validate
+		validate : validate,
+		modify : modify,
+		changePw : changePw,
+		unjoin : unjoin,
+		modifyPhoto : modifyPhoto
 	};
 })();
 

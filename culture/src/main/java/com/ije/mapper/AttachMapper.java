@@ -10,7 +10,7 @@ public interface AttachMapper {
 	
 	public List<AttachVO> findByCno(Long cno);	
 	public List<AttachVO> findByBno(Long bno); 
-	public AttachVO findByMno(Long mno); 
+	public List<AttachVO> findByMno(Long mno); 
 	
 	public void insert(List<AttachVO> ins);
 	

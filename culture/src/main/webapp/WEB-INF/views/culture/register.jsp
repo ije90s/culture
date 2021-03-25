@@ -4,7 +4,6 @@
 <%@ taglib prefix="fmt"  uri="http://java.sun.com/jsp/jstl/fmt" %>    
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>  
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>   
-<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %> 
 <%@ include file="../includes/header.jsp"  %>
 					<style>
         			.invalid{color:red !important;}
@@ -27,32 +26,32 @@
                                             	<div id="kind">
 	                                            	<div class="form-check-inline">
 														<label class="form-check-label">
-															<input type="radio" class="form-check-input chk" name="kind" value="1" <c:if test="${fn:contains(cultureVO.kind, '1')}">checked</c:if>>공연
+															<input type="radio" class="form-check-input chk" name="kind" value="1" <c:if test="${cultureVO.kind eq '1'}">checked</c:if>>공연
 														</label>
 													</div>
 	                                            	<div class="form-check-inline">
 														<label class="form-check-label">
-															<input type="radio" class="form-check-input chk" name="kind" value="2" <c:if test="${fn:contains(cultureVO.kind, '2')}">checked</c:if>>영화
+															<input type="radio" class="form-check-input chk" name="kind" value="2" <c:if test="${cultureVO.kind eq '2'}">checked</c:if>>영화
 														</label>
 													</div>
 	                                            	<div class="form-check-inline">
 														<label class="form-check-label">
-															<input type="radio" class="form-check-input chk" name="kind" value="3" <c:if test="${fn:contains(cultureVO.kind, '3')}">checked</c:if>>독서
+															<input type="radio" class="form-check-input chk" name="kind" value="3" <c:if test="${cultureVO.kind eq '3'}">checked</c:if>>독서
 														</label>
 													</div>	
 	                                            	<div class="form-check-inline">
 														<label class="form-check-label">
-															<input type="radio" class="form-check-input chk" name="kind" value="4" <c:if test="${fn:contains(cultureVO.kind, '4')}">checked</c:if>>관람
+															<input type="radio" class="form-check-input chk" name="kind" value="4" <c:if test="${cultureVO.kind eq '4'}">checked</c:if>>관람
 														</label>
 													</div>	
 	                                            	<div class="form-check-inline">
 														<label class="form-check-label">
-															<input type="radio" class="form-check-input chk" name="kind" value="5" <c:if test="${fn:contains(cultureVO.kind, '5')}">checked</c:if>>스포츠
+															<input type="radio" class="form-check-input chk" name="kind" value="5" <c:if test="${cultureVO.kind eq '5'}">checked</c:if>>스포츠
 														</label>
 													</div>	
 	                                            	<div class="form-check-inline">
 														<label class="form-check-label">
-															<input type="radio" class="form-check-input chk" name="kind" value="6" <c:if test="${fn:contains(cultureVO.kind, '6')}">checked</c:if>>기타
+															<input type="radio" class="form-check-input chk" name="kind" value="6" <c:if test="${cultureVO.kind eq '6'}">checked</c:if>>기타
 														</label>
 													</div><br>
 													<small class="kind"></small>
@@ -65,31 +64,31 @@
                                             </div>
                                             <div class="form-group">
                                             	<label class="small mb-1" for="rank">평점</label>
-                                            	<input type="hidden" name="rank" />
+                                            	<input type="hidden" name="rank" value="0"/>
                                             	<div id="rank">
 	                                            	<div class="form-check-inline">
 														<label class="form-check-label">
-															<input type="radio" class="form-check-input" name="crank" value="1" <c:if test="${fn:contains(cultureVO.rank, '1')}">checked</c:if>>1점
+															<input type="radio" class="form-check-input" name="crank" value="1" <c:if test="${cultureVO.rank eq '1'}">checked</c:if>>1점
 														</label>
 													</div>
 	                                            	<div class="form-check-inline">
 														<label class="form-check-label">
-															<input type="radio" class="form-check-input" name="crank" value="2" <c:if test="${fn:contains(cultureVO.rank, '2')}">checked</c:if>>2점
+															<input type="radio" class="form-check-input" name="crank" value="2" <c:if test="${cultureVO.rank eq '2'}">checked</c:if>>2점
 														</label>
 													</div>
 	                                            	<div class="form-check-inline">
 														<label class="form-check-label">
-															<input type="radio" class="form-check-input" name="crank" value="3" <c:if test="${fn:contains(cultureVO.rank, '3')}">checked</c:if>>3점
+															<input type="radio" class="form-check-input" name="crank" value="3" <c:if test="${cultureVO.rank eq '3'}">checked</c:if>>3점
 														</label>
 													</div>	
 	                                            	<div class="form-check-inline">
 														<label class="form-check-label">
-															<input type="radio" class="form-check-input" name="crank" value="4" <c:if test="${fn:contains(cultureVO.rank, '4')}">checked</c:if>>4점
+															<input type="radio" class="form-check-input" name="crank" value="4" <c:if test="${cultureVO.rank eq '4'}">checked</c:if>>4점
 														</label>
 													</div>	
 	                                            	<div class="form-check-inline">
 														<label class="form-check-label">
-															<input type="radio" class="form-check-input" name="rank" value="5" <c:if test="${fn:contains(cultureVO.rank, '5')}">checked</c:if>>5점
+															<input type="radio" class="form-check-input" name="crank" value="5" <c:if test="${cultureVO.rank eq '5'}">checked</c:if>>5점
 														</label>
 													</div>	
 												</div>																																																							                                            			
@@ -171,9 +170,8 @@ $(document).ready(function(){
 		if(!checkItem($("input[name='kind']"))) return false;
 		if(!checkItem($("input[name='title']"))) return false;
 		
-		$("input[name='rank']").val("0");
 		var crank = $("input[name='crank']:checked"); 
-		if(crank.val() != ""){
+		if(crank.length > 0){
 			$("input[name='rank']").val(crank.val()); 
 		}
 	
