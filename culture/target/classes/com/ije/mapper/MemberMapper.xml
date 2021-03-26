@@ -43,6 +43,7 @@
 		</foreach>
 	</insert>
 	
+
 	<update id="update">
 	update tb_member 
 	set name=#{name}, phone=#{phone}, email=#{email}, favorites=#{favorites}, pw=#{pw}, udate=sysdate
@@ -53,4 +54,8 @@
 	delete tb_member where id=#{id}
 	</delete>
 	
+	<update id="updateAuth">
+	update tb_member_auth set auth=#{auth} where mno=#{mno}
+	</update>	
+		
 </mapper>

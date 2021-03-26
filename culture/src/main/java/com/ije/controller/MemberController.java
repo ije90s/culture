@@ -170,22 +170,32 @@ public class MemberController {
 	@DeleteMapping(value="/unjoin", consumes = "application/json", produces = {MediaType.TEXT_PLAIN_VALUE})
 	public ResponseEntity<String> unjoin(@RequestBody UnjoinVO ins) {
 		log.info("unJoinVO : " + ins);
+
 		MemberVO vo = service.read(ins.getId()); 
-		if(vo.getAttachList() != null) {
-			deleteFiles(vo.getAttachList().get(0).getFileList()); 
-		}
-		unjoinService.register(ins);
+		List<AttachVO> attachList = service.getAttach(vo.getMno()); 
+		if(attachList!=null && attachList.size()>0) {
+			deleteFiles(attachList.get(0).getFileList()); 
+			unjoinService.register(ins);
+		}		
+
 		return new ResponseEntity<>("success", HttpStatus.OK); 
 	}
 	
 	
 	@PreAuthorize("principal.member.mno == #mno")
-	@PutMapping("/modifyPhoto/{mno}")
+	@PutMapping(value="/modifyPhoto/{mno}", consumes = "application/json", produces = {MediaType.TEXT_PLAIN_VALUE})
 	public ResponseEntity<String> modifyPhoto(@PathVariable("mno") Long mno, @RequestBody AttachFileVO files) {
 		log.info("사진 바꾸기"); 
 		log.info("upt :"+files);
 		MemberVO upt = service.read2(mno);
 		
+		//이전 파일 삭제 
+		List<AttachVO> attachList = service.getAttach(upt.getMno()); 
+		if(attachList!=null && attachList.size()>0) {
+			deleteFiles(attachList.get(0).getFileList()); 
+		}		
+		
+		//새로 파일 업로드
 		List<AttachFileVO> af = new ArrayList<AttachFileVO>(); 
 		af.add(files);
 		
@@ -198,6 +208,17 @@ public class MemberController {
 		upt.setAttachList(fileList);
 		if(upt.getAttachList()!=null && upt.getAttachList().size()>0) {
 			service.modifyPhoto(upt);
+		}
+		return new ResponseEntity<>(HttpStatus.OK);
+	}
+	@PreAuthorize("principal.member.mno == #mno")
+	@DeleteMapping(value="/deletePhoto/{mno}", produces = {MediaType.TEXT_PLAIN_VALUE})
+	public ResponseEntity<String> deletePhoto(@PathVariable("mno") Long mno){
+		log.info(mno);
+		List<AttachVO> attachList = service.getAttach(mno);
+		if(attachList!=null && attachList.size()>0) {
+			deleteFiles(attachList.get(0).getFileList()); 
+			service.deletePhoto(mno);
 		}
 		return new ResponseEntity<>(HttpStatus.OK);
 	}

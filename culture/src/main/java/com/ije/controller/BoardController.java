@@ -65,14 +65,14 @@ public class BoardController {
 	}
 	
 	@GetMapping("/register")
-	@PreAuthorize("isAuthenticated()")
+	@PreAuthorize("hasAnyRole('ROLE_MEMBER','ROLE_ADMIN')")
 	public void register(@RequestParam("kind") String kind, Model d) {
 		log.info("게시글 등록폼....................");
 		d.addAttribute("kind", kind);
 	}
 	
 	@PostMapping("/register")
-	@PreAuthorize("isAuthenticated()")
+	@PreAuthorize("hasAnyRole('ROLE_MEMBER','ROLE_ADMIN')")
 	public String register(@RequestHeader("User-Agent") String userAgent, @Valid @ModelAttribute BoardVO ins, BindingResult result, RedirectAttributes rd) {
 		
 		if(result.hasErrors()) {
@@ -109,7 +109,7 @@ public class BoardController {
 		return "redirect:/board/list/"+ins.getKind();
 	}
 	
-	@PreAuthorize("principal.username == #upt.writer")
+	@PreAuthorize("principal.username == #upt.writer or hasRole('ROLE_ADMIN')")
 	@PostMapping("/modify")
 	public String modify(@RequestHeader("User-Agent") String userAgent, @Valid @ModelAttribute("board") BoardVO upt, BindingResult result, @ModelAttribute("cri") Criteria cri, RedirectAttributes rd) {
 		log.info("게시글 수정하기: "+upt);
@@ -155,7 +155,7 @@ public class BoardController {
 		});
 	}	
 	
-	@PreAuthorize("principal.username == #writer")
+	@PreAuthorize("principal.username == #writer or hasRole('ROLE_ADMIN')")
 	@PostMapping("/remove")
 	public String remove(@RequestParam("bno") Long bno, @ModelAttribute("cri") Criteria cri, RedirectAttributes rd, String writer) {
 		log.info("게시글 삭제하기: " + bno);

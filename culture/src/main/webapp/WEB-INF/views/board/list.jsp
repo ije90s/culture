@@ -14,21 +14,32 @@
                         <div class="card mb-4">
                             <div class="card-header">
                                  <form id="searchForm" action="/board/list" method="get">
-                                	<select name="type">
+                                 <input type="hidden" name="pageNum" value='<c:out value="${page.cri.pageNum }"/>' />
+								 <input type="hidden" name="amount" value='<c:out value="${page.cri.amount }"/>' />
+								 <div class="input-group">
+                                	<select name="type" class="custom-select" style="flex:none; width:200px;">
                                 	<option value="" <c:out value="${page.cri.type==null?'selected':''}"/>>선택</option>
                                 	<option value="T" <c:out value="${page.cri.type eq 'T'?'selected':''}"/>>제목</option>
                                 	<option value="C" <c:out value="${page.cri.type eq 'C'?'selected':''}"/>>내용</option>
                                 	<option value="W" <c:out value="${page.cri.type eq 'W'?'selected':''}"/>>작성자</option>
-                                	<option value="TC" <c:out value="${page.cri.type eq 'TC'?'selected':''}"/>>제목 or 내용</option>
-                                	<option value="TW" <c:out value="${page.cri.type eq 'TW'?'selected':''}"/>>제목 or 작성자</option>
-                                	<option value="WC" <c:out value="${page.cri.type eq 'WC'?'selected':''}"/>>작성자 or 내용</option>
-                                	<option value="TWC" <c:out value="${page.cri.type eq 'TWC'?'selected':''}"/>>제목 or 작성자 or 내용</option>
+                                	<option value="TC" <c:out value="${page.cri.type eq 'TC'?'selected':''}"/>>제목+내용</option>
+                                	<option value="TW" <c:out value="${page.cri.type eq 'TW'?'selected':''}"/>>제목+작성자</option>
+                                	<option value="WC" <c:out value="${page.cri.type eq 'WC'?'selected':''}"/>>작성자+내용</option>
+                                	<option value="TWC" <c:out value="${page.cri.type eq 'TWC'?'selected':''}"/>>제목+작성자+내용</option>
                                 	</select>
-                                	<input type="text" name="keyword" value='<c:out value="${page.cri.keyword}"/>' />
-                                	<input type="hidden" name="pageNum" value='<c:out value="${page.cri.pageNum }"/>' />
-									<input type="hidden" name="amount" value='<c:out value="${page.cri.amount }"/>' />
-									<button class="btn btn-primary" data-oper="search">검색</button>
-									<button class="btn btn-secondary float-right" data-oper="regiter">등록</button>
+                                	<div class="input-group-prepend"><input type="text" name="keyword" class="form-control" value='<c:out value="${page.cri.keyword}"/>' /></div>  	
+									<div class="input-group-prepend"><button class="btn btn-primary" data-oper="search">검색</button></div>
+									<c:if test="${kind ne 'notice' }">
+										<sec:authorize access="hasAnyRole('ROLE_ADMIN','ROLE_MEMBER')">
+											<button class="btn btn-secondary" style="position:absolute; right:5px;" data-oper="regiter">등록</button>
+										</sec:authorize>
+									</c:if>
+									<c:if test="${kind eq 'notice' }">
+										<sec:authorize access="hasRole('ROLE_ADMIN')">
+											<button class="btn btn-secondary" style="position:absolute; right:5px;" data-oper="regiter">등록</button>
+										</sec:authorize>
+									</c:if>
+								</div>	
                                 </form>
                             </div>
                             <div class="card-body">
@@ -45,7 +56,7 @@
 									<tbody>
 										<c:forEach items="${list}" var="list">
 										<tr>
-											<td>${list.bno}</td>
+											<td>${list.rn}</td>
 											<td><a class="move" href="${list.bno}">${list.title} <b>[<c:out value="${list.replyCnt}"/>]</b></a></td>
 											<td>${list.writer}</td>
 											<td><fmt:formatDate value="${list.rdate}" pattern="yyyy-MM-dd"/></td>

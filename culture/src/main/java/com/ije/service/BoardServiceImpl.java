@@ -3,6 +3,7 @@ package com.ije.service;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.ije.domain.AttachVO;
 import com.ije.domain.BoardVO;
@@ -28,6 +29,7 @@ public class BoardServiceImpl implements BoardService {
 		return mapper.getList();
 	}
 
+	@Transactional
 	@Override
 	public void register(BoardVO ins) {
 		log.info("게시물 등록하기...............................");
@@ -51,6 +53,7 @@ public class BoardServiceImpl implements BoardService {
 		return mapper.read(bno);
 	}
 
+	@Transactional
 	@Override
 	public int remove(Long bno) {
 		log.info("게시물 삭제 : "+bno);
@@ -58,6 +61,7 @@ public class BoardServiceImpl implements BoardService {
 		return mapper.delete(bno);
 	}
 
+	@Transactional
 	@Override
 	public int modify(BoardVO upt) {
 		log.info("게시물 수정 : "+upt);

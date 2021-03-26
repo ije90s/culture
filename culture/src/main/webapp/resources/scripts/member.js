@@ -221,12 +221,31 @@ var memberService = (function(){
 		});			
 	}
 	
+	function deletePhoto(mno, callback, error){
+		console.log("deletePhoto................"); 
+		$.ajax({
+			type : 'delete', 
+			url : '/member/deletePhoto/'+mno, 
+			success : function(result, status, xhr){
+				if(callback){
+					callback(result); 
+				}
+			}, 
+			error : function(xhr, status, er){
+				if(error){
+					error(xhr);
+				}
+			}
+		});				
+	}
+	
 	return {
 		validate : validate,
 		modify : modify,
 		changePw : changePw,
 		unjoin : unjoin,
-		modifyPhoto : modifyPhoto
+		modifyPhoto : modifyPhoto,
+		deletePhoto : deletePhoto
 	};
 })();
 

@@ -12,7 +12,7 @@
   							<button type="button" class="btn btn-outline-primary active">통계</button>
                         </div>
                         </h3>
-                        <div class="card mb-4">
+                        <div class="card mt-4 mb-4">
                             <div class="card-header">
                                 <input type="text" name="sdate" id="sdate" readonly/>
                                 <button id="regBtn" class="btn btn-secondary float-right">등록</button>
@@ -226,9 +226,9 @@ $(document).ready(function(){
 		var text = $(this).text(); 
 		var mno = '<sec:authentication property="principal.member.mno"/>';
 		if(text == "리스트"){
-			self.location="/culture/list?mno="+mno; 	
+			self.location="/culture/list/"+mno; 	
 		}else{
-			self.location="/culture/stats?mno="+mno; 	
+			self.location="/culture/stats/"+mno; 	
 		}
 	});	
 	

@@ -77,6 +77,12 @@ public class MemberServiceImpl implements MemberService {
 		return mapper.delete(id);
 	}
 
+	@Override
+	public void deletePhoto(Long mno) {
+		log.info("사진 삭제......................");
+		attachMapper.deleteByMno(mno);	
+	}
+
 
 
 }

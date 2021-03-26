@@ -15,4 +15,5 @@ public interface MemberService {
 	public int remove(String id);
 	public List<AttachVO> getAttach(Long mno);
 	public void modifyPhoto(MemberVO vo);
+	public void deletePhoto(Long mno);
 }

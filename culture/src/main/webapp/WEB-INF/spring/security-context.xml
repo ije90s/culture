@@ -8,19 +8,19 @@
 	<bean id="customAccessDenied" class="com.ije.security.CustomAccessDeniedHandler"></bean>
 	<bean id="customLoginSuccess" class="com.ije.security.CustomLoginSuccessHandler"></bean>
 	<bean id="bcryptPasswordEncoder" class="org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder"></bean>
-	<bean id="customUserDetail" class="com.ije.security.CustomUserDetailService"></bean>
+	<bean id="customUserDetailService" class="com.ije.security.CustomUserDetailService"></bean>
 	<security:http>
 		<security:intercept-url pattern="/sample/all" access="permitAll"/>
 		<security:intercept-url pattern="/sample/member" access="hasRole('ROLE_MEMBER')"/>
 		<security:intercept-url pattern="/sample/admin" access="hasRole('ROLE_ADMIN')"/>
-		<security:form-login login-page="/customLogin" authentication-success-handler-ref="customLoginSuccess"/>	
+		<security:form-login login-page="/customLogin" authentication-success-handler-ref="customLoginSuccess" />	
 		<security:logout logout-url="/customLogout" invalidate-session="true" delete-cookies="remember-me,JSESSION_ID"/>
 		<security:remember-me data-source-ref="dataSource" token-validity-seconds="604800"/>
 		<security:access-denied-handler ref="customAccessDenied"/>
 	</security:http>
 
 	<security:authentication-manager>
-		<security:authentication-provider user-service-ref="customUserDetail">
+		<security:authentication-provider user-service-ref="customUserDetailService">
 			<security:password-encoder ref="bcryptPasswordEncoder"/>
 		</security:authentication-provider>
 	</security:authentication-manager>

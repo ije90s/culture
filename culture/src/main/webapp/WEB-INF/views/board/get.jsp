@@ -1,5 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>      
 <%@ taglib prefix="c"  uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt"  uri="http://java.sun.com/jsp/jstl/fmt" %>   
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>  
@@ -33,7 +34,7 @@
 	                     <c:if test="${board.kind eq 'free' }">자유게시판</c:if>
 	                     <c:if test="${board.kind eq 'question' }">질문&답변</c:if>
 	                     <c:if test="${board.kind eq 'review' }">문화후기</c:if> 상세</h3>
-                        <div class="card mb-4">
+                        <div class="card mt-4 mb-4">
                             <div class="card-header"></div>
                             <div class="card-body">                            
                             	<div class="form-group">
@@ -49,8 +50,8 @@
 								</div>
                                 <div class="form-group mt-4 mb-0 text-right">
                                 	<sec:authentication property="principal" var="pinfo"/>
-                                	<sec:authorize access="isAuthenticated()">
-                                		<c:if test="${pinfo.username eq board.writer}">
+                                	<sec:authorize access="hasAnyRole('ROLE_ADMIN','ROLE_MEMBER')">
+                                		<c:if test="${pinfo.username eq board.writer || fn:contains(pinfo.member.authList, 'ROLE_ADMIN')}">
 		                                    <button type="button" class="btn btn-primary" data-oper="modify">수정</button>
 		                                    <button type="button" class="btn btn-danger" data-oper="remove">삭제</button>
 	                                    </c:if>
@@ -60,7 +61,7 @@
                             </div> <!-- card-body 끝  -->
                             <!-- 댓글 시작 -->
                             <div class="card-header"><i class="fa fa-comments fa-fw"></i> 댓글
-                           		<sec:authorize access="isAuthenticated()">
+                           		<sec:authorize access="hasAnyRole('ROLE_ADMIN','ROLE_MEMBER')">
                              		<button id="regBtn" class="btn btn-secondary float-right">새글</button>
                              	</sec:authorize>
                             </div>
@@ -261,10 +262,11 @@ $(document).ready(function(){
 	
 	
 	var replyer = null; 
+	var auth = null; 
 	<sec:authorize access="isAuthenticated()">
 		replyer = '<sec:authentication property="principal.username" />'; 
+		auth = '<sec:authentication property="principal.member.authList" />';
 	</sec:authorize>
-	
 	var modal = $(".modal"); 
 	var modalReply = $(".modal").find("input[name='reply']"); 
 	var modalReplyer = $(".modal").find("input[name='replyer']"); 
@@ -310,9 +312,8 @@ $(document).ready(function(){
 				return;
 			}
 			
-			console.log("origin : "+ origin); 
-			
-			if(origin!=replyer){
+			//console.log("origin : "+ origin); 
+			if(origin!=replyer && !auth.includes("ADMIN")){
 				alert("자신이 작성한 댓글만 수정이 가능합니다."); 
 				modal.modal("hide"); 
 				return; 
@@ -355,7 +356,7 @@ $(document).ready(function(){
 		
 		var origin = modalReplyer.val(); 
 		
-		if(replyer != origin){
+		if(replyer != origin && !auth.includes("ADMIN")){
 			alert("자신이 작성한 댓글만 삭제 가능합니다."); 
 			modal.modal("hide"); 
 			return; 

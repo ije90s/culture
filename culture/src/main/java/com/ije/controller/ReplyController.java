@@ -32,7 +32,7 @@ public class ReplyController {
 	
 	private final ReplyService service; 
 	
-	@PreAuthorize("isAuthenticated()")
+	@PreAuthorize("hasAnyRole('ROLE_MEMBER','ROLE_ADMIN')")
 	@PostMapping(value="/new", consumes = "application/json", produces= {MediaType.TEXT_PLAIN_VALUE})
 	public ResponseEntity<String> create(@RequestBody ReplyVO ins){
 		log.info("ReplyVO : " + ins);
@@ -54,7 +54,7 @@ public class ReplyController {
 		return new ResponseEntity<>(service.get(rno), HttpStatus.OK); 
 	}
 	
-	@PreAuthorize("principal.username == #upt.replyer")
+	@PreAuthorize("principal.username == #upt.replyer or hasRole('ROLE_ADMIN')")
 	@PutMapping(value="/{rno}", consumes = "application/json", produces= {MediaType.TEXT_PLAIN_VALUE})
 	public ResponseEntity<String> modify(@PathVariable("rno") Long rno, @RequestBody ReplyVO upt){
 		log.info("수정 : " + rno);
@@ -62,7 +62,7 @@ public class ReplyController {
 		return service.modify(upt)? new ResponseEntity<>("success", HttpStatus.OK) : new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
 	}
 	
-	@PreAuthorize("principal.username == #del.replyer")
+	@PreAuthorize("principal.username == #del.replyer or hasRole('ROLE_ADMIN')")
 	@DeleteMapping("/{rno}")
 	public ResponseEntity<String> remove(@RequestBody ReplyVO del, @PathVariable("rno") Long rno){
 		log.info("삭제 : "+rno);

@@ -15,6 +15,7 @@ import lombok.Data;
 
 @Data
 public class CultureVO {
+	private Long rn;
 	private Long cno; 
 	@NotBlank(message = "필수항목입니다.")
 	private String cdate; 

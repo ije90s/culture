@@ -12,22 +12,23 @@
 	  							<button type="button" class="btn btn-outline-primary">통계</button>
 	                        </div>
                         </h3>
-                        <div class="card mb-4">
+                        <div class="card mt-4 mb-4">
                             <div class="card-header">
                                 <form id="searchForm" action="/culture/list" method="get">
-                                	<select name="type">
-                                	<option value="" <c:out value="${page.cri.type==null?'selected':''}"/>>선택</option>
-                                	<option value="T" <c:out value="${page.cri.type eq 'T'?'selected':''}"/>>제목</option>
-                                	<option value="C" <c:out value="${page.cri.type eq 'C'?'selected':''}"/>>내용</option>
-                                	<option value="TC" <c:out value="${page.cri.type eq 'TC'?'selected':''}"/>>제목 or 내용</option>
-                                	</select>
-                                	<input type="text" name="keyword" value='<c:out value="${page.cri.keyword}"/>' />
                                 	<input type="hidden" name="pageNum" value='<c:out value="${page.cri.pageNum }"/>' />
 									<input type="hidden" name="amount" value='<c:out value="${page.cri.amount }"/>' />
-									<button class="btn btn-primary" data-oper="search">검색</button>
-									<button class="btn btn-secondary float-right" data-oper="regiter">등록</button>
-                                </form>
-                                
+                                	<div class="input-group">
+	                                	<select name="type" class="custom-select" style="flex:none; width:120px;">
+	                                	<option value="" <c:out value="${page.cri.type==null?'selected':''}"/>>선택</option>
+	                                	<option value="T" <c:out value="${page.cri.type eq 'T'?'selected':''}"/>>제목</option>
+	                                	<option value="C" <c:out value="${page.cri.type eq 'C'?'selected':''}"/>>내용</option>
+	                                	<option value="TC" <c:out value="${page.cri.type eq 'TC'?'selected':''}"/>>제목+내용</option>
+	                                	</select>
+	                                	<div class="input-group-prepend"><input type="text" name="keyword" class="form-control" value='<c:out value="${page.cri.keyword}"/>' /></div>
+										<div class="input-group-prepend"><button class="btn btn-primary" data-oper="search">검색</button></div>
+										<button class="btn btn-secondary" style="position:absolute; right:5px;" data-oper="regiter">등록</button>
+									</div>
+                                </form>							                  
                             </div>
                             <div class="card-body">
                                 <div class="table-responsive">
@@ -44,7 +45,7 @@
      									<tbody>
      									<c:forEach var="culture" items="${list}">     	
      										<tr>										
-     											<td>${culture.cno}</td>
+     											<td>${culture.rn}</td>
      											<td>
      												<c:if test="${culture.kind eq 1}">공연</c:if> 
      												<c:if test="${culture.kind eq 2}">영화</c:if> 

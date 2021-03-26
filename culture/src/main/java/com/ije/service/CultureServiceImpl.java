@@ -38,6 +38,7 @@ public class CultureServiceImpl implements CultureService {
 		return mapper.insert(ins);
 	}
 
+	@Transactional
 	@Override
 	public void registerKey(CultureVO ins) {
 		log.info("registerKey...................");
@@ -60,6 +61,7 @@ public class CultureServiceImpl implements CultureService {
 		return mapper.read(cno);
 	}
 
+	@Transactional
 	@Override
 	public int modify(CultureVO upt) {
 		log.info("modify...................");
@@ -78,6 +80,7 @@ public class CultureServiceImpl implements CultureService {
 		return mapper.update(upt);
 	}
 
+	@Transactional
 	@Override
 	public int remove(Long cno) {
 		log.info("remove.......................");

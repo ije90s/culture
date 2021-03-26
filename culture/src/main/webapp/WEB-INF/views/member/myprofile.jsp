@@ -25,7 +25,10 @@
                             </div>
                             <div class="card-body">
                             	<div class="form-group uploadDiv text-center">
-                            		<img class="rounded-circle photo uploadResult">
+                            		<div class="uploadResult">
+	                            		<i class="fa fa-window-close deletePhoto" style="position:absolute; cursor:pointer;"></i>
+	                            		<img class="rounded-circle photo">
+                            		</div>
 									<input type="file" id="upload" name="upload" data-folder="member" style="display:none;" />
 									<i class="fas fa-user fa-fw photo default" style="font-size:200px; cursor:pointer;"></i>
 								</div>
@@ -204,11 +207,12 @@ $(document).ready(function(){
 		$.getJSON("/member/getAttachList", {mno : mno}, function(arr){
 	 	
 			if(arr==null || arr.length==0){
+				$(".uploadResult").hide();
 				return;
 			}
 			$(arr[0].fileList).each(function(i, attach){
 				var fileCallPath = encodeURIComponent(attach.path+"/s_"+attach.uuid+"_"+attach.fileName); 
-				$(".uploadResult").attr('src', '/display?fileName='+fileCallPath).attr("style","width:175px;height:200px;");
+				$(".uploadResult img").attr('src', '/display?fileName='+fileCallPath).attr("style","width:175px;height:200px;");
 				$(".default").hide();	
 			});				
 		});
@@ -419,8 +423,7 @@ $(document).ready(function(){
 			var fileCallPath = encodeURIComponent(obj.uploadPath+"/s_"+obj.uuid+"_"+obj.fileName); 
 			var originPath = obj.uploadPath+"\\"+obj.uuid+"_"+obj.fileName;
 			originPath = originPath.replace(new RegExp(/\\/g),"/");  
-			$(".uploadResult").attr('src', '/display?fileName='+fileCallPath).attr("style","width:175px;height:200px;");			
-			
+				
 			var files={
 					path : obj.uploadPath, 
 					uuid : obj.uuid,
@@ -429,11 +432,22 @@ $(document).ready(function(){
 			};
 			
 			memberService.modifyPhoto(mno.val(), files,  function(data){
-				alert("프로필이 변경되었습니다."); 
+				alert("프로필 사진이 변경되었습니다."); 
 				location.reload();
 			});
+			
+			//$(".uploadResult img").attr('src', '/display?fileName='+fileCallPath).attr("style","width:175px;height:200px;");		
 		});
 	}	 
+	
+	$(".uploadResult").on("click", ".deletePhoto", function(e){
+		e.preventDefault(); 
+		console.log("사진 삭제");
+		memberService.deletePhoto(mno.val(),  function(data){
+			alert("프로필 사진이 삭제되었습니다."); 
+			location.reload();
+		}); 
+	});
 	 
 });
 </script>					

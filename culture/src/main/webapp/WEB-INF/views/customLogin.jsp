@@ -1,5 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
+<%@ taglib prefix="c"  uri="http://java.sun.com/jsp/jstl/core" %>    
 <!DOCTYPE html>
 <html lang="en">
     <head>
@@ -8,7 +9,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
         <meta name="description" content="" />
         <meta name="author" content="" />
-        <title>Page Title - SB Admin</title>
+        <title>문화일기</title>
         <link href="/resources/dist/css/styles.css" rel="stylesheet" />
         <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/js/all.min.js" crossorigin="anonymous"></script>
     	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
@@ -22,8 +23,6 @@
 				        	<div class="col-lg-5">
 				            	<div class="card shadow-lg border-0 rounded-lg mt-5">
 				                	<div class="card-header"><h3 class="text-center font-weight-light my-4">Login</h3>
-				                	<h2><c:out value="${error}"/></h2>
-									<h2><c:out value="${logout}"/></h2>
 				                	</div>
 				                    <div class="card-body">
 				                    	<form method="post" action="/login" class="needs-validation" novalidate>
@@ -63,6 +62,15 @@
         <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
         <script src="/resources/dist/js/scripts.js"></script>
         <script>
+       	  var error = '<c:out value="${error}"/>'; 
+       	  var logout = '<c:out value="${logout}"/>'; 
+       	  if(error!=""){
+       		 alert(error);
+       	  }    	  
+       	  if(logout!=""){
+       		 alert(logout);
+       	  }
+       
 	     // Disable form submissions if there are invalid fields
 	     (function() {
 	       'use strict';

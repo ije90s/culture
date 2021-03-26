@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper 
+	PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+	
+<mapper namespace="com.ije.mapper.LoginMapper">
+
+	<insert id="insert">
+	insert into tb_login_log(idx, id) Values(seq_login.nextval, #{id})
+	</insert>
+	
+	<select id="read" resultType="com.ije.domain.LoginVO">
+	select * from tb_login_log 
+	where id=#{id} and TO_CHAR(TO_DATE(rdate), 'yyyy-MM-dd')=#{rdate}
+	</select>
+	
+	<select id="getCount" resultType="int">
+	select count(*) from tb_login_log 
+	where id=#{id}
+	</select>
+</mapper>

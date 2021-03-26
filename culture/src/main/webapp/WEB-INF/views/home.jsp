@@ -7,8 +7,8 @@
 
 	<div class="container-fluid">
 		<h3 class="mt-4"><sec:authentication property="principal.member.name"/> 환영합니다. 
-		<button id="regBtn" class="btn btn-secondary float-right">문화기록 등록</button></h3>
-		<div class="card mb-4">
+		<button id="regBtn" class="btn btn-primary float-right">문화기록 등록</button></h3>
+		<div class="card mt-4 mb-4">
         	<div class="card-header"><h6>문화기록<button class="btn btn-secondary float-right move" data-oper="culture">더보기</button></h6></div>
             <div class="card-body">
             	<table id="culture" class="table table-bordered" width="100%" cellspacing="0">

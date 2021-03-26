@@ -129,7 +129,7 @@ public class CultureController {
 		d.addAttribute("culture", service.get(cno)); 
 	}
 	
-	@PreAuthorize("principal.member.mno == #upt.mno")
+	@PreAuthorize("principal.member.mno == #upt.mno or hasRole('ROLE_ADMIN')")
 	@PostMapping("/modify")
 	public String modify(@RequestHeader("User-Agent") String userAgent, @Valid @ModelAttribute("culture") CultureVO upt, BindingResult result, @ModelAttribute("cri") Criteria cri, RedirectAttributes rttr) {
 		
@@ -191,7 +191,7 @@ public class CultureController {
 		});
 	}
 	
-	@PreAuthorize("principal.member.mno == #mno")
+	@PreAuthorize("principal.member.mno == #mno or hasRole('ROLE_ADMIN')")
 	@PostMapping("/remove")
 	public String remove(@RequestParam("cno") Long cno, @RequestParam("mno") Long mno, @ModelAttribute("cri") Criteria cri, RedirectAttributes rttr) {
 		log.info("삭제하기 호출...............................................");
