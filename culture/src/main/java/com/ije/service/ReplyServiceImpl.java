@@ -55,8 +55,8 @@ public class ReplyServiceImpl implements ReplyService {
 	public boolean remove(Long rno) {
 		log.info("..................................");
 		ReplyVO vo = mapper.read(rno); 
-		boardMapper.updateReplyCnt(vo.getBno(), -1);
 		
+		boardMapper.updateReplyCnt(vo.getBno(), mapper.getReplyCount(rno)*-1);
 		return mapper.delete(rno) > 0;
 	}
 

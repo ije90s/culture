@@ -101,7 +101,7 @@ var replyService = (function(){
 		var dateObj = new Date(time); 
 		var str = ""; 
 		var yy = dateObj.getFullYear(); 
-		var mm = dateObj.getMonth(); 
+		var mm = dateObj.getMonth()+1; 
 		var dd = dateObj.getDate(); 
 		var hh = dateObj.getHours(); 
 		var mi = dateObj.getMinutes(); 
@@ -111,12 +111,13 @@ var replyService = (function(){
 		
 	}
 	
+
 	return {
 		add:add,
 		getListPaging:getListPaging,
 		remove:remove, 
 		modify:modify,
 		get:get,
-		displyTime:displyTime 
+		displyTime:displyTime
 	}; 
 })(); 

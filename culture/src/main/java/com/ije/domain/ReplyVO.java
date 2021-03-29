@@ -14,5 +14,7 @@ public class ReplyVO {
 	@DateTimeFormat(pattern="yyyy-MM-dd")
 	private Date rdate; 
 	private Date udate; 
-	private Long bno; 
+	private Long bno;
+	private Long refno;
+	private int level;
 }

@@ -2,6 +2,7 @@ package com.ije.service;
 
 import java.util.List;
 
+import com.ije.domain.AttachFileVO;
 import com.ije.domain.AttachVO;
 import com.ije.domain.BoardVO;
 import com.ije.domain.Criteria;
@@ -20,4 +21,5 @@ public interface BoardService {
 	public List<BoardVO> topList(String kind);
 	
 	public List<AttachVO> getAttachList(Long bno);
+	public List<AttachVO> getAllAttachList(Long bno);
 }

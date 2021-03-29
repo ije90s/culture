@@ -6,6 +6,8 @@ import java.net.URLEncoder;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import javax.validation.Valid;
@@ -52,6 +54,7 @@ public class BoardController {
 	public String list(@PathVariable("kind") String kind, Criteria cri, Model d) {
 		log.info("목록 출력.............................");
 		//log.info( service.getListPaging(cri));
+		log.info(service.getListPaging(cri, kind));
 		d.addAttribute("list", service.getListPaging(cri, kind)); 
 		d.addAttribute("page", new PageVO(cri, service.getCount(cri, kind)));
 		d.addAttribute("kind", kind);
@@ -66,9 +69,10 @@ public class BoardController {
 	
 	@GetMapping("/register")
 	@PreAuthorize("hasAnyRole('ROLE_MEMBER','ROLE_ADMIN')")
-	public void register(@RequestParam("kind") String kind, Model d) {
+	public void register(@RequestParam("kind") String kind, @RequestParam("refno") Long refno, Model d) {
 		log.info("게시글 등록폼....................");
 		d.addAttribute("kind", kind);
+		d.addAttribute("refno", refno);
 	}
 	
 	@PostMapping("/register")
@@ -160,12 +164,17 @@ public class BoardController {
 	public String remove(@RequestParam("bno") Long bno, @ModelAttribute("cri") Criteria cri, RedirectAttributes rd, String writer) {
 		log.info("게시글 삭제하기: " + bno);
 		BoardVO vo = service.get(bno); 
+		List<AttachVO> attachList = service.getAllAttachList(bno);
+		//log.info("attachList : " + attachList);
 		int result = service.remove(bno); 
-		List<AttachVO> attachList = service.getAttachList(bno); 
 		if(result > 0 ) {
 			if(attachList !=null && attachList.size() > 0) {
-				List<AttachFileVO> FileList = attachList.get(0).getFileList();
-				deleteFiles(FileList); 
+				List<AttachFileVO> fileList = new ArrayList<AttachFileVO>(); 
+				for(int i=0;i<attachList.size();i++) {
+					//log.info("fileList : " +attachList.get(i).getFileList());
+					fileList.addAll(attachList.get(i).getFileList()); 	
+				}
+				deleteFiles(fileList); 
 			}
 			rd.addFlashAttribute("result", result); 
 		}
@@ -188,5 +197,11 @@ public class BoardController {
 		
 		return new ResponseEntity<>(service.getAttachList(bno), HttpStatus.OK);
 	}	
+	
+	@GetMapping(value="/gno/{bno}", produces = {MediaType.TEXT_PLAIN_VALUE})
+	public ResponseEntity<String> getGno(@PathVariable("bno") Long bno){
+		log.info("gno 호출.......................................................");
+		return new ResponseEntity<>(HttpStatus.OK);
+	}
 	
 }

@@ -29,10 +29,11 @@ public class BoardServiceTests {
 	public void register() {
 		log.info("========================================");
 		BoardVO ins = new BoardVO(); 
-		ins.setKind("notice");
-		ins.setTitle("service 테스트");
-		ins.setContent("service 테스트");
-		ins.setWriter("admin");
+		ins.setKind("free");
+		ins.setTitle("댓글 테스트4");
+		ins.setContent("댓글 테스트4");
+		ins.setWriter("admin90");
+		ins.setRefno(46L);
 		service.register(ins);
 	}
 	
@@ -45,7 +46,7 @@ public class BoardServiceTests {
 	@Test
 	public void remove() {
 		log.info("========================================");
-		log.info(service.remove(10L));
+		log.info(service.remove(44L));
 	}
 	
 	@Test
@@ -64,6 +65,6 @@ public class BoardServiceTests {
 		Criteria cri = new Criteria(); 
 		cri.setAmount(10);
 		cri.setPageNum(1);
-		service.getListPaging(cri).forEach(board -> log.info(board));
+		//service.getListPaging(cri).forEach(board -> log.info(board));
 	}
 }

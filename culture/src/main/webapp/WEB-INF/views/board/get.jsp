@@ -51,6 +51,7 @@
                                 <div class="form-group mt-4 mb-0 text-right">
                                 	<sec:authentication property="principal" var="pinfo"/>
                                 	<sec:authorize access="hasAnyRole('ROLE_ADMIN','ROLE_MEMBER')">
+                                			<button type="button" class="btn btn-success" data-oper="reply">답글</button>
                                 		<c:if test="${pinfo.username eq board.writer || fn:contains(pinfo.member.authList, 'ROLE_ADMIN')}">
 		                                    <button type="button" class="btn btn-primary" data-oper="modify">수정</button>
 		                                    <button type="button" class="btn btn-danger" data-oper="remove">삭제</button>
@@ -60,10 +61,14 @@
                                 </div>                  				
                             </div> <!-- card-body 끝  -->
                             <!-- 댓글 시작 -->
-                            <div class="card-header"><i class="fa fa-comments fa-fw"></i> 댓글
-                           		<sec:authorize access="hasAnyRole('ROLE_ADMIN','ROLE_MEMBER')">
-                             		<button id="regBtn" class="btn btn-secondary float-right">새글</button>
-                             	</sec:authorize>
+                            <div class="card-header">
+                            	<div>
+	                            	<i class="fa fa-comments fa-fw"></i> 댓글
+	                           		<sec:authorize access="hasAnyRole('ROLE_ADMIN','ROLE_MEMBER')">
+	                             		<button id="regBtn" class="btn btn-secondary float-right">새글</button>
+	                             	</sec:authorize>
+                             	</div>
+                             	<div><h6>* 원댓글을 삭제하면 모든 답댓글이 삭제됩니다.</h6></div>
                             </div>
                             <div class="card-body"> 
                             	<ul class="chat list-group list-group-flush">
@@ -123,6 +128,7 @@
       </div>
       <!-- Modal footer -->
       <div class="modal-footer">
+      	<button type="button" class="btn btn-success" id="reBtn">답댓글</button>
       	<button type="button" class="btn btn-warning" id="modBtn">수정</button>
       	<button type="button" class="btn btn-danger" id="delBtn">삭제</button>
         <button type="button" class="btn btn-secondary" data-dismiss="modal">닫기</button>
@@ -177,7 +183,7 @@ $(document).ready(function(){
 	$(".btn").click(function(e){
 		e.preventDefault(); 
 		var oper = $(this).data("oper"); 
-		console.log(oper);
+		//console.log(oper);
 		if(oper === "modify"){
 			form.attr("action", "/board/modify").submit();
 		}else if(oper === "remove"){
@@ -188,6 +194,11 @@ $(document).ready(function(){
 			var kind = $(this).data("kind"); 
 			form.find("input[name='bno']").remove();
 			form.attr("action", "/board/list/"+kind).submit();
+		}else if(oper == "reply"){
+			var level="${board.level}"; 
+			form.append('<input type="hidden" name="kind" value="${board.kind}"/>');
+			form.append('<input type="hidden" name="refno" value="${board.bno}" />'); 
+			form.attr("action", "/board/register").submit(); 
 		}
 	});
 		
@@ -212,12 +223,22 @@ $(document).ready(function(){
 			}
 			
 			var str=""; 
+			 
 			for(var i=0;i<list.length;i++){
+				var strLevel="";
+				var strStep="";
+				
+				for(var j=1;j<list[i].level;j++){
+					strStep+="&nbsp;&nbsp";
+				}
+				if(list[i].level > 1){
+					strLevel+="<i class='fab fa-replyd'></i> ";
+				}
 				str+="<li class='list-group-item' data-rno='"+list[i].rno+"'>";
 				str+="<div><div class='header'>";
-				str+="<strong class='primary-font'>"+list[i].replyer+"</strong>";
+				str+=strStep+strLevel+"<strong class='primary-font'>"+list[i].replyer+"</strong>";
 				str+="<small class='float-right text-muted'>"+replyService.displyTime(list[i].rdate)+"</small></div>";
-				str+="<p>"+list[i].reply+"</p></div>";
+				str+="<p>"+strStep+list[i].reply+"</p></div>";	
 				str+="</li>";
 			}
 			replyUL.html(str); 
@@ -273,6 +294,7 @@ $(document).ready(function(){
 	var modalRdate = $(".modal").find("input[name='rdate']"); 
 	var modalModBtn = $("#modBtn"); 
 	var modalDelBtn = $("#delBtn"); 
+	var modalReBtn = $("#reBtn"); 
 	
 	var csrfHeader = "${_csrf.headerName}";
 	var csrfToken = "${_csrf.token}";
@@ -286,6 +308,7 @@ $(document).ready(function(){
 		modalReplyer.val(replyer);
 		modalRdate.closest("div").hide(); 
 		modal.find(modalDelBtn).hide(); 
+		modal.find(modalReBtn).hide();
 		modal.find(modalModBtn).text("등록").show();
 		modal.data("rno", 0); 
 		$(".modal").modal("show");
@@ -294,9 +317,10 @@ $(document).ready(function(){
 	modalModBtn.on("click",function(){
 		
 		var rno = modal.data("rno"); 
+		var text = $(this).text(); 
 		var reply; 
 		
-		if(parseInt(rno) > 0){
+		if(text=="수정"){
 			
 			var origin = modalReplyer.val(); 
 			
@@ -324,12 +348,13 @@ $(document).ready(function(){
 				modal.modal("hide"); 
 				showList(pageNum);
 			});					
-		}else{
+		}else if(text=="등록"){
 			
 			reply = {
 					reply : modalReply.val(), 
 					replyer : modalReplyer.val(), 
-					bno : bnoValue
+					bno : bnoValue, 
+					refno : 0
 			};
 					
 			replyService.add(reply, function(result){
@@ -339,7 +364,29 @@ $(document).ready(function(){
 				modal.modal("hide");
 				showList(-1);
 			});			
+		}else{
+			
+			reply = {
+					reply : modalReply.val(), 
+					replyer : modalReplyer.val(), 
+					bno : bnoValue, 
+					refno : rno
+			};
+			console.log(reply);
+			
+			if(auth.includes("USER")){
+				alert("답글 쓸수 있는 권한이 없습니다."); 
+				modal.modal("hide"); 
+				return; 
+			}	
+					
+			replyService.add(reply, function(result){
+				alert("등록되었습니다."); 
+				modal.modal("hide");
+				showList(pageNum);
+			});					
 		}
+
 	});
 	
 	modalDelBtn.on("click", function(e){
@@ -368,16 +415,28 @@ $(document).ready(function(){
 			showList(pageNum);
 		});
 	});
+	
+	modalReBtn.on("click", function(e){
+		e.preventDefault();
+		modalReply.val(""); 
+		modalReplyer.val(replyer);
+		modalRdate.closest("div").hide(); 
+		modal.find(modalDelBtn).hide(); 
+		modal.find(modalModBtn).text("답글").show();
+		modal.find(modalReBtn).hide();
+		$(".modal").modal("show");	
+	});
 		
 	$(".chat").on("click", "li", function(e){
 		var rno = $(this).data("rno"); 
-		
+
 		replyService.get(rno, function(data){
 			modalReply.val(data.reply); 
 			modalReplyer.val(data.replyer); 
 			modalRdate.attr("readonly", "readonly").val(replyService.displyTime(data.rdate));
 			modal.data("rno", data.rno); 
 			modal.find(modalModBtn).text("수정").show();
+			modal.find(modalReBtn).show();
 			modal.find(modalDelBtn).show(); 
 			$(".modal").modal("show");
 		});

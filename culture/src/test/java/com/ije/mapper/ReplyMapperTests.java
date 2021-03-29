@@ -67,4 +67,11 @@ public class ReplyMapperTests {
 		List<ReplyVO> replies = mapper.getListPaing(cri,15L); 
 		replies.forEach(reply -> log.info(reply));
 	}
+	
+	@Test
+	public void getCount() {
+		log.info("...................................................");
+		log.info(mapper.getReplyCount(3L, "Y", "N"));
+		log.info(mapper.getReplyCount(3L, "", "Y"));
+	}
 }

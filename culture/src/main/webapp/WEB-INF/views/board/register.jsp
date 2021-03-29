@@ -1,5 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>     
 <%@ taglib prefix="c"  uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt"  uri="http://java.sun.com/jsp/jstl/fmt" %>    
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>    
@@ -12,7 +13,10 @@
                             <c:if test="${kind eq 'notice' }">공지사항</c:if>
 	                        <c:if test="${kind eq 'free' }">자유게시판</c:if>
 	                        <c:if test="${kind eq 'question' }">질문&답변</c:if>
-	                        <c:if test="${kind eq 'review' }">문화후기</c:if> 등록</h3>
+	                        <c:if test="${kind eq 'review' }">문화후기</c:if> 
+	                    	<c:if test="${refno eq 0}">등록</c:if>
+	                    	<c:if test="${refno ne 0}">답글</c:if>
+	                    </h3>
                         <div class="card mb-4">
                             <div class="card-header"><h6><medium class="invalid">*</medium>(별표)가 있는 항목만 필수값입니다.</h6></div>
                             <div class="card-body">
@@ -20,14 +24,15 @@
                             		<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
                             		<input type="hidden" name="writer" value='<sec:authentication property="principal.username"/>'/>
                             		<input type="hidden" name="kind" value="${kind}"/>
+                            		<input type="hidden" name="refno" value="${refno}" />
 	                            	<div class="form-group">
 	                                	<label class="small mb-1" for="title">제목<medium class="invalid">*</medium></label>
-	                                    <input class="form-control py-4" name="title" id="title"" type="text" value="${boardVo.title}"/>
+	                                    <input class="form-control py-4" name="title" id="title" type="text" value="${boardVo.title}"/>
 	                                    <small></small>
 	                                </div>
 	                                <div class="form-group">
 	                                	<label class="small mb-1" for="content">내용<medium class="invalid">*</medium></label>
-	                                    <textarea class="form-control" name="content" rows="5" id="content">${boardVo.content}</textarea>
+	                                    <textarea class="form-control" name="content" rows="5" id="content"><c:if test="${refno ne 0 }"><c:if test="${!fn:contains(boardVo.content, '답글')}">============답글===========</c:if></c:if>${boardVo.content}</textarea>
 	                                    <small></small>
 									</div>
 									<div class="form-group uploadDiv">

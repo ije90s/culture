@@ -31,7 +31,15 @@
 	<select id="findByBno" resultMap="attachMap">
 	SELECT a.gno, rdate, mno, cno, bno, uuid, fileName, fileType, path FROM 
 	TB_ATTACH_GROUP a LEFT OUTER JOIN TB_ATTACH b ON a.GNO = b.GNO 
-	WHERE bno=#{bno} 	
+	WHERE bno = #{bno} 
+	</select>
+	
+	<select id="findByAllBno" resultMap="attachMap">
+	SELECT a.gno, rdate, mno, cno, bno, uuid, fileName, fileType, path FROM 
+	TB_ATTACH_GROUP a LEFT OUTER JOIN TB_ATTACH b ON a.GNO = b.GNO 
+	WHERE bno in(SELECT bno FROM tb_board 
+	START WITH bno=#{bno}
+	CONNECT BY PRIOR bno = refno)
 	</select>
 
 	<select id="findByMno" resultMap="attachMap">
@@ -39,7 +47,7 @@
 	TB_ATTACH_GROUP a LEFT OUTER JOIN TB_ATTACH b ON a.GNO = b.GNO 
 	WHERE mno=#{mno} 	
 	</select>
-
+	
 	<insert id="insert" parameterType="java.util.List">
 		<foreach collection="list" item="item" open="INSERT ALL" close="select * from dual" separator=" " >
 		INTO TB_ATTACH_GROUP(gno, cno, mno, bno)
@@ -56,9 +64,11 @@
 	</delete>
 	
 	<delete id="deleteByBno">
-	delete TB_ATTACH_GROUP where bno=#{bno} 
+	delete TB_ATTACH_GROUP where bno in (SELECT bno FROM tb_board 
+	START WITH bno=#{bno}
+	CONNECT BY PRIOR bno = refno)
 	</delete>
-
+	
 	<delete id="deleteByMno">
 	delete TB_ATTACH_GROUP where mno=#{mno} 
 	</delete>

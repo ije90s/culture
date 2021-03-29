@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.ije.domain.AttachFileVO;
 import com.ije.domain.AttachVO;
 import com.ije.domain.BoardVO;
 import com.ije.domain.Criteria;
@@ -82,6 +83,7 @@ public class BoardServiceImpl implements BoardService {
 	@Override
 	public List<BoardVO> getListPaging(Criteria cri, String kind) {
 		log.info("페이징 : "+cri+" kind : "+kind);
+		log.info(mapper.getListPaging(cri, kind));
 		return mapper.getListPaging(cri, kind);
 	}
 
@@ -100,5 +102,12 @@ public class BoardServiceImpl implements BoardService {
 	public List<AttachVO> getAttachList(Long bno) {
 		return attachMapper.findByBno(bno);
 	}
+
+	@Override
+	public List<AttachVO> getAllAttachList(Long bno) {
+		return attachMapper.findByAllBno(bno);
+	}
+
+	
 
 }

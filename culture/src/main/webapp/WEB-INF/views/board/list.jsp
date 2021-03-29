@@ -44,6 +44,7 @@
                             </div>
                             <div class="card-body">
                                 <div class="table-responsive">
+                                	<h6>* 게시글이 삭제될 시, 답글까지도 모두 삭제됩니다.</h6>
 									<table class="table table-bordered" width="100%" cellspacing="0">
 									<thead>
 										<tr>
@@ -57,7 +58,15 @@
 										<c:forEach items="${list}" var="list">
 										<tr>
 											<td>${list.rn}</td>
-											<td><a class="move" href="${list.bno}">${list.title} <b>[<c:out value="${list.replyCnt}"/>]</b></a></td>
+											<td>
+												<c:forEach varStatus="sts" begin="1" end="${list.level}">
+												&nbsp;&nbsp;
+													<c:if test="${list.level>1 and sts.last}">
+														<i class='fab fa-replyd'></i>
+													</c:if>
+												</c:forEach>
+												<a class="move" href="${list.bno}">${list.title} <b>[<c:out value="${list.replyCnt}"/>]</b></a>												
+											</td>
 											<td>${list.writer}</td>
 											<td><fmt:formatDate value="${list.rdate}" pattern="yyyy-MM-dd"/></td>
 										</tr>
@@ -153,6 +162,7 @@ $(document).ready(function(){
 		}else{
 			search.empty();
 			search.append("<input type='hidden' name='kind' value='"+kind+"'/>");
+			search.append("<input type='hidden' name='refno' value='0' />");
 			search.attr("action", "/board/register").submit();			
 		}
 		

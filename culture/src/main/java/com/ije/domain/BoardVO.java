@@ -24,4 +24,6 @@ public class BoardVO {
 	private List<AttachVO> attachList; 
 	
 	private int replyCnt;
+	private int level;
+	private Long refno;
 }

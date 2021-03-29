@@ -10,8 +10,8 @@
 	</select>
 
 	<insert id="insert">
-	Insert into tb_reply(rno, reply, replyer, bno)
-	Values(seq_reply.nextval, #{reply}, #{replyer}, #{bno})
+	Insert into tb_reply(rno, reply, replyer, bno, refno)
+	Values(seq_reply.nextval, #{reply}, #{replyer}, #{bno}, #{refno})
 	</insert>
 	
 	<select id="read" resultType="com.ije.domain.ReplyVO">
@@ -25,17 +25,22 @@
 	</update>
 	
 	<delete id="delete">
-	Delete tb_reply Where rno=#{rno}
+	Delete tb_reply Where rno in(
+	SELECT rno FROM tb_reply
+	START WITH rno=#{rno}
+	CONNECT BY PRIOR rno = refno)
 	</delete>
 	
 	<select id="getListPaing" resultType="com.ije.domain.ReplyVO">
 	<![CDATA[
 	Select * from (
 		Select /*+ INDEX(tb_reply, idx_reply) */
-		rownum rn, rno, reply, replyer, rdate, udate, bno  
+		rownum rn, level, rno, reply, replyer, rdate, udate, bno, refno
 		from tb_reply 
-		Where bno=#{bno} and rno > 0 and rownum <= #{cri.pageNum} * #{cri.amount} 
-	) Where rn > (#{cri.pageNum}-1)*#{cri.amount}
+		Where bno=#{bno} and rno > 0 and rownum <= #{cri.pageNum} * #{cri.amount}
+		START WITH refno=0 
+		CONNECT BY PRIOR rno=refno 
+		ORDER siblings BY rno asc) Where rn > (#{cri.pageNum}-1)*#{cri.amount}
 	]]>
 	</select>
 	
@@ -43,4 +48,12 @@
 	Select count(*) from tb_reply 
 	Where bno=#{bno}
 	</select>
+	
+	<select id="getReplyCount" resultType="int">
+	Select count(*) from tb_reply where rno in(
+	SELECT rno FROM tb_reply
+	START WITH rno=#{rno}
+	CONNECT BY PRIOR rno = refno)
+	</select>
+	
 </mapper>

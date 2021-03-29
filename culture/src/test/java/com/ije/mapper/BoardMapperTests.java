@@ -77,6 +77,12 @@ public class BoardMapperTests {
 		Criteria cri = new Criteria(); 
 		cri.setPageNum(1);
 		cri.setAmount(10);
-		mapper.getListPaging(cri).forEach(board -> log.info(board));
+		mapper.getListPaging(cri, "free").forEach(list -> log.info(list));
+	}
+	
+	@Test
+	public void findByRefno() {
+		log.info(".................................................................................");
+		log.info(mapper.findByGno(46L));
 	}
 }

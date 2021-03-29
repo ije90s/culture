@@ -25,7 +25,6 @@
 		</trim>
 	</sql>
 
-
 	<select id="getList" resultType="com.ije.domain.BoardVO">
 	Select * from tb_board where bno > 0 
 	</select>
@@ -34,13 +33,15 @@
 	<![CDATA[
 	Select * from (
 		Select /*+ INDEX_DESC(tb_board pk_board) */
-		ROWNUM rn, bno, kind, title, content, writer, rdate, udate, replycnt
+		ROWNUM rn, level, bno, kind, title, content, writer, rdate, udate, replycnt, refno
 		From tb_board Where 
 	]]>	
 	<include refid="criteria"></include>
 	<![CDATA[
 	kind=#{kind} and #{cri.pageNum}*#{cri.amount} >= ROWNUM
-	) Where rn > (#{cri.pageNum}-1)*#{cri.amount} 
+	START WITH refno=0 
+	CONNECT BY PRIOR bno=refno 
+	ORDER siblings BY bno DESC) Where rn > (#{cri.pageNum}-1)*#{cri.amount} 
 	]]>
 	</select>
 	
@@ -51,16 +52,16 @@
 	</select>
 	
 	<insert id="insert">
-	Insert into tb_board(bno, kind, title, content, writer)
-	Values(seq_board.nextval, #{kind}, #{title}, #{content}, #{writer})
+	Insert into tb_board(bno, kind, title, content, writer, refno)
+	Values(seq_board.nextval, #{kind}, #{title}, #{content}, #{writer}, #{refno})
 	</insert>
 	
 	<insert id="insertKey">
 		<selectKey keyProperty="bno" order="BEFORE" resultType="Long">
 		Select seq_board.nextval from dual 
 		</selectKey>	
-	Insert into tb_board(bno, kind, title, content, writer)
-	Values(#{bno}, #{kind}, #{title}, #{content}, #{writer})
+	Insert into tb_board(bno, kind, title, content, writer, refno)
+	Values(#{bno}, #{kind}, #{title}, #{content}, #{writer}, #{refno})
 	</insert>
 	
 	<select id="read" resultType="com.ije.domain.BoardVO">
@@ -68,7 +69,10 @@
 	</select>
 	
 	<delete id="delete">
-	Delete tb_board where bno = #{bno}
+	Delete tb_board where bno in(
+	SELECT bno FROM tb_board 
+	START WITH bno=#{bno}
+	CONNECT BY PRIOR bno = refno)
 	</delete>
 	
 	<update id="update">
@@ -90,4 +94,6 @@
 	<update id="updateReplyCnt">
 	update tb_board set replycnt = replycnt+#{amount} where bno=#{bno}
 	</update>
+	
+
 </mapper>

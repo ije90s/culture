@@ -40,6 +40,7 @@ public class ReplyController {
 		return service.register(ins) ? new ResponseEntity<>("success", HttpStatus.OK) : new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR); 
 	}
 	
+	
 	@GetMapping(value = "/pages/{bno}/{page}", produces = {MediaType.APPLICATION_XML_VALUE, MediaType.APPLICATION_JSON_UTF8_VALUE})
 	public ResponseEntity<ReplyPageDTO> getListPaging(@PathVariable("bno") Long bno, @PathVariable("page") int page){
 		log.info("getListPaging........................");
@@ -69,4 +70,5 @@ public class ReplyController {
 		log.info("replyer : " + del.getReplyer());
 		return service.remove(rno)? new ResponseEntity<>("success", HttpStatus.OK) : new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
 	}
+	
 }
