@@ -131,6 +131,26 @@
 											<div class="form-group uploadResult">
 												<ul class="list-group list-group-horizontal"></ul>
 											</div>
+						                    <div class="form-group">
+                                            	<label class="small mb-1" for="open">공개여부</label>
+                                            	<div id="open">
+	                                            	<div class="form-check-inline">
+														<label class="form-check-label">
+															<input type="radio" class="form-check-input" name="open" value="0" <c:if test="${cultureVO.open eq '0'}">checked</c:if>>비공개
+														</label>
+													</div>
+	                                            	<div class="form-check-inline">
+														<label class="form-check-label">
+															<input type="radio" class="form-check-input" name="open" value="1" <c:if test="${cultureVO.open eq '1'}">checked</c:if>>멤버공개
+														</label>
+													</div>
+												    <div class="form-check-inline">
+														<label class="form-check-label">
+															<input type="radio" class="form-check-input" name="open" value="3" <c:if test="${cultureVO.open eq '2'}">checked</c:if>>전체공개
+														</label>
+													</div>
+												</div>																																																							                                            			
+                                            </div>	
                                             <div class="form-group mt-4 mb-0 text-right">
                                             	<sec:authentication property="principal" var="pinfo"/>
                                              	<sec:authorize access="isAuthenticated()">

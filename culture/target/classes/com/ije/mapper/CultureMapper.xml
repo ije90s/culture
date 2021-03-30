@@ -44,7 +44,7 @@
 	) where rn > (#{cri.pageNum}-1)*#{cri.amount}
 	]]>
 	</select>
-	
+		
 	<select id="getMonList" resultType="com.ije.domain.CultureVO">
 	<![CDATA[
 	SELECT TO_CHAR(TO_DATE(cdate), 'yyyy-MM-dd') As day, kind, count(*) AS sum
@@ -88,8 +88,8 @@
 		<selectKey keyProperty="cno" order="BEFORE" resultType="Long">
 		Select seq_culture.nextval from dual
 		</selectKey>
-	INSERT INTO tb_culture(cno, cdate, kind, title, content, RANK, mno)
-	Values(#{cno}, #{cdate}, #{kind}, #{title}, #{content}, #{rank}, #{mno})	
+	INSERT INTO tb_culture(cno, cdate, kind, title, content, RANK, mno, open)
+	Values(#{cno}, #{cdate}, #{kind}, #{title}, #{content}, #{rank}, #{mno}, #{open})	
 	</insert>
 	
 	<select id="read" resultType="com.ije.domain.CultureVO">
@@ -98,11 +98,27 @@
 	
 	<update id="update">
 	update tb_culture 
-	set cdate=#{cdate}, kind=#{kind}, title=#{title}, content=#{content}, rank=#{rank}, udate=sysdate
+	set cdate=#{cdate}, kind=#{kind}, title=#{title}, content=#{content}, rank=#{rank}, open=#{open} udate=sysdate
 	where cno=#{cno}
 	</update>
 	
 	<delete id="delete">
 	delete tb_culture where cno=#{cno}
 	</delete>
+	
+	
+	<select id="getListSearch" resultType="com.ije.domain.CultureVO">
+	<![CDATA[
+	select * from ( 
+		select /*+ INDEX_DESC(tb_culture pk_culture)*/ 
+		ROWNUM rn, cno, title, content, rdate
+		From tb_culture where 
+	]]>	
+	<include refid="criteria"></include>
+	<![CDATA[
+		ROWNUM <= #{cri.pageNum}*#{cri.amount} and open in('1','2')
+	) where rn > (#{cri.pageNum}-1)*#{cri.amount}
+	]]>	
+	</select>	
+
 </mapper>

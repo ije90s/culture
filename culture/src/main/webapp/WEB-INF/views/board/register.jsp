@@ -13,7 +13,7 @@
                             <c:if test="${kind eq 'notice' }">공지사항</c:if>
 	                        <c:if test="${kind eq 'free' }">자유게시판</c:if>
 	                        <c:if test="${kind eq 'question' }">질문&답변</c:if>
-	                        <c:if test="${kind eq 'review' }">문화후기</c:if> 
+	                        <c:if test="${kind eq 'share' }">공유마당</c:if> 
 	                    	<c:if test="${refno eq 0}">등록</c:if>
 	                    	<c:if test="${refno ne 0}">답글</c:if>
 	                    </h3>

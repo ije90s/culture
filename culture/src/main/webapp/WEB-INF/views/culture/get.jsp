@@ -28,7 +28,12 @@
 					}
 					</style>
                     <div class="container-fluid">
-                        <h3 class="mt-4">나의 기록 상세</h3>
+                        <h3 class="mt-4">
+                        <sec:authentication property="principal" var="pinfo"/>
+                        <sec:authorize access="isAuthenticated()">
+                        	<c:if test="${pinfo.member.mno eq culture.mno}">나의 </c:if>
+                        	<c:if test="${pinfo.member.mno ne culture.mno}">문화</c:if>
+                        </sec:authorize>기록 상세</h3>
                         <div class="card mb-4">
                             <div class="card-header"></div>
                             <div class="card-body">
@@ -114,14 +119,13 @@
 												<ul class="list-group list-group-horizontal"></ul>
 											</div>
                                             <div class="form-group mt-4 mb-0 text-right">
-                                            	<sec:authentication property="principal" var="pinfo"/>
                                              	<sec:authorize access="isAuthenticated()">
                                              		<c:if test="${pinfo.member.mno eq culture.mno}">
 	                                            		<button type="button" class="btn btn-primary" data-oper="modify">수정</button>
 	                                            		<button type="button" class="btn btn-danger" data-oper="remove">삭제</button>
+	                                            		<button type="button" class="btn btn-secondary"  data-oper="list">목록</button>
                                             		</c:if>
                                             	</sec:authorize>
-												<button type="button" class="btn btn-secondary"  data-oper="list">목록</button>
                                             </div>                       
                              </div> <!-- card-body 끝  -->
                         </div> <!-- card mb-4 끝 -->

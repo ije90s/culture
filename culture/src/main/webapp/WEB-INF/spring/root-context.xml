@@ -12,7 +12,7 @@
 		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-4.3.xsd">
 	
 	<!-- Root Context: defines shared resources visible to all other web components -->
-
+	
 	<bean id="hikariConfig" class="com.zaxxer.hikari.HikariConfig">
 		<property name="driverClassName" value="net.sf.log4jdbc.sql.jdbcapi.DriverSpy"></property>
 		<property name="jdbcUrl" value="jdbc:log4jdbc:oracle:thin:@localhost:1521:XE"></property>
@@ -34,9 +34,13 @@
 	</bean>
 	
 	<tx:annotation-driven/>
-
+	
 	<mybatis-spring:scan base-package="com.ije.mapper"/>
+	
 	<context:component-scan base-package="com.ije.service"/>	
 	<context:component-scan base-package="com.ije.aop"/>
+	
+	
 	<aop:aspectj-autoproxy></aop:aspectj-autoproxy>
+	
 </beans>

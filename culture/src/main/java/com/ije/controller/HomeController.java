@@ -17,9 +17,14 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.ije.domain.Criteria;
 import com.ije.domain.LoginVO;
+import com.ije.domain.PageVO;
+import com.ije.service.BoardService;
+import com.ije.service.CultureService;
 import com.ije.service.LoginService;
 
 import lombok.RequiredArgsConstructor;
@@ -34,7 +39,7 @@ public class HomeController {
 	private static final Logger logger = LoggerFactory.getLogger(HomeController.class);
 	
 	private final LoginService service; 
-	
+
 	/**
 	 * Simply selects the home view to render by returning its name.
 	 */
@@ -59,5 +64,13 @@ public class HomeController {
 		}		
 		
 		return "home";
+	}
+	
+	@GetMapping("/search")
+	@PreAuthorize("isAuthenticated()")
+	public void search(@RequestParam("type") String type, @RequestParam("keyword") String keyword, Model d) {
+		logger.info("통합검색 ");
+		d.addAttribute("type", type); 
+		d.addAttribute("keyword", keyword); 
 	}
 }

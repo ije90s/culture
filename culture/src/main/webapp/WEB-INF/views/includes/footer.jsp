@@ -16,10 +16,22 @@
                     </div>
                 </footer>
             </div>
-        </div>    
+        </div>   
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
         <script src="/resources/dist/js/scripts.js"></script>
         <script src="https://cdn.datatables.net/1.10.20/js/jquery.dataTables.min.js" crossorigin="anonymous"></script>
         <script src="https://cdn.datatables.net/1.10.20/js/dataTables.bootstrap4.min.js" crossorigin="anonymous"></script>
+        <script>
+        $(document).ready(function(){
+        	$("#searchBtn").click(function(e){
+        		e.preventDefault();
+        		$("#searchTotalForm").submit(); 
+        	});
+        	$("#searchText").keyup(function(e){
+        		if(e.keyCode==13)
+        			$("#searchTotalForm").submit(); 
+        	});
+        });
+        </script>
     </body>
 </html>

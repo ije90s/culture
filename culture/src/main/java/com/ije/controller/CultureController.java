@@ -26,6 +26,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -259,4 +260,14 @@ public class CultureController {
 		Criteria cri = new Criteria(); 
 		return new ResponseEntity<>(service.getListPaging(cri,mno), HttpStatus.OK); 
 	}	
+	
+	@GetMapping(value="/search/pages/{page}/{type}/{keyword}", produces = {MediaType.APPLICATION_JSON_UTF8_VALUE, MediaType.APPLICATION_XML_VALUE})
+	@ResponseBody
+	public ResponseEntity<List<CultureVO>> search(@PathVariable("page") int page, @PathVariable("type") String type, @PathVariable("keyword") String keyword){
+		log.info("검색 내용 : "+type+","+keyword);
+		Criteria cri = new Criteria(page, 3);
+		cri.setType(type);
+		cri.setKeyword(keyword);
+		return new ResponseEntity<>(service.getListSearch(cri), HttpStatus.OK);
+	}
 }

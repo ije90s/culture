@@ -33,7 +33,7 @@
                          <c:if test="${board.kind eq 'notice' }">공지사항</c:if>
 	                     <c:if test="${board.kind eq 'free' }">자유게시판</c:if>
 	                     <c:if test="${board.kind eq 'question' }">질문&답변</c:if>
-	                     <c:if test="${board.kind eq 'review' }">문화후기</c:if> 상세</h3>
+	                     <c:if test="${board.kind eq 'share' }">공유마당</c:if> 상세</h3>
                         <div class="card mt-4 mb-4">
                             <div class="card-header"></div>
                             <div class="card-body">                            
@@ -93,7 +93,7 @@
 <div class="originPictureWrapper">
 	<div class="originPicture"></div>
 </div>                	 
-<form role="form" method="get">
+<form id="mainFrom" role="form" method="get">
 	<input type="hidden" name="bno" value="${board.bno}" />
 	<input type="hidden" name="pageNum" value="${cri.pageNum}" />
 	<input type="hidden" name="amount" value="${cri.amount}" />
@@ -144,8 +144,14 @@
 
 
 $(document).ready(function(){
-	var form = $("form"); 
+	var form = $("#mainFrom"); 
 	
+	history.pushState(null, null, location.href);
+	console.log(history.state);
+	window.onpopstate = function(event) {
+	    history.go(1);
+	};
+
 	 (function(){
 			var bno = '<c:out value="${board.bno}" />';
 			$.getJSON("/board/getAttachList", {bno : bno}, function(arr){

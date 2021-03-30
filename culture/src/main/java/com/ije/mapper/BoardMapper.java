@@ -22,7 +22,6 @@ public interface BoardMapper {
 	public List<BoardVO> getListPaging(@Param("cri") Criteria cri, @Param("kind") String kind); 
 	public int getCount(@Param("cri") Criteria cri, @Param("kind") String kind);
 	public List<BoardVO> topList(String kind);
-	
 	/* 댓글수 업데이트 */
 	public void updateReplyCnt(@Param("bno") Long bno, @Param("amount") int amount);
 	

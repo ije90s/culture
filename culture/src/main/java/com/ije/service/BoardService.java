@@ -17,7 +17,7 @@ public interface BoardService {
 	
 	public List<BoardVO> getListPaging(Criteria cri, String kind);
 	public int getCount(Criteria cri, String kind);
-	
+
 	public List<BoardVO> topList(String kind);
 	
 	public List<AttachVO> getAttachList(Long bno);

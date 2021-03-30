@@ -61,8 +61,8 @@ public class BoardController {
 		return "/board/list";
 	}
 	
-	@GetMapping({"/get", "/modify"})
-	public void get(@RequestParam("bno") Long bno, @ModelAttribute("cri") Criteria cri , Model d) {
+	@GetMapping({"/get","/modify"})
+	public void modify(@RequestParam("bno") Long bno, @ModelAttribute("cri") Criteria cri , Model d) {
 		log.info("게시글 : " + bno);
 		d.addAttribute("board", service.get(bno)); 
 	}
@@ -204,4 +204,13 @@ public class BoardController {
 		return new ResponseEntity<>(HttpStatus.OK);
 	}
 	
+	@GetMapping(value="/search/{kind}/pages/{page}/{type}/{keyword}", produces = {MediaType.APPLICATION_JSON_UTF8_VALUE, MediaType.APPLICATION_XML_VALUE})
+	@ResponseBody
+	public ResponseEntity<List<BoardVO>> search(@PathVariable("kind") String kind, @PathVariable("page") int page, @PathVariable("type") String type, @PathVariable("keyword") String keyword){
+		log.info("검색 내용 : "+keyword);
+		Criteria cri = new Criteria(page, 3); 
+		cri.setType(type);
+		cri.setKeyword(keyword);
+		return new ResponseEntity<>(service.getListPaging(cri, kind), HttpStatus.OK); 
+	}
 }

@@ -21,9 +21,12 @@ public interface CultureService {
 	public int getCount(Criteria cri, Long mno);  
 	
 	public List<AttachVO> getAttachList(Long cno);
-	
+
 	public List<CultureVO> getMonList(Criteria cri, Long mno); 
 	public List<CultureVO> getYearList(Criteria cri, Long mno);
 	public List<CultureVO> getChartList(Criteria cri, Long mno);
 	public List<CultureVO> getBySdate(Criteria cri, Long mno); 
+	
+	public List<CultureVO> getListSearch(Criteria cri);
+
 }

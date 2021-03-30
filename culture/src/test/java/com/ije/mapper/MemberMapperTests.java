@@ -61,7 +61,7 @@ public class MemberMapperTests {
 		ins.setId("test4");
 		log.info(ins);
 		
-		mapper.insert2(ins);
+		//mapper.insert2(ins);
 		
 	}
 }

@@ -42,7 +42,7 @@ public class CultureMapperTests {
 		ins.setTitle("insert 테스트");
 		ins.setContent("insert 테스트");
 		ins.setRank(1L);
-		ins.setCdate(strToday);
+		//ins.setCdate(strToday);
 		log.info(mapper.insert(ins));
 		log.info(ins);
 	}
@@ -125,5 +125,13 @@ public class CultureMapperTests {
 		Criteria cri = new Criteria(); 
 		cri.setSdate("2021-03-01");
 		log.info(mapper.read2(cri, 102L));
+	}
+	
+	@Test
+	public void getListTotal() {
+		Criteria cri = new Criteria(); 
+		cri.setType("TC");
+		cri.setKeyword("테스트");
+		mapper.getListTotal(cri).forEach(culture -> log.info(culture));
 	}
 }

@@ -9,7 +9,7 @@
 	                        <c:if test="${kind eq 'notice' }">공지사항</c:if>
 	                        <c:if test="${kind eq 'free' }">자유게시판</c:if>
 	                        <c:if test="${kind eq 'question' }">질문&답변</c:if>
-	                        <c:if test="${kind eq 'review' }">문화후기</c:if>
+	                        <c:if test="${kind eq 'share' }">공유마당</c:if>
                         </h3>
                         <div class="card mb-4">
                             <div class="card-header">
@@ -85,7 +85,7 @@
 								    	<li class='page-item ${page.cri.pageNum eq num? "active":""}'><a class='page-link' href="${num}">${num}</a></li>
 								    </c:forEach>
 								    
-								    <c:if test="">
+								    <c:if test="${page.next}">
 								    	<li class="page-item"><a class="page-link" href="${page.end+1}">Next</a></li>
 								    </c:if>
   								  </ul>

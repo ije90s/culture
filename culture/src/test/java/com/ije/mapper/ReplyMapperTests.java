@@ -71,7 +71,7 @@ public class ReplyMapperTests {
 	@Test
 	public void getCount() {
 		log.info("...................................................");
-		log.info(mapper.getReplyCount(3L, "Y", "N"));
-		log.info(mapper.getReplyCount(3L, "", "Y"));
+		//log.info(mapper.getReplyCount(3L, "Y", "N"));
+		//log.info(mapper.getReplyCount(3L, "", "Y"));
 	}
 }

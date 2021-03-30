@@ -28,12 +28,13 @@
             <a class="navbar-brand" href="/">문화일기</a>
             <button class="btn btn-link btn-sm order-1 order-lg-0" id="sidebarToggle" href="#"><i class="fas fa-bars"></i></button>
             <!-- Navbar Search-->
-            <form class="d-none d-md-inline-block form-inline ml-auto mr-0 mr-md-3 my-2 my-md-0">
+            <form id="searchTotalForm" class="d-none d-md-inline-block form-inline ml-auto mr-0 mr-md-3 my-2 my-md-0" action="/search" method="get">
+            	<input type="hidden" name="type" value="TC" />
                 <div class="input-group">
-                    <input class="form-control" type="text" placeholder="Search for..." aria-label="Search" aria-describedby="basic-addon2" />
-                    <div class="input-group-append">
-                        <button class="btn btn-primary" type="button"><i class="fas fa-search"></i></button>
-                    </div>
+		            <input class="form-control" type="text" id="searchText" name="keyword" placeholder="Search for..." aria-label="Search" aria-describedby="basic-addon2" />
+	                <div class="input-group-append">
+						<button id="searchBtn" class="btn btn-primary" type="button"><i class="fas fa-search"></i></button>
+	                </div>
                 </div>
             </form>
             <!-- Navbar-->
@@ -104,7 +105,7 @@
                             <a class="nav-link" href="/board/list/notice">공지사항</a>
                             <a class="nav-link" href="/board/list/free">자유게시판</a>
                             <a class="nav-link" href="/board/list/question">질문&답변</a>
-                            <a class="nav-link" href="/board/list/review">문화후기</a>
+                            <a class="nav-link" href="/board/list/share">공유마당</a>
                         </div>
                     </div>
                 </nav>

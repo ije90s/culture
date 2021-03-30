@@ -75,7 +75,7 @@
 								    	<li class='page-item ${page.cri.pageNum eq num? "active":""}'><a class='page-link' href="${num}">${num}</a></li>
 								    </c:forEach>
 								    
-								    <c:if test="">
+								    <c:if test="${page.next}">
 								    	<li class="page-item"><a class="page-link" href="${page.end+1}">Next</a></li>
 								    </c:if>
   								  </ul>

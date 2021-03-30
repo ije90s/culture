@@ -134,4 +134,11 @@ public class CultureServiceImpl implements CultureService {
 		log.info("일별 자세히 조회 : "+cri);
 		return mapper.read2(cri,mno);
 	}
+
+
+	@Override
+	public List<CultureVO> getListSearch(Criteria cri) {
+		return mapper.getListSearch(cri);
+	}
+
 }

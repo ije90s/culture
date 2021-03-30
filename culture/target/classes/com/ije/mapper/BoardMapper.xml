@@ -45,6 +45,7 @@
 	]]>
 	</select>
 	
+
 	<select id="getCount" resultType="int">
 	Select count(*) From tb_board where
 	<include refid="criteria"></include>
@@ -95,5 +96,6 @@
 	update tb_board set replycnt = replycnt+#{amount} where bno=#{bno}
 	</update>
 	
+
 
 </mapper>

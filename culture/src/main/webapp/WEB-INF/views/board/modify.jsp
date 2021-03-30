@@ -35,7 +35,7 @@
                          <c:if test="${board.kind eq 'notice' }">공지사항</c:if>
 	                     <c:if test="${board.kind eq 'free' }">자유게시판</c:if>
 	                     <c:if test="${board.kind eq 'question' }">질문&답변</c:if>
-	                     <c:if test="${board.kind eq 'review' }">문화후기</c:if> 수정</h3>
+	                     <c:if test="${board.kind eq 'share' }">공유마당</c:if> 수정</h3>
                         <div class="card mt-4 mb-4">
                             <div class="card-header"><h6><medium class="invalid">*</medium>(별표)가 있는 항목만 필수값입니다.</h6></div>
                             <div class="card-body">

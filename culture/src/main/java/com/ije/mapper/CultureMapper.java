@@ -22,6 +22,7 @@ public interface CultureMapper {
 	//페이징 처리 
 	public List<CultureVO> getListPaging(@Param("cri") Criteria cri, @Param("mno") Long mno);
 	public int getCount(@Param("cri") Criteria cri, @Param("mno") Long mno); 
+	public List<CultureVO> getListSearch(@Param("cri") Criteria cri);
 	
 	//통계 
 	public List<CultureVO> getMonList(@Param("cri") Criteria cri, @Param("mno") Long mno); 
