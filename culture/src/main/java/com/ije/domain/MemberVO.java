@@ -29,8 +29,10 @@ public class MemberVO {
 	private String favorites; 
 	private Date rdate;
 	private Date udate; 
+	private int open;
+	private int state;
 	private boolean enabled; 
 	private List<AuthVO> authList;
-	private List<AttachVO> attachList; 
-	
+	private List<AttachVO> attachList;	
+	private Long lno;
 }

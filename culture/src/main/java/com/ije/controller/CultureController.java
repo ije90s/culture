@@ -270,4 +270,12 @@ public class CultureController {
 		cri.setKeyword(keyword);
 		return new ResponseEntity<>(service.getListSearch(cri), HttpStatus.OK);
 	}
+	
+	@GetMapping(value="/{mno}/count", produces = {MediaType.APPLICATION_JSON_UTF8_VALUE, MediaType.APPLICATION_XML_VALUE})
+	@ResponseBody
+	public int count(@PathVariable("mno") Long mno){
+		log.info("문화기록 등록건수 : " + mno);
+		Criteria cri = new Criteria(); 
+		return service.getCount(cri, mno); 
+	}
 }

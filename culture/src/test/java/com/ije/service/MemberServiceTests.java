@@ -7,6 +7,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import com.ije.domain.Criteria;
 import com.ije.domain.MemberVO;
 import com.ije.domain.UnjoinVO;
 
@@ -41,6 +42,13 @@ public class MemberServiceTests {
 		ins.setMemo("");
 		ins.setId("test4");
 		log.info(ins);
-		service.registerUnjoin(ins);
+		//service.registerUnjoin(ins);
+	}
+	
+	@Test
+	public void getList() {
+		log.info("..........................................");
+		Criteria cri = new Criteria(); 
+		service.getList(cri).forEach(member -> log.info(member));
 	}
 }

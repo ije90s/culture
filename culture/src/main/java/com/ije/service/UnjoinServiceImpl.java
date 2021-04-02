@@ -1,8 +1,11 @@
 package com.ije.service;
 
+import java.util.List;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.ije.domain.Criteria;
 import com.ije.domain.MemberVO;
 import com.ije.domain.UnjoinVO;
 import com.ije.mapper.AttachMapper;
@@ -29,6 +32,21 @@ public class UnjoinServiceImpl implements UnjoinService {
 		MemberVO vo = memberMapper.read(ins.getId()); 
 		attachMapper.deleteByMno(vo.getMno());
 		memberMapper.delete(ins.getId()); 
+	}
+
+	@Override
+	public List<UnjoinVO> getList(Criteria cri) {
+		return mapper.getList(cri);
+	}
+
+	@Override
+	public int getCount() {
+		return mapper.getCount();
+	}
+
+	@Override
+	public UnjoinVO get(Long uno) {
+		return mapper.read(uno);
 	}
 
 }

@@ -133,6 +133,38 @@ var memberService = (function(){
 						console.log(error()); 
 					}
 				});			
+		}else if(name=='kind'){
+			small=$(".kind");
+			var str=""; 
+			if(!t.is(':checked') && str!=""){
+				msg = "종류를 선택하세요.";
+				tag = "invalid";
+			}else {
+				msg = "";
+				tag = "";
+				str = t.is(':checked'); 
+			}
+		}else if(name=='auth'){
+			small=$(".auth");
+			var str=""; 
+			if(!t.is(':checked') && !str){
+				msg = "종류를 선택하세요.";
+				tag = "invalid";
+			}else {
+				msg = "";
+				tag = "";
+				str = t.is(':checked'); 
+			}		
+		}else if(name=='sdate' || name=='edate'){
+			if(value==''){
+				msg = "형식이 맞지 않습니다."; 
+				tag = "invalid"; 		
+			}
+		}else if(name=='content'){
+			if(value==''){
+				msg = "내용을 입력하세요."; 
+				tag = "invalid"; 		
+			}		
 		}
 		small.text(msg); 
 		small.removeClass();
@@ -239,13 +271,152 @@ var memberService = (function(){
 		});				
 	}
 	
+	function cultureList(param, callback, error){
+		
+		var mno = param.mno; 
+		var category = param.category; 
+		
+		$.get("/"+category+"/"+mno+"/top.json", function(result){
+			if(callback){
+				callback(result); 
+			}
+		}).fail(function(xhr, status, err){
+			if(error){
+				error(er); 
+			}
+		}); 
+	}
+	
+	function boardList(writer, callback, error){
+		$.get("/board/writer/"+writer+"/top.json", function(result){
+			if(callback){
+				callback(result); 
+			}
+		}).fail(function(xhr, status, err){
+			if(error){
+				error(er); 
+			}
+		}); 
+	}	
+	
+	function cultureCount(mno, callback, error){
+		$.get("/culture/"+mno+"/count.json", function(result){
+			if(callback){
+				callback(result); 
+			}
+		}).fail(function(xhr, status, err){
+			if(error){
+				error(er); 
+			}
+		}); 
+	}
+	
+	function boardCount(writer, callback, error){
+		$.get("/board/writer/"+writer+"/count.json", function(result){
+			if(callback){
+				callback(result); 
+			}
+		}).fail(function(xhr, status, err){
+			if(error){
+				error(er); 
+			}
+		}); 
+	}	
+	
+	function displyTime(time){
+		var dateObj = new Date(time); 
+		var yy = dateObj.getFullYear(); 
+		var mm = dateObj.getMonth()+1; 
+		var dd = dateObj.getDate(); 
+		
+		return [yy, '-', (mm<10?'0':'')+mm, '-', (dd<10?'0':'')+dd].join('');
+		
+	}
+	
+	function get(lno, callback, error){
+		$.get("/log/"+lno+".json", function(result){
+			if(callback){
+				callback(result); 
+			}
+		}).fail(function(xhr, status, err){
+			if(error){
+				error(er); 
+			}
+		}); 
+	}
+	
+	function add(log, callback, error){
+		
+		$.ajax({
+			type : 'post', 
+			url : '/log/new', 
+			data : JSON.stringify(log), 
+			contentType : "application/json; charset=UTF-8", 
+			success : function(result, status, xhr){
+				if(callback){
+					callback(result); 
+				}
+			}, 
+			error : function(xhr, status, er){
+				if(error){
+					error(xhr);
+				}
+			}
+		});			
+	}
+	
+	function modify2(log, callback, error){
+		$.ajax({
+			type : 'put', 
+			url : '/log/'+log.lno, 
+			data : JSON.stringify(log), 
+			contentType : "application/json; charset=UTF-8", 
+			success : function(result, status, xhr){
+				if(callback){
+					callback(result); 
+				}
+			}, 
+			error : function(xhr, status, er){
+				if(error){
+					error(xhr);
+				}
+			}
+		});				
+	}
+
+	function remove(lno, callback, error){
+		$.ajax({
+			type : 'delete', 
+			url : '/log/'+lno, 
+			success : function(result, status, xhr){
+				if(callback){
+					callback(result); 
+				}
+			}, 
+			error : function(xhr, status, er){
+				if(error){
+					error(xhr);
+				}
+			}
+		});				
+	}
+	
 	return {
 		validate : validate,
 		modify : modify,
 		changePw : changePw,
 		unjoin : unjoin,
 		modifyPhoto : modifyPhoto,
-		deletePhoto : deletePhoto
+		deletePhoto : deletePhoto,
+		cultureList : cultureList,
+		boardList : boardList,  
+		cultureCount : cultureCount,
+		boardCount : boardCount,
+		displyTime : displyTime, 
+		get : get,
+		add : add,
+		modify2 : modify2,
+		remove : remove
 	};
 })();
 

@@ -28,12 +28,15 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.ije.domain.AttachFileVO;
 import com.ije.domain.AttachVO;
+import com.ije.domain.Criteria;
 import com.ije.domain.MemberVO;
+import com.ije.domain.PageVO;
 import com.ije.domain.UnjoinVO;
 import com.ije.service.MemberService;
 import com.ije.service.UnjoinService;
@@ -233,4 +236,20 @@ public class MemberController {
 		return new ResponseEntity<>(service.getAttach(mno), HttpStatus.OK);
 	}	
 
+	//admin 부분
+	
+	@GetMapping("/list")
+	public void memberList(@ModelAttribute("cri") Criteria cri, Model d) {
+		log.info("회원 리스트.............");
+		log.info(service.getList(cri));
+		d.addAttribute("list", service.getList(cri)); 
+		d.addAttribute("page", new PageVO(cri, service.getCount(cri))); 
+	}
+	
+	@GetMapping("/get")
+	public void memberGet(@RequestParam("mno") Long mno, @ModelAttribute("cri") Criteria cri, Model d) {
+		log.info("회원조회....................");
+		d.addAttribute("member", service.read2(mno)); 
+	} 	
+	
 }

@@ -4,6 +4,7 @@ package com.ije.service;
 import java.util.List;
 
 import com.ije.domain.AttachVO;
+import com.ije.domain.Criteria;
 import com.ije.domain.MemberVO;
 import com.ije.domain.UnjoinVO;
 
@@ -16,4 +17,6 @@ public interface MemberService {
 	public List<AttachVO> getAttach(Long mno);
 	public void modifyPhoto(MemberVO vo);
 	public void deletePhoto(Long mno);
+	public List<MemberVO> getList(Criteria cri);
+	public int getCount(Criteria cri);
 }

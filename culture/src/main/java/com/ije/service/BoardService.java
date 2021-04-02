@@ -19,6 +19,9 @@ public interface BoardService {
 	public int getCount(Criteria cri, String kind);
 
 	public List<BoardVO> topList(String kind);
+	public List<BoardVO> topWriterList(String writer);
+	public int getWriterCount(String writer); 
+
 	
 	public List<AttachVO> getAttachList(Long bno);
 	public List<AttachVO> getAllAttachList(Long bno);

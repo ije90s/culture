@@ -5,7 +5,26 @@
 	
 <mapper namespace="com.ije.mapper.UnJoinMapper">
 	<insert id="insert">
-	insert into tb_unjoin(reason, memo, id)
-	values (#{reason}, #{memo}, #{id})
+	insert into tb_unjoin(uno, reason, memo, id)
+	values (seq_unjoin.nextval, #{reason}, #{memo}, #{id})
 	</insert>
+	
+	<select id="getList" resultType="com.ije.domain.UnjoinVO">
+	<![CDATA[
+	select * from ( 
+		select /*+ INDEX_DESC(tb_unjoin pk_unjoin)*/ 
+		ROWNUM rn, uno, reason, memo, id, rdate
+		From tb_unjoin where 
+		ROWNUM <= #{pageNum}*#{amount}
+	) where rn > (#{pageNum}-1)*#{amount}
+	]]>	
+	</select>
+	
+	<select id="getCount" resultType="int">
+	select count(*) from tb_unjoin
+	</select>
+	
+	<select id="read" resultType="com.ije.domain.UnjoinVO">
+	select * from tb_unjoin where uno=#{uno}
+	</select>
 </mapper>

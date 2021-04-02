@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.ije.domain.AttachVO;
+import com.ije.domain.Criteria;
 import com.ije.domain.MemberVO;
 import com.ije.domain.UnjoinVO;
 import com.ije.mapper.AttachMapper;
@@ -81,6 +82,17 @@ public class MemberServiceImpl implements MemberService {
 	public void deletePhoto(Long mno) {
 		log.info("사진 삭제......................");
 		attachMapper.deleteByMno(mno);	
+	}
+
+	@Override
+	public List<MemberVO> getList(Criteria cri) {
+		log.info("멤버회원출력......................");
+		return mapper.getList(cri);
+	}
+
+	@Override
+	public int getCount(Criteria cri) {
+		return mapper.getCount(cri);
 	}
 
 

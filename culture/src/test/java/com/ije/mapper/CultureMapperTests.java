@@ -127,11 +127,4 @@ public class CultureMapperTests {
 		log.info(mapper.read2(cri, 102L));
 	}
 	
-	@Test
-	public void getListTotal() {
-		Criteria cri = new Criteria(); 
-		cri.setType("TC");
-		cri.setKeyword("테스트");
-		mapper.getListTotal(cri).forEach(culture -> log.info(culture));
-	}
 }

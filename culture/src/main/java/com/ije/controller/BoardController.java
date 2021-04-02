@@ -213,4 +213,18 @@ public class BoardController {
 		cri.setKeyword(keyword);
 		return new ResponseEntity<>(service.getListPaging(cri, kind), HttpStatus.OK); 
 	}
+	
+	@GetMapping(value="/writer/{writer}/top", produces = {MediaType.APPLICATION_JSON_UTF8_VALUE, MediaType.APPLICATION_XML_VALUE})
+	@ResponseBody
+	public ResponseEntity<List<BoardVO>> top2(@PathVariable("writer") String writer){
+		log.info("게시판 최신글 가져오기 : "+writer);
+		return new ResponseEntity<>(service.topWriterList(writer), HttpStatus.OK); 
+	}	
+	
+	@GetMapping(value="/writer/{writer}/count", produces = {MediaType.APPLICATION_JSON_UTF8_VALUE, MediaType.APPLICATION_XML_VALUE})
+	@ResponseBody
+	public int count(@PathVariable("writer") String writer) {
+		log.info("게시판 등록 건수 : " + writer);
+		return service.getWriterCount(writer);
+	}
 }

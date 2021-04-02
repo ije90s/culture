@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper 
+	PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+	
+<mapper namespace="com.ije.mapper.MemberLogMapper">
+	
+	<sql id="criteria">
+		<trim prefix="(" suffix=") And " prefixOverrides="OR">
+		<foreach item="type" collection="cri.typeArr">
+			<trim prefix="OR">
+				<choose>
+					<when test="type == 'T'.toString()">
+						target like '%'||#{cri.keyword}||'%'
+					</when>
+				</choose>
+			</trim>
+		</foreach>
+		</trim>
+	</sql>	
+	
+	<select id="getList" resultType="com.ije.domain.MemberLogVO">
+	SELECT * FROM (
+		SELECT 
+		/*+ INDEX_DESC(tb_member_log fk_member_log) */
+		target, count(*) AS cnt FROM TB_MEMBER_LOG WHERE 
+		<include refid="criteria"></include>
+	<![CDATA[	
+		ROWNUM <= #{cri.pageNum}*#{cri.amount}
+		GROUP BY target
+	) WHERE rownum > (#{cri.pageNum}-1)*#{cri.amount}
+	]]>	
+	</select>
+	
+	<select id="getCount" resultType="int">
+	SELECT count(*) FROM (
+		SELECT count(*) FROM TB_MEMBER_LOG WHERE
+		<include refid="criteria"></include>
+		1=1
+		GROUP BY target
+	)
+	</select>
+	
+	<select id="read" resultType="com.ije.domain.MemberLogVO">
+	select * from tb_member_log where lno=#{lno}
+	</select>
+	
+	<select id="read2" resultType="com.ije.domain.MemberLogVO">
+	<![CDATA[
+	select * from ( 
+		select /*+ INDEX_DESC(tb_member_log pk_member_log)*/ 
+		ROWNUM rn, lno, kind, content, target, auth, sdate, edate, rdate, rid, mdate, mid, oldauth, state
+		From tb_member_log where 
+		ROWNUM <= #{sub.pageNum}*#{sub.amount} and target=#{target}
+	) where rn > (#{sub.pageNum}-1)*#{sub.amount}
+	]]>		
+	</select>
+	
+	<select id="getCount2" resultType="int">
+	select count(*) from tb_member_log where target=#{target}
+	</select>
+	
+	<insert id="insert">
+	insert into tb_member_log(lno, kind, content, auth, sdate, edate, target, rid, mid, oldauth, state)
+	values(seq_member_log.nextval, #{kind}, #{content}, #{auth}, #{sdate}, #{edate}, #{target}, #{rid}, #{mid}, #{oldauth}, #{state})
+	</insert>
+	
+	<update id="update">
+	update tb_member_log 
+	set kind=#{kind}, content=#{content}, auth=#{auth}, sdate=#{sdate}, edate=#{edate}, mid=#{mid}, mdate=sysdate
+	where lno=#{lno}  
+	</update>
+
+	<delete id="delete">
+	delete tb_member_log where lno=#{lno}
+	</delete>
+</mapper>

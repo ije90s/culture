@@ -78,7 +78,27 @@
 											</label>
 										</div>
 									</div> <!-- id="favorites" 끝  -->								
-                            	</div> <!--  form-group 그룹 끝-->                                                        
+                            	</div> <!--  form-group 그룹 끝-->      
+                                <div class="form-group modify">
+						            <label class="small mb-1" for="open">공개여부</label>
+						            <div id="open">
+							            <div class="form-check-inline">
+							            	<label class="form-check-label">
+											<input type="checkbox" class="form-check-input" name="open" value="0" <c:if test="${member.open eq '0'}">checked</c:if> disabled>비공개
+											</label>
+										</div>
+							            <div class="form-check-inline">
+											<label class="form-check-label">
+											<input type="checkbox" class="form-check-input" name="open" value="1" <c:if test="${member.open eq '1'}">checked</c:if> disabled>멤버공개
+											</label>
+									    </div>
+							            <div class="form-check-inline">
+											<label class="form-check-label">
+											<input type="checkbox" class="form-check-input" name="open" value="2" <c:if test="${member.open eq '2'}">checked</c:if> disabled>전체공개
+											</label>
+									    </div>	
+									</div> <!-- id="open" 끝  -->	  
+								</div>		                                                  
                             </div> <!-- card-body 끝 -->
                         </div>  <!-- card mb-4 끝 -->
 					</div> <!-- container 끝 -->
@@ -148,6 +168,26 @@
 				</div>
 			</div> <!-- id="favorites" 끝  -->	  
 		</div>
+        <div class="form-group modify">
+            <label class="small mb-1" for="open">공개여부</label>
+            <div id="open">
+	            <div class="form-check-inline">
+	            	<label class="form-check-label">
+					<input type="radio" class="form-check-input" name="open" value="0" <c:if test="${member.open eq '0'}">checked</c:if>>비공개
+					</label>
+				</div>
+	            <div class="form-check-inline">
+					<label class="form-check-label">
+					<input type="radio" class="form-check-input" name="open" value="1" <c:if test="${member.open eq '1'}">checked</c:if>>멤버공개
+					</label>
+			    </div>
+	            <div class="form-check-inline">
+					<label class="form-check-label">
+					<input type="radio" class="form-check-input" name="open" value="2" <c:if test="${member.open eq '2'}">checked</c:if>>전체공개
+					</label>
+			    </div>	
+			</div> <!-- id="open" 끝  -->	  
+		</div>		
 		<div class="form-group changePw">
   			<label>기존 비밀번호</label>
      		<input class="form-control chk" name="originPw" type="password" value="${member.pw}" readonly/> 
@@ -268,7 +308,8 @@ $(document).ready(function(){
 	var name = modal.find("input[name='name']"); 
 	var phone = modal.find("input[name='phone']"); 
 	var email = modal.find("input[name='email']"); 
-	var favorites = modal.find("input[name='favorites']"); 
+	var favorites = modal.find("input[name='favorites']");
+	var open = modal.find("input[name='open']:checked");
 	var originPw = modal.find("input[name='originPw']"); 
 	$(".btn-primary").click(function(e){
 		e.preventDefault(); 
@@ -278,9 +319,9 @@ $(document).ready(function(){
 		//invalid 한번 더 체크
 		$(".chk").each(function(e){
 			memberService.validate($(this));
-		});		
+		});	
+		
 		if(link == "modify"){
-			
 			if(!checkItem($("input[name='name']"))) return false;			
 			//이메일, 휴대폰번호 체크
 			if($("input[name='phone']").val() != "") {	
@@ -298,6 +339,9 @@ $(document).ready(function(){
 			if(checked.includes(",")) checked = checked.substr(0, checked.length-1);
 			$("input[name='favorites']").val(checked);	
 			
+			//공개여부 체크여부 확인
+			open = modal.find("input[name='open']:checked").val();
+			
 			member={
 				mno :  mno.val(), 
 				id :  id.val(), 
@@ -305,7 +349,8 @@ $(document).ready(function(){
 				name : name.val(), 
 				phone : phone.val(), 
 				email : email.val(), 
-				favorites : favorites.val()
+				favorites : favorites.val(),
+				open : open
 			};			
 			memberService.modify(member,function(data){
 				console.log(data);
@@ -330,7 +375,8 @@ $(document).ready(function(){
 					name : name.val(), 
 					phone : phone.val(), 
 					email : email.val(), 
-					favorites : favorites.val()
+					favorites : favorites.val(),
+					open : open.val()
 			};
 			memberService.changePw(member,function(data){
 				console.log(data);
@@ -369,8 +415,8 @@ $(document).ready(function(){
 			}, function(error){
 				console.log(error.status); 
 			});
-		}
-		
+		}		
+				
 		
 	});
 	

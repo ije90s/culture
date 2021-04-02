@@ -106,6 +106,17 @@ public class BoardServiceImpl implements BoardService {
 	public List<AttachVO> getAllAttachList(Long bno) {
 		return attachMapper.findByAllBno(bno);
 	}
+
+	@Override
+	public List<BoardVO> topWriterList(String writer) {
+		return mapper.topWriterList(writer);
+	}
+
+	@Override
+	public int getWriterCount(String writer) {
+		// TODO Auto-generated method stub
+		return mapper.getWriterCount(writer);
+	}
 	
 
 }

@@ -92,6 +92,20 @@
 	]]>
 	</select>
 	
+	<select id="topWriterList" resultType="com.ije.domain.BoardVO">
+	<![CDATA[
+	Select * from (
+	 Select /*+ INDESX_DESC(tb_board, pk_board) */ 
+	 rownum rn, bno, kind, title, content, writer, rdate, udate 
+	 From tb_board Where writer=#{writer}
+	) Where rn <= 5
+	]]>	
+	</select>
+	
+	<select id="getWriterCount" resultType="int">
+	select count(*) from tb_board where writer=#{writer}
+	</select>
+	
 	<update id="updateReplyCnt">
 	update tb_board set replycnt = replycnt+#{amount} where bno=#{bno}
 	</update>

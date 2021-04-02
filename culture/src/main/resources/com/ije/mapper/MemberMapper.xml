@@ -15,6 +15,9 @@
 		<result property="favorites" column="favorites"/>
 		<result property="rdate" column="rdate"/>
 		<result property="udate" column="udate"/>
+		<result property="open" column="open"/>
+		<result property="state" column="state"/>
+		<result property="lno" column="lno"/>
 		<collection property="authList" resultMap="autoMap"></collection>
 	</resultMap>
 	
@@ -24,15 +27,23 @@
 	</resultMap>
 	
 	<select id="read" resultMap="memberMap">
-	select a.mno, id, pw, name, phone, email, favorites, rdate, udate, auth 
+	<![CDATA[
+	select a.mno, id, pw, name, phone, email, favorites, rdate, udate, open, state, auth,
+	NVL((SELECT /*+ INDEX_DESC(tb_member_log fk_member_log) */
+	lno from tb_member_log where target=id AND ROWNUM<=1), '0') as lno
 	from tb_member a left outer join tb_member_auth b on a.mno=b.mno 
 	where id=#{id}
+	]]>
 	</select>
 	
 	<select id="get" resultMap="memberMap">
-	select a.mno, id, pw, name, phone, email, favorites, rdate, udate, auth 
+	<![CDATA[
+	select a.mno, id, pw, name, phone, email, favorites, rdate, udate, open, state, auth,
+	NVL((SELECT /*+ INDEX_DESC(tb_member_log fk_member_log) */
+	lno from tb_member_log where target=id AND ROWNUM<=1), '0') as lno
 	from tb_member a left outer join tb_member_auth b on a.mno=b.mno 
 	where a.mno=#{mno}
+	]]>
 	</select>
 	
 	<insert id="insert" parameterType="java.util.List">
@@ -46,7 +57,7 @@
 
 	<update id="update">
 	update tb_member 
-	set name=#{name}, phone=#{phone}, email=#{email}, favorites=#{favorites}, pw=#{pw}, udate=sysdate
+	set name=#{name}, phone=#{phone}, email=#{email}, favorites=#{favorites}, pw=#{pw}, open=#{open}, udate=sysdate
 	where mno=#{mno}
 	</update>
 
@@ -57,5 +68,49 @@
 	<update id="updateAuth">
 	update tb_member_auth set auth=#{auth} where mno=#{mno}
 	</update>	
-		
+
+	<update id="updateState">
+	update tb_member set state=#{state} where id=#{id}
+	</update>	
+
+	<sql id="criteria">
+		<trim prefix="(" suffix=") And " prefixOverrides="OR">
+		<foreach item="type" collection="cri.typeArr">
+			<trim prefix="OR">
+				<choose>
+					<when test="type == 'N'.toString()">
+						state = '0' and id like '%'||#{cri.keyword}||'%'
+					</when>
+					<when test="type == 'B'.toString()">
+						state = '1' and id like '%'||#{cri.keyword}||'%'
+					</when>
+					<when test="type == 'E'.toString()">
+						state = '2' and id like '%'||#{cri.keyword}||'%'
+					</when>
+				</choose>
+			</trim>
+		</foreach>
+		</trim>
+	</sql>
+
+	<select id="getList" resultMap="memberMap">
+	<![CDATA[
+	select * from ( 
+		select ROWNUM rn,  a.mno, id, pw, name, phone, email, favorites, rdate, udate, open, state, auth,
+		NVL((SELECT /*+ INDEX_DESC(tb_member_log fk_member_log) */
+		lno from tb_member_log where target=id AND ROWNUM<=1), '0') as lno
+		from tb_member a left outer join tb_member_auth b on a.mno=b.mno where
+	]]>	
+	<include refid="criteria"></include>
+	<![CDATA[
+		ROWNUM <= #{cri.pageNum}*#{cri.amount} and auth in('ROLE_USER','ROLE_MEMBER')
+	) where rn > (#{cri.pageNum}-1)*#{cri.amount}
+	]]>
+	</select>
+	
+	<select id="getCount" resultType="int">
+	select count(*) from tb_member a left outer join tb_member_auth b on a.mno=b.mno where
+	<include refid="criteria"></include>
+	auth in('ROLE_USER','ROLE_MEMBER')
+	</select>
 </mapper>
