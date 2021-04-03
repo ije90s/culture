@@ -21,6 +21,15 @@
 		</foreach>
 		</trim>
 	</sql>
+	<sql id="mno">
+		<trim suffix=" And ">
+			<choose>
+				<when test="mno != 0">
+					mno=#{mno}
+				</when>
+			</choose>
+		</trim>
+	</sql>
 	<select id="getList" resultType="com.ije.domain.CultureVO">
 	 select * from tb_culture where cno > 0 
 	</select>
@@ -28,7 +37,8 @@
 	<select id="getCount" resultType="int">
 	select count(*) from tb_culture where 
 	<include refid="criteria"></include> 
-	mno=#{mno}
+	<include refid="mno"></include> 
+	1=1
 	</select>
 	
 	<select id="getListPaging" resultType="com.ije.domain.CultureVO">
@@ -39,8 +49,9 @@
 		From tb_culture where 
 	]]>	
 	<include refid="criteria"></include>
+	<include refid="mno"></include> 
 	<![CDATA[
-		ROWNUM <= #{cri.pageNum}*#{cri.amount} and mno=#{mno}
+		ROWNUM <= #{cri.pageNum}*#{cri.amount}
 	) where rn > (#{cri.pageNum}-1)*#{cri.amount}
 	]]>
 	</select>
@@ -100,6 +111,10 @@
 	update tb_culture 
 	set cdate=#{cdate}, kind=#{kind}, title=#{title}, content=#{content}, rank=#{rank}, open=#{open} udate=sysdate
 	where cno=#{cno}
+	</update>
+	
+	<update id="reportUpdate">
+	update tb_culture set report=#{reporter} where cno=#{cno}
 	</update>
 	
 	<delete id="delete">

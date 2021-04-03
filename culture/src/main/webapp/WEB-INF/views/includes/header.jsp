@@ -1,7 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>    
-<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %> 
 <!DOCTYPE html>
 <html lang="en">
     <head>
@@ -14,6 +13,7 @@
         <link href="/resources/dist/css/styles.css" rel="stylesheet" />
         <link href="https://cdn.datatables.net/1.10.20/css/dataTables.bootstrap4.min.css" rel="stylesheet" crossorigin="anonymous" />
         <link rel="stylesheet" href="http://code.jquery.com/ui/1.8.18/themes/base/jquery-ui.css" type="text/css" />
+
         <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/js/all.min.js" crossorigin="anonymous"></script>
         
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
@@ -43,9 +43,10 @@
                     <a class="nav-link dropdown-toggle" id="userDropdown" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fas fa-user fa-fw"></i></a>
                     <div class="dropdown-menu dropdown-menu-right" aria-labelledby="userDropdown">
                         <a class="dropdown-item" href='/member/myprofile/<sec:authentication property="principal.member.mno"/>'>나의 정보</a>
+                        <a class="dropdown-item" href='/report/list?repoter=<sec:authentication property="principal.username"/>'>신고리스트</a>
                         <div class="dropdown-divider"></div>
                         <sec:authorize access="isAuthenticated()">
-                        	<a class="dropdown-item" href="#" onclick="document.getElementById('logoutForm').submit();"><i class="fa fa-sign-out"></i> Logout</a>
+                        	<a class="dropdown-item" href="#" onclick="document.getElementById('logoutForm').submit();"><i class="fa fa-toggle-off"></i> Logout</a>
                         	<form id="logoutForm" action="/customLogout" method="POST">
    								<input name="${_csrf.parameterName}" type="hidden" value="${_csrf.token}"/>
 							</form>

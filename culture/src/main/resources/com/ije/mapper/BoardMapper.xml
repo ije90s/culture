@@ -82,6 +82,10 @@
 	where bno = #{bno}
 	</update>
 	
+	<update id="reportUpdate">
+	update tb_board set report=#{reporter} where bno=#{bno}
+	</update>
+	
 	<select id="topList" resultType="com.ije.domain.BoardVO">
 	<![CDATA[
 	Select * from (

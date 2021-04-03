@@ -21,7 +21,7 @@ public class MemberLogMapperTests {
 	@Test
 	public void getList() {
 		log.info("...........................");
-		mapper.getList().forEach(list -> log.info(list));
+		//mapper.getList().forEach(list -> log.info(list));
 	}
 	
 	@Test

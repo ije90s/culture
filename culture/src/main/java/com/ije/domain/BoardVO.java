@@ -26,4 +26,5 @@ public class BoardVO {
 	private int replyCnt;
 	private int level;
 	private Long refno;
+	private String report;
 }

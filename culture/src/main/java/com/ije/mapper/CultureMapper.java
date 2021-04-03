@@ -18,6 +18,7 @@ public interface CultureMapper {
 	public CultureVO read(Long cno);
 	public int update(CultureVO upt);
 	public int delete(Long cno);
+	public int reportUpdate(@Param("reporter") String reporter, @Param("cno") Long cno);
 	
 	//페이징 처리 
 	public List<CultureVO> getListPaging(@Param("cri") Criteria cri, @Param("mno") Long mno);

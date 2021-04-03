@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper 
+	PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+	
+<mapper namespace="com.ije.mapper.ReportMapper">
+	
+	<sql id="criteria">
+		<trim prefix="(" suffix=") And " prefixOverrides="OR">
+		<foreach item="type" collection="cri.typeArr">
+			<trim prefix="OR">
+				<choose>
+					<when test="type == 'T'.toString()">
+						title like '%'||#{cri.keyword}||'%'
+					</when>
+					<when test="type == 'C'.toString()">
+						content like '%'||#{cri.keyword}||'%'
+					</when>
+					<when test="type == 'R'.toString()">
+						reporter like '%'||#{cri.keyword}||'%'
+					</when>
+				</choose>
+			</trim>
+		</foreach>
+		</trim>
+	</sql>
+	
+	<sql id="reporter">
+		<trim suffix=" And ">
+			<choose>
+				<when test="reporter != 'all'.toString()">
+				 	reporter = #{reporter}
+				</when>
+			</choose>
+		</trim>
+	</sql>
+		
+	<select id="getList" resultType="com.ije.domain.ReportVO">
+	select * from (
+		select /*+ INDEX_DESC(tb_report pk_report) */
+		ROWNUM rn, rno, title, content, reporter, kind, no, reason, 
+		state, rdate, mid, mdate from tb_report where
+		<include refid="criteria"></include>
+		<include refid="reporter"></include>	
+	<![CDATA[
+		ROWNUM <= #{cri.pageNum}*#{cri.amount}
+	) where rn > (#{cri.pageNum}-1)*#{cri.amount}
+	]]>
+	</select>
+	
+	<select id="getCount" resultType="int">
+	select count(*) from tb_report where 
+	<include refid="criteria"></include>
+	<include refid="reporter"></include>
+	1=1
+	</select>
+	
+	<insert id="insert">
+	insert into tb_report(rno, title, content, reporter, kind, no, mid)
+	values(seq_report.nextval, #{title}, #{content}, #{reporter}, #{kind}, #{no}, #{mid})
+	</insert>
+
+	<select id="read" resultType="com.ije.domain.ReportVO">
+	select * from tb_report where rno=#{rno}
+	</select>
+	
+	<update id="update">
+	update tb_report set title=#{title}, content=#{content}, state=#{state}, reason=#{reason}, 
+	mid=#{mid}, mdate=sysdate where rno=#{rno} 
+	</update>
+	
+	<delete id="delete">
+	delete tb_report where rno=#{rno}
+	</delete>
+	
+	<select id="getByNo" resultType="com.ije.domain.ReportVO">
+	select * from tb_report where kind=#{kind} and no=#{no}
+	</select>
+</mapper>

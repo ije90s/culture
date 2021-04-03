@@ -43,7 +43,7 @@ var cultureService = (function(){
 		small.removeClass();
 		small.addClass(tag);
 	}; 
-
+	
 	return {
 		validate : validate
 	};

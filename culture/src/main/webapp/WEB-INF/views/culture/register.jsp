@@ -119,7 +119,7 @@
 													</div>
 												    <div class="form-check-inline">
 														<label class="form-check-label">
-															<input type="radio" class="form-check-input" name="open" value="3" <c:if test="${cultureVO.open eq '2'}">checked</c:if>>전체공개
+															<input type="radio" class="form-check-input" name="open" value="2" <c:if test="${cultureVO.open eq '2'}">checked</c:if>>전체공개
 														</label>
 													</div>
 												</div>																																																							                                            			

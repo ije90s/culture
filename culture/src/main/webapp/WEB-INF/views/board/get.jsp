@@ -27,6 +27,30 @@
 					.originPicture img{
 						width:600px; 
 					}
+				    .warningWrapper{
+						position:absolute; 
+						display:none; 
+						justify-content:center; 
+						align-items:center; 
+						top:0%;
+						width:100%;
+						height:100%; 
+ 						background-color:gray; 
+						z-index:100; 
+						background:rgba(255,255,255,0.6); 
+					}
+					.warningDiv{
+						position:relative; 
+						display:flex; 
+						justify-content:center; 
+						align-items:center; 
+						padding : 5px 0;
+						top:15%;
+						left : 5%;
+						width : 30%;
+						background-color:white; 
+						border : 1px solid gray;
+					}	
 					</style>
                     <div class="container-fluid">
                         <h3 class="mt-4">
@@ -35,7 +59,11 @@
 	                     <c:if test="${board.kind eq 'question' }">질문&답변</c:if>
 	                     <c:if test="${board.kind eq 'share' }">공유마당</c:if> 상세</h3>
                         <div class="card mt-4 mb-4">
-                            <div class="card-header"></div>
+                            <div class="card-header"><h6 id="report" style="cursor:pointer;">
+		                    	<i class="fas fa-bullhorn" style="color:red"></i> 
+		                        <c:if test="${board.report eq 'N' }"> 신고하기</c:if>
+		                        <c:if test="${board.report ne 'N' }"> 신고확인중</c:if>
+	                        </h6></div>
                             <div class="card-body">                            
                             	<div class="form-group">
                                 	<label class="small mb-1" for="title">제목 </label>
@@ -90,6 +118,26 @@
                             
                         </div> <!-- card mb-4 끝 -->                            
                 	</div> <!-- container-fluid 끝 -->
+<div class="warningWrapper">
+	<div class="warningDiv">
+		<form id="reportForm">
+	    	<div class="form-group">
+	        	<label class="small mb-1" for="title">제목</label>
+	            <input class="form-control py-4" name="title" id="title" type="text"/>
+	        </div>
+	        <div class="form-group">
+	            <label class="small mb-1" for="content">내용</label>
+	            <textarea class="form-control" name="content" rows="5" id="content"></textarea>
+	        </div>
+	        <div class="form-group mt-4 mb-0 text-right">
+		        <button type="button" class="btn btn-primary btn-sm" id="regReport" data-oper="reg">등록</button>
+		        <button type="button" class="btn btn-warning  btn-sm" id="modReport" data-oper="mod">수정</button>
+		        <button type="button" class="btn btn-danger  btn-sm" id="delReport" data-oper="del">삭제</button>
+		        <button type="button" class="btn btn-secondary  btn-sm"  data-oper="close">닫기</button>
+	         </div>        
+	    </form>
+    </div>
+</div>                 	
 <div class="originPictureWrapper">
 	<div class="originPicture"></div>
 </div>                	 
@@ -138,14 +186,15 @@
   </div>
 </div>            	
 <!-- The Modal 끝 -->     
-<script src="/resources/scripts/reply.js"></script>      
+<script src="/resources/scripts/reply.js"></script>
+<script src="/resources/scripts/report.js"></script>          
 <script src="/resources/scripts/common.js"></script>	  
 <script>
 
 
 $(document).ready(function(){
 	var form = $("#mainFrom"); 
-	
+	var formRe = $("#reportForm");
 	history.pushState(null, null, location.href);
 	console.log(history.state);
 	window.onpopstate = function(event) {
@@ -205,7 +254,67 @@ $(document).ready(function(){
 			form.append('<input type="hidden" name="kind" value="${board.kind}"/>');
 			form.append('<input type="hidden" name="refno" value="${board.bno}" />'); 
 			form.attr("action", "/board/register").submit(); 
-		}
+		}else if(oper == "reg"){
+			 var report; 
+			 var reporter = '<sec:authentication property="principal.username"/>'; 
+			 var no = '<c:out value="${board.bno}" />';
+			 var title = formRe.find("input[name='title']").val();
+			 var content = formRe.find("#content").val();
+			 
+			 report = {
+				title : title, 
+				content : content, 
+				reporter : reporter, 
+				kind : "board", 
+				no : no, 
+				mid : reporter
+			 };
+			 console.log(report);
+			 
+			 reportService.add(report, function(data){
+				console.log(data);
+				if(data=="success"){
+					alert("등록되었습니다.");
+					$(".warningWrapper").hide();
+					location.reload();
+				}
+			 });		 
+		 }else if(oper == "mod"){	 	 
+			 var report; 
+			 var title = formRe.find("input[name='title']").val();
+			 var content = formRe.find("#content").val();
+			 var rno = formRe.find("input[name='rno']").val();
+			 var state = formRe.find("input[name='state']").val();
+			 var reason = formRe.find("input[name='reason']").val();
+			 var mid = formRe.find("input[name='mid']").val();
+	
+			 report = {
+				title : title, 
+				content : content, 
+				rno : rno, 
+				state : state, 
+				reason : reason, 
+				mid : mid
+			 }; 
+			 console.log(report);
+			 reportService.modify(report, function(data){
+				alert("수정되었습니다.");  
+				$(".warningWrapper").hide();
+				location.reload();
+			 });
+			 
+		 }else if(oper == "del"){
+			 var rno = formRe.find("input[name='rno']").val();
+			 reportService.remove(rno, function(data){
+					alert("삭제되었습니다.");  
+					$(".warningWrapper").hide();
+					location.reload();
+			 });
+		 }else if(oper == "close"){
+			 formRe.find("input[name='title']").val(""); 
+			 formRe.find("#content").val("");
+			 $(".warningWrapper").hide(); 
+		 }
 	});
 		
 	var bnoValue = '<c:out value="${board.bno}"/>'; 
@@ -465,7 +574,42 @@ $(document).ready(function(){
 			setTimeout(function(){
 				$(".originPictureWrapper").hide();
 			},1000);
-		 });	
+		 });
+	 
+	 $("#report").on("click",function(e){
+		 e.preventDefault();
+		 var oper = $(this).text(); 
+		 //console.log(oper);
+		 if(oper.includes("신고하기")){
+			formRe.find("#regReport").show();
+			formRe.find("#modReport").hide();
+			formRe.find("#delReport").hide();
+			$(".warningWrapper").show();
+		 }else{
+			 var reporter = '<sec:authentication property="principal.username"/>'; 
+			 var no = '<c:out value="${board.bno}" />'; 
+			 reportService.get("board", no, function(data){
+				 if(reporter == data.reporter){
+					 if(data.state == "0"){
+						 formRe.find("input[name='title']").val(data.title); 
+						 formRe.find("#content").val(data.content); 
+						 formRe.append("<input type='hidden' name='rno' value='"+data.rno+"'/>");
+						 formRe.append("<input type='hidden' name='state' value='0'/>");
+						 formRe.append("<input type='hidden' name='reason' value=''/>");
+						 formRe.append("<input type='hidden' name='mid' value='"+reporter+"'/>");
+						 formRe.find("#regReport").hide();
+						 formRe.find("#modReport").show();
+						 formRe.find("#delReport").show();
+						 $(".warningWrapper").show();
+					 }else{
+						 alert("수정할 수 없습니다."); 
+					 }
+				 }else{
+					 alert("신고 처리중입니다.");
+				 }
+			 });
+		 } 			
+	 });	 
 });
 </script>                	
 <%@ include file="../includes/footer.jsp"  %> 

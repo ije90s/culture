@@ -35,4 +35,5 @@ public class CultureVO {
 	private int sum; 
 	private int ratio; 
 	private String open;
+	private String report;
 }

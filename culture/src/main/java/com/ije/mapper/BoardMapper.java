@@ -17,6 +17,7 @@ public interface BoardMapper {
 	public BoardVO read(Long bno); 
 	public int delete(Long bno); 
 	public int update(BoardVO upt); 
+	public int reportUpdate(@Param("reporter") String reporter, @Param("bno") Long bno); 
 	
 	/*리스트 출력 */
 	public List<BoardVO> getListPaging(@Param("cri") Criteria cri, @Param("kind") String kind); 
