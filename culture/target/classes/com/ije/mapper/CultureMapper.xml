@@ -21,11 +21,14 @@
 		</foreach>
 		</trim>
 	</sql>
-	<sql id="mno">
+	<sql id="object">
 		<trim suffix=" And ">
 			<choose>
-				<when test="mno != 0">
-					mno=#{mno}
+				<when test="object != 0">
+					mno=#{object}
+				</when>
+				<when test="object == 0">
+					open in (1,2)
 				</when>
 			</choose>
 		</trim>
@@ -37,7 +40,7 @@
 	<select id="getCount" resultType="int">
 	select count(*) from tb_culture where 
 	<include refid="criteria"></include> 
-	<include refid="mno"></include> 
+	<include refid="object"></include> 
 	1=1
 	</select>
 	
@@ -49,7 +52,7 @@
 		From tb_culture where 
 	]]>	
 	<include refid="criteria"></include>
-	<include refid="mno"></include> 
+	<include refid="object"></include> 
 	<![CDATA[
 		ROWNUM <= #{cri.pageNum}*#{cri.amount}
 	) where rn > (#{cri.pageNum}-1)*#{cri.amount}
@@ -109,7 +112,7 @@
 	
 	<update id="update">
 	update tb_culture 
-	set cdate=#{cdate}, kind=#{kind}, title=#{title}, content=#{content}, rank=#{rank}, open=#{open} udate=sysdate
+	set cdate=#{cdate}, kind=#{kind}, title=#{title}, content=#{content}, rank=#{rank}, open=#{open}, udate=sysdate
 	where cno=#{cno}
 	</update>
 	

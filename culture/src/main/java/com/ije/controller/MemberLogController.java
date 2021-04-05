@@ -7,6 +7,7 @@ import javax.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -39,12 +40,14 @@ public class MemberLogController {
 	private final MemberLogService service; 
 	
 	@GetMapping("/list")
+	@PreAuthorize("hasRole('ROLE_ADMIN')")
 	public void list(Criteria cri, Model d) {
 		d.addAttribute("list", service.getList(cri)); 
 		d.addAttribute("page", new PageVO(cri, service.getCount(cri)));
 	}
 	
 	@GetMapping("/get")
+	@PreAuthorize("hasRole('ROLE_ADMIN')")
 	public void get(@RequestParam("target") String target, @RequestParam("subPage") int subPage, @ModelAttribute("cri") Criteria cri, Model d) {
 		log.info("조회 : "+target);
 		d.addAttribute("target", target); 
@@ -64,6 +67,7 @@ public class MemberLogController {
 		return new ResponseEntity<>(service.get(lno), HttpStatus.OK); 
 	}
 	
+	@PreAuthorize("hasRole('ROLE_ADMIN')")
 	@PostMapping(value="/new", consumes = "application/json", produces = {MediaType.TEXT_PLAIN_VALUE})
 	public ResponseEntity<String> regiter(@Valid @RequestBody MemberLogVO ins, BindingResult result){
 		log.info("로그 등록 ...................................");
@@ -80,6 +84,7 @@ public class MemberLogController {
 		return service.register(ins)?new ResponseEntity<>("success", HttpStatus.OK) : new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR); 
 	}
 	
+	@PreAuthorize("hasRole('ROLE_ADMIN')")
 	@PutMapping(value="/{lno}", consumes = "application/json", produces = {MediaType.TEXT_PLAIN_VALUE})
 	public ResponseEntity<String> modify(@PathVariable("lno") Long lno, @Valid @RequestBody MemberLogVO upt, BindingResult result){
 		log.info("로그 수정 ...................................");
@@ -96,6 +101,7 @@ public class MemberLogController {
 		return service.modify(upt)?new ResponseEntity<>("success", HttpStatus.OK) : new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR); 
 	}
 	
+	@PreAuthorize("hasRole('ROLE_ADMIN')")
 	@DeleteMapping(value="/{lno}", produces = {MediaType.TEXT_PLAIN_VALUE})
 	public ResponseEntity<String> remove(@PathVariable("lno") Long lno){
 		log.info("로그 삭제 ...................................");

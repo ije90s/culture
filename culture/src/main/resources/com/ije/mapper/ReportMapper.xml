@@ -25,11 +25,11 @@
 		</trim>
 	</sql>
 	
-	<sql id="reporter">
+	<sql id="object">
 		<trim suffix=" And ">
 			<choose>
-				<when test="reporter != 'all'.toString()">
-				 	reporter = #{reporter}
+				<when test="object != 'all'.toString()">
+				 	reporter = #{object}
 				</when>
 			</choose>
 		</trim>
@@ -41,7 +41,7 @@
 		ROWNUM rn, rno, title, content, reporter, kind, no, reason, 
 		state, rdate, mid, mdate from tb_report where
 		<include refid="criteria"></include>
-		<include refid="reporter"></include>	
+		<include refid="object"></include>	
 	<![CDATA[
 		ROWNUM <= #{cri.pageNum}*#{cri.amount}
 	) where rn > (#{cri.pageNum}-1)*#{cri.amount}
@@ -51,7 +51,7 @@
 	<select id="getCount" resultType="int">
 	select count(*) from tb_report where 
 	<include refid="criteria"></include>
-	<include refid="reporter"></include>
+	<include refid="object"></include>
 	1=1
 	</select>
 	

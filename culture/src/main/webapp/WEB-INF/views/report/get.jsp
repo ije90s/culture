@@ -1,9 +1,10 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>   
 <%@ taglib prefix="c"  uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt"  uri="http://java.sun.com/jsp/jstl/fmt" %>    
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %> 
-<%@ include file="../includes/header2.jsp"  %>
+<%@ include file="../includes/header.jsp"  %>
                     <div class="container-fluid">
                         <h3 class="mt-4">신고 상세</h3>
                         <div class="card mb-4">
@@ -46,8 +47,13 @@
                                                 <textarea class="form-control" name="reason" rows="5" id="reason" readonly>${report.reason}</textarea>
 											</div> 
                                             <div class="form-group mt-4 mb-0 text-right">
-	                                        	<button type="button" class="btn btn-primary" data-oper="modify">수정</button>
-	                                            <button type="button" class="btn btn-danger" data-oper="remove">삭제</button>
+                                            	<sec:authentication property="principal" var="pinfo"/>
+                                				<sec:authorize access="hasAnyRole('ROLE_ADMIN','ROLE_MEMBER')">	
+                                					<c:if test="${pinfo.username eq report.reporter || fn:contains(pinfo.member.authList, 'ROLE_ADMIN')}">	
+			                                        	<button type="button" class="btn btn-primary" data-oper="modify">수정</button>
+			                                            <button type="button" class="btn btn-danger" data-oper="remove">삭제</button>
+		                                            </c:if>
+	                                            </sec:authorize>
 	                                            <button type="button" class="btn btn-secondary"  data-oper="list">목록</button>
 	                                            <button type="button" class="btn btn-info" data-oper="search"><i class="fa fa-search"></i></button>
                                             </div>                       
@@ -64,7 +70,14 @@
  <script>
  $(document).ready(function(){
 	 
-	 var formObj = $("#mainForm"); 
+	var formObj = $("#mainForm"); 
+	var auth = null; 
+	var object = '<sec:authentication property="principal.username"/>'; 
+	<sec:authorize access="isAuthenticated()">
+		auth = '<sec:authentication property="principal.member.authList" />';
+	</sec:authorize>
+	if(auth.includes("ADMIN")) object = "all";
+	
 	 $(".btn").on("click",function(e){
 		 e.preventDefault(); 
 		 var oper = $(this).data("oper"); 
@@ -73,10 +86,11 @@
 			 formObj.attr("action", "/report/modify").attr("method", "get").submit();
 		 }else if(oper === "remove"){
 			 formObj.append('<input type="hidden" id="${_csrf.parameterName}" name="${_csrf.parameterName}" value="${_csrf.token}" />');
+			 formObj.append('<input type="hidden" name="object" value="'+object+'" />');
 			 formObj.attr("action", "/report/remove").submit();
 		 }else if(oper === "list"){
 			 formObj.find("#rno").remove();
-			 formObj.attr("action", "/report/list").attr("method","get").submit();
+			 formObj.attr("action", "/report/list/"+object).attr("method","get").submit();
 		 }else if(oper == "search"){
 			 var kind = '<c:out value="${report.kind}"/>';
 			 var no = '<c:out value="${report.no}"/>';

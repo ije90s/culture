@@ -12,4 +12,5 @@ public class UnjoinVO {
 	private String memo; 
 	private Date rdate;
 	private String id; 
+	private int cnt;
 }

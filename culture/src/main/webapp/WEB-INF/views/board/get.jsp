@@ -581,10 +581,15 @@ $(document).ready(function(){
 		 var oper = $(this).text(); 
 		 //console.log(oper);
 		 if(oper.includes("신고하기")){
-			formRe.find("#regReport").show();
-			formRe.find("#modReport").hide();
-			formRe.find("#delReport").hide();
-			$(".warningWrapper").show();
+			if(auth.includes("MEMBER")){
+				formRe.find("#regReport").show();
+				formRe.find("#modReport").hide();
+				formRe.find("#delReport").hide();
+				$(".warningWrapper").show();		
+			}else{
+				alert("신고할 수 없습니다.");
+			}
+			
 		 }else{
 			 var reporter = '<sec:authentication property="principal.username"/>'; 
 			 var no = '<c:out value="${board.bno}" />'; 

@@ -3,12 +3,12 @@
 <%@ taglib prefix="c"  uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt"  uri="http://java.sun.com/jsp/jstl/fmt" %>   
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>    
-<%@ include file="../includes/header2.jsp"  %>
+<%@ include file="../includes/header.jsp"  %>
                     <div class="container-fluid">
                         <h3 class="mt-4">신고리스트</h3>
                         <div class="card mt-4 mb-4">
                             <div class="card-header">
-                                <form id="searchForm" action="/report/list" method="get">
+                                <form id="searchForm" method="get">
                                 	<input type="hidden" name="pageNum" value='<c:out value="${page.cri.pageNum }"/>' />
 									<input type="hidden" name="amount" value='<c:out value="${page.cri.amount }"/>' />
                                 	<div class="input-group">
@@ -112,6 +112,15 @@
 $(document).ready(function(){
 	var result = '<c:out value="${result}"/>';
 	var form = $("#listForm"); 
+	
+	var auth = null; 
+	var object = '<sec:authentication property="principal.username"/>'; 
+	<sec:authorize access="isAuthenticated()">
+		auth = '<sec:authentication property="principal.member.authList" />';
+	</sec:authorize>
+	
+	if(auth.includes("ADMIN")) object = "all";
+	
 	checkModal(result); 
 	history.replaceState({}, null, null);
 	
@@ -130,7 +139,7 @@ $(document).ready(function(){
 		console.log("click");
 	
 		form.find("input[name='pageNum']").val($(this).attr("href"));
-		form.attr("action", "/report/list").submit();
+		form.attr("action", "/report/list/"+object).submit();
 	});
 	
 	//상세페이지 이동
@@ -155,7 +164,7 @@ $(document).ready(function(){
 		}
 		
 		search.find("input[name='pageNum']").val("1");
-		search.attr("action", "/report/list").submit();				
+		search.attr("action", "/report/list/"+object).submit();				
 	});
 });
 </script>                	

@@ -132,7 +132,7 @@ public class CultureController {
 	
 	@PreAuthorize("principal.member.mno == #upt.mno or hasRole('ROLE_ADMIN')")
 	@PostMapping("/modify")
-	public String modify(@RequestHeader("User-Agent") String userAgent, @Valid @ModelAttribute("culture") CultureVO upt, BindingResult result, @ModelAttribute("cri") Criteria cri, RedirectAttributes rttr) {
+	public String modify(@RequestParam("object") Long object, @RequestHeader("User-Agent") String userAgent, @Valid @ModelAttribute("culture") CultureVO upt, BindingResult result, @ModelAttribute("cri") Criteria cri, RedirectAttributes rttr) {
 		
 		if(result.hasErrors()) {
 			for(ObjectError obj : result.getAllErrors()) {
@@ -165,7 +165,7 @@ public class CultureController {
 		if(service.modify(upt) > 0) {
 			rttr.addFlashAttribute("result", service.modify(upt));
 		}
-		return "redirect:/culture/list/"+upt.getMno()+cri.getListLink();
+		return "redirect:/culture/list/"+object+cri.getListLink();
 	}
 	
 	private void deleteFiles(List<AttachFileVO> attachList) {
@@ -194,7 +194,7 @@ public class CultureController {
 	
 	@PreAuthorize("principal.member.mno == #mno or hasRole('ROLE_ADMIN')")
 	@PostMapping("/remove")
-	public String remove(@RequestParam("cno") Long cno, @RequestParam("mno") Long mno, @ModelAttribute("cri") Criteria cri, RedirectAttributes rttr) {
+	public String remove(@RequestParam("cno") Long cno, @RequestParam("object") Long object, @ModelAttribute("cri") Criteria cri, RedirectAttributes rttr) {
 		log.info("삭제하기 호출...............................................");
 		log.info("cno : " + cno);
 		log.info("...........................................");
@@ -207,7 +207,7 @@ public class CultureController {
 			}
 			rttr.addFlashAttribute("result", service.remove(cno)); 
 		}
-		return "redirect:/culture/list/"+vo.getMno()+cri.getListLink();
+		return "redirect:/culture/list/"+object+cri.getListLink();
 	}	
 	
 	@GetMapping(value="/getAttachList", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)

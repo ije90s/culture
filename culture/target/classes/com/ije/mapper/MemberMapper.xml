@@ -79,17 +79,23 @@
 			<trim prefix="OR">
 				<choose>
 					<when test="type == 'N'.toString()">
-						state = '0' and id like '%'||#{cri.keyword}||'%'
+						state = '0'
 					</when>
 					<when test="type == 'B'.toString()">
-						state = '1' and id like '%'||#{cri.keyword}||'%'
+						state = '1'
 					</when>
 					<when test="type == 'E'.toString()">
-						state = '2' and id like '%'||#{cri.keyword}||'%'
+						state = '2'
 					</when>
+					
 				</choose>
 			</trim>
 		</foreach>
+		<trim prefix=" AND ">
+			<if test="cri.keyword !=null">
+				id like '%'||#{cri.keyword}||'%'
+			</if>
+		</trim>		
 		</trim>
 	</sql>
 

@@ -11,4 +11,5 @@ public interface UnJoinMapper {
 	public List<UnjoinVO> getList(Criteria cri);
 	public int getCount();
 	public UnjoinVO read(Long uno);
+	public List<UnjoinVO> getCountList();
 }

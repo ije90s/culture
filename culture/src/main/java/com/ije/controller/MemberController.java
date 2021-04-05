@@ -238,6 +238,7 @@ public class MemberController {
 
 	//admin 부분
 	
+	@PreAuthorize("hasRole('ROLE_ADMIN')")
 	@GetMapping("/list")
 	public void memberList(@ModelAttribute("cri") Criteria cri, Model d) {
 		log.info("회원 리스트.............");
@@ -252,4 +253,12 @@ public class MemberController {
 		d.addAttribute("member", service.read2(mno)); 
 	} 	
 	
+	@GetMapping(value="/count/{type}", produces = {MediaType.APPLICATION_JSON_UTF8_VALUE, MediaType.APPLICATION_XML_VALUE})
+	public ResponseEntity<Integer> getCount(@PathVariable("type") String type){
+		Criteria cri = new Criteria(); 
+		cri.setType(type);
+		log.info(type);
+		log.info(service.getCount(cri));
+		return new ResponseEntity<>(service.getCount(cri), HttpStatus.OK); 
+	}
 }

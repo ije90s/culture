@@ -35,7 +35,7 @@
                         <div class="card mb-4">
                             <div class="card-header"><h6><medium class="invalid">*</medium>(별표)가 있는 항목만 필수값입니다.</h6></div>
                             <div class="card-body">
-									<form role="form" action="/culture/modify" method="post">
+									<form id="mainForm" role="form" action="/culture/modify" method="post">
 										<input type="hidden" name="mno" value="${culture.mno}" />
 										<input type="hidden" name="cno" value="${culture.cno }" />
 										<input type="hidden" name="pageNum" value="${cri.pageNum}"/>
@@ -136,17 +136,17 @@
                                             	<div id="open">
 	                                            	<div class="form-check-inline">
 														<label class="form-check-label">
-															<input type="radio" class="form-check-input" name="open" value="0" <c:if test="${cultureVO.open eq '0'}">checked</c:if>>비공개
+															<input type="radio" class="form-check-input" name="open" value="0" <c:if test="${culture.open eq '0'}">checked</c:if>>비공개
 														</label>
 													</div>
 	                                            	<div class="form-check-inline">
 														<label class="form-check-label">
-															<input type="radio" class="form-check-input" name="open" value="1" <c:if test="${cultureVO.open eq '1'}">checked</c:if>>멤버공개
+															<input type="radio" class="form-check-input" name="open" value="1" <c:if test="${culture.open eq '1'}">checked</c:if>>멤버공개
 														</label>
 													</div>
 												    <div class="form-check-inline">
 														<label class="form-check-label">
-															<input type="radio" class="form-check-input" name="open" value="2" <c:if test="${cultureVO.open eq '2'}">checked</c:if>>전체공개
+															<input type="radio" class="form-check-input" name="open" value="2" <c:if test="${culture.open eq '2'}">checked</c:if>>전체공개
 														</label>
 													</div>
 												</div>																																																							                                            			
@@ -154,7 +154,7 @@
                                             <div class="form-group mt-4 mb-0 text-right">
                                             	<sec:authentication property="principal" var="pinfo"/>
                                              	<sec:authorize access="isAuthenticated()">
-                                             		<c:if test="${pinfo.member.mno eq culture.mno}">
+                                             		<c:if test="${pinfo.member.mno eq culture.mno || fn:contains(pinfo.member.authList, 'ROLE_ADMIN')}">
                                             			<button type="button" class="btn btn-primary" data-oper="modify">수정</button>
                                             		</c:if>
                                             	</sec:authorize>
@@ -194,10 +194,18 @@
 <script>
 
 $(document).ready(function(){
-	var formObj = $("form"); 
+	var formObj = $("#mainForm"); 
 	var mno = '<sec:authentication property="principal.member.mno"/>'; 
 	var csrfHeader = "${_csrf.headerName}"; 
 	var csrfToken = "${_csrf.token}";
+	
+	 var auth = null; 
+
+	 <sec:authorize access="isAuthenticated()">
+		auth = '<sec:authentication property="principal.member.authList" />';
+	 </sec:authorize>	
+	 if(auth.includes("ADMIN")) mno = "0";		
+	
 	
 	$(".chk").blur(function(e){
 		cultureService.validate($(this));	
@@ -303,6 +311,8 @@ $(document).ready(function(){
 					str+="<input type='hidden' name='attachList[0].fileList["+i+"].fileType' value='"+jobj.data("type")+"'/>";
 				});
 				
+				str+="<input type='hidden' name='object' value='"+mno+"' />"; 
+				
 				$(".chk").each(function(e){
 					cultureService.validate($(this));	
 				});
@@ -321,10 +331,10 @@ $(document).ready(function(){
 			}
 		}else{
 			formObj.attr("action", "/culture/list/"+mno).attr("method", "get"); 
-			var pageNum = $("input[name='pageNum']").clone(); 
-			var amount = $("input[name='amount']").clone(); 
-			var type = $("input[name='type']").clone(); 
-			var keyword = $("input[name='keyword']").clone(); 
+			var pageNum = formObj.find("input[name='pageNum']"); 
+			var amount = formObj.find("input[name='amount']"); 
+			var type = formObj.find("input[name='type']");   
+			var keyword = formObj.find("input[name='keyword']"); 
 			
 			formObj.empty(); 
 			formObj.append(pageNum); 

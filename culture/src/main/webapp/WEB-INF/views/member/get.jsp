@@ -4,7 +4,7 @@
 <%@ taglib prefix="fmt"  uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %> 
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>      
-<%@ include file="../includes/header2.jsp"  %>
+<%@ include file="../includes/header.jsp"  %>
  					<div class="container-fluid">
                         <h3 class="mt-4">회원정보 상세</h3>
                         <div class="card mt-4 mb-4">

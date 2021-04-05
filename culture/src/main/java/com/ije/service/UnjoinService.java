@@ -10,4 +10,5 @@ public interface UnjoinService {
 	public List<UnjoinVO> getList(Criteria cri); 
 	public int getCount();
 	public UnjoinVO get(Long uno);
+	public List<UnjoinVO> getCountList();
 }

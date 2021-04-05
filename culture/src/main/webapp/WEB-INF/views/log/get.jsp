@@ -2,7 +2,7 @@
     pageEncoding="UTF-8"%>
 <%@ taglib prefix="c"  uri="http://java.sun.com/jsp/jstl/core" %>    
 <%@ taglib prefix="fmt"  uri="http://java.sun.com/jsp/jstl/fmt" %>
-<%@ include file="../includes/header2.jsp"  %>
+<%@ include file="../includes/header.jsp"  %>
 					<div class="container-fluid">
                         <h3 class="mt-4">${target} 로그 상세</h3>
                         <div class="card mt-4 mb-4">

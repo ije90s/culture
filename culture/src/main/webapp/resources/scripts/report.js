@@ -54,11 +54,13 @@ var reportService = (function(){
 		});
 	}
 	
-	function remove(rno, callback, error){
+	function remove(report, callback, error){
 		console.log("remove........................."); 	
 		$.ajax({
 			type : 'delete', 
-			url : '/report/'+rno,
+			url : '/report/'+report.rno,
+			data : JSON.stringify(report), 
+			contentType : "application/json; charset=UTF-8", 
 			success : function(result, status, xhr){
 				if(callback){
 					callback(result); 

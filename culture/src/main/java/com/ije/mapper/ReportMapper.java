@@ -9,8 +9,8 @@ import com.ije.domain.ReportVO;
 
 public interface ReportMapper {
 	
-	public List<ReportVO> getList(@Param("cri") Criteria cri, @Param("reporter") String reporter); 
-	public int getCount(@Param("cri") Criteria cri, @Param("reporter") String reporter); 
+	public List<ReportVO> getList(@Param("cri") Criteria cri, @Param("object") String object); 
+	public int getCount(@Param("cri") Criteria cri, @Param("object") String object); 
 	public int insert(ReportVO ins);
 	public ReportVO read(Long rno);
 	public int update(ReportVO upt);

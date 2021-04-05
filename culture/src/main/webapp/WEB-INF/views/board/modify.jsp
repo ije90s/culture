@@ -39,7 +39,7 @@
                         <div class="card mt-4 mb-4">
                             <div class="card-header"><h6><medium class="invalid">*</medium>(별표)가 있는 항목만 필수값입니다.</h6></div>
                             <div class="card-body">
-                            	<form role="form" action="/board/modify" method="post">
+                            	<form id="mainForm" role="form" action="/board/modify" method="post">
                             		<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
                             		<input type="hidden" name="pageNum" value="${cri.pageNum}" />
                             		<input type="hidden" name="amount" value="${cri.amount}" />
@@ -86,7 +86,7 @@
 <script src="/resources/scripts/board.js"></script>
 <script>
 $(document).ready(function(){
-	var form = $("form");
+	var form = $("#mainForm");
 	var csrfHeader = "${_csrf.headerName}"; 
 	var csrfToken = "${_csrf.token}";
 	
@@ -192,11 +192,11 @@ $(document).ready(function(){
 				form.append(str).submit();
 			}
 		}else{
-			var pageNum = $("input[name='pageNum']").clone(); 
-			var amount = $("input[name='amount']").clone(); 
-			var type = $("input[name='type']").clone(); 
-			var keyword = $("input[name='keyword']").clone(); 
-			var kind = $("input[name='kind']").val(); 
+			var pageNum = form.find("input[name='pageNum']"); 
+			var amount = form.find("input[name='amount']"); 
+			var type = form.find("input[name='type']");   
+			var keyword = form.find("input[name='keyword']"); 
+			
 			form.empty();
 			form.append(pageNum);
 			form.append(amount);

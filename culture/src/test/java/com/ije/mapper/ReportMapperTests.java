@@ -23,7 +23,7 @@ public class ReportMapperTests {
 	public void getList() {
 		log.info("......................................");
 		Criteria cri = new Criteria(); 
-		mapper.getList(cri).forEach(list -> log.info(list));
+		//mapper.getList(cri).forEach(list -> log.info(list));
 	}
 	
 	@Test

@@ -1,7 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <%@ taglib prefix="c"  uri="http://java.sun.com/jsp/jstl/core" %>    
-<%@ include file="../includes/header2.jsp"  %>
+<%@ include file="../includes/header.jsp"  %>
 					<div class="container-fluid">
                         <h3 class="mt-4">탈퇴 상세</h3>
                         <div class="card mt-4 mb-4">

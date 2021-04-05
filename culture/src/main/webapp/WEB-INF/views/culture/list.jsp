@@ -6,11 +6,19 @@
 <%@ include file="../includes/header.jsp"  %>
 
                     <div class="container-fluid">
-                        <h3 class="mt-4">나의 기록
-	                        <div class="btn-group float-right">
-	                         	<button type="button" class="btn btn-outline-primary active">리스트</button>
-	  							<button type="button" class="btn btn-outline-primary">통계</button>
-	                        </div>
+                        <h3 class="mt-4">
+                        	<sec:authorize access="hasRole('ROLE_ADMIN')">
+                        	문화 기록
+                        	</sec:authorize>		 
+                        	<sec:authorize access="hasAnyRole('ROLE_USER','ROLE_MEMBER')">
+                        	나의 기록
+                        	</sec:authorize>	                        		
+                        	<sec:authorize access="hasAnyRole('ROLE_USER','ROLE_MEMBER')">
+		                        <div class="btn-group float-right">
+		                         	<button type="button" class="btn btn-outline-primary active">리스트</button>
+		  							<button type="button" class="btn btn-outline-primary">통계</button>
+		                        </div>
+	                        </sec:authorize>
                         </h3>
                         <div class="card mt-4 mb-4">
                             <div class="card-header">
@@ -26,7 +34,9 @@
 	                                	</select>
 	                                	<div class="input-group-prepend"><input type="text" name="keyword" class="form-control" value='<c:out value="${page.cri.keyword}"/>' /></div>
 										<div class="input-group-prepend"><button class="btn btn-primary" data-oper="search">검색</button></div>
-										<button class="btn btn-secondary" style="position:absolute; right:5px;" data-oper="regiter">등록</button>
+										<sec:authorize access="hasAnyRole('ROLE_USER','ROLE_MEMBER')">
+											<button class="btn btn-secondary" style="position:absolute; right:5px;" data-oper="regiter">등록</button>
+										</sec:authorize>
 									</div>
                                 </form>							                  
                             </div>
@@ -123,6 +133,13 @@ $(document).ready(function(){
 	var form = $("#listForm"); 
 	checkModal(result); 
 	history.replaceState({}, null, null);
+	
+	var auth = null; 
+	<sec:authorize access="isAuthenticated()">
+		auth = '<sec:authentication property="principal.member.authList" />';
+	</sec:authorize>
+
+	if(auth.includes("ADMIN")) mno = "0";	
 	
 	//모달창
 	function checkModal(result){

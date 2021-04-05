@@ -13,7 +13,7 @@
                         <div class="card mb-4">
                             <div class="card-header"><h6><medium class="invalid">*</medium>(별표)가 있는 항목만 필수값입니다.</h6></div>
                             <div class="card-body">
-									<form role="form" action="/culture/register" method="post">
+									<form id="mainForm" role="form" action="/culture/register" method="post">
 										<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
 										<input type="hidden" name="mno" value='<sec:authentication property="principal.member.mno"/>' />
 									        <div class="form-group">
@@ -162,7 +162,7 @@
 
 $(document).ready(function(){
 	
-	var formObj = $("form"); 
+	var formObj = $("#mainForm"); 
 	var csrfHeader = "${_csrf.headerName}"; 
 	var csrfToken = "${_csrf.token}";
 	

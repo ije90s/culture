@@ -49,4 +49,9 @@ public class UnjoinServiceImpl implements UnjoinService {
 		return mapper.read(uno);
 	}
 
+	@Override
+	public List<UnjoinVO> getCountList() {
+		return mapper.getCountList();
+	}
+
 }

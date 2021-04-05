@@ -30,7 +30,43 @@ var homeService = (function(){
 			}
 		}); 
 	}
-
+	
+	function countList(type, callback, error){
+		$.get("/member/count/"+type+".json", function(result){
+			if(callback){
+				callback(result); 
+			}
+		}).fail(function(xhr, status, err){
+			if(error){
+				error(er); 
+			}
+		}); 		
+	}
+	
+	function reportList(callback, error){
+		$.get("/report/top.json", function(result){
+			if(callback){
+				callback(result); 
+			}
+		}).fail(function(xhr, status, err){
+			if(error){
+				error(er); 
+			}
+		});	
+	}
+	
+	function chartList(callback, error){
+		$.get("/unjoin/chart.json", function(result){
+			if(callback){
+				callback(result); 
+			}
+		}).fail(function(xhr, status, err){
+			if(error){
+				error(er); 
+			}
+		});	
+	}	
+	
 	function displyTime(time){
 		var dateObj = new Date(time); 
 		var yy = dateObj.getFullYear(); 
@@ -44,6 +80,9 @@ var homeService = (function(){
 	return {
 		cultureList : cultureList,
 		boardList : boardList,  
-		displyTime : displyTime
+		displyTime : displyTime,
+		countList : countList,
+		reportList : reportList,
+		chartList : chartList
 	};
 })();

@@ -1,8 +1,11 @@
 package com.ije.controller;
 
+import java.util.List;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -33,11 +36,13 @@ public class ReportController {
 
 	private final ReportService service; 
 	
-	@GetMapping("/list")
-	public void list(@RequestParam("repoter") String reporter, Criteria cri, Model d) {
+	@GetMapping("/list/{object}")
+	@PreAuthorize("isAuthenticated()")
+	public String list(@PathVariable("object") String object, Criteria cri, Model d) {
 		log.info("리스트 출력..................");
-		d.addAttribute("list", service.getList(cri, reporter)); 
-		d.addAttribute("page", new PageVO(cri, service.getCount(cri, reporter))); 
+		d.addAttribute("list", service.getList(cri, object)); 
+		d.addAttribute("page", new PageVO(cri, service.getCount(cri, object))); 
+		return "/report/list";
 	}
 	
 	@GetMapping({"/get", "/modify"})
@@ -48,26 +53,31 @@ public class ReportController {
 	
 	
 	@PostMapping("/modify")
-	public String modify(@ModelAttribute("report") ReportVO upt, @ModelAttribute("cri") Criteria cri, RedirectAttributes rd) {
+	@PreAuthorize("hasAnyRole('ROLE_MEMBER','ROLE_ADMIN')")
+	public String modify(@RequestParam("object") String object, @ModelAttribute("report") ReportVO upt,  @ModelAttribute("cri") Criteria cri, RedirectAttributes rd) {
 		log.info("내용 수정.......................");
 		log.info(upt);
+	
 		int result = service.modify(upt); 
 		if(result > 0) {
 			rd.addFlashAttribute("result", result); 
 		}
-		return "redirect:/report/list/"+cri.getListLink(); 
+		
+		return "redirect:/report/list/"+object+cri.getListLink(); 
 	}
 	
 	@PostMapping("/remove")
-	public String remove(@RequestParam("rno") Long rno, @ModelAttribute("cri") Criteria cri, RedirectAttributes rd) {
+	@PreAuthorize("hasAnyRole('ROLE_MEMBER','ROLE_ADMIN')")
+	public String remove(@RequestParam("rno") Long rno, @RequestParam("object") String object, @ModelAttribute("cri") Criteria cri, RedirectAttributes rd) {
 		log.info("내용 삭제......................."+rno);
 		int result = service.remove(rno); 
 		if(result > 0) {
 			rd.addFlashAttribute("result", result); 
 		}
-		return "redirect:/report/list/"+cri.getListLink(); 
+		return "redirect:/report/list/"+object+cri.getListLink(); 
 	}
 	
+	@PreAuthorize("hasAnyRole('ROLE_MEMBER')")
 	@PostMapping(value="/new", consumes = "application/json", produces = {MediaType.TEXT_PLAIN_VALUE})
 	@ResponseBody
 	public ResponseEntity<String> register(@RequestBody ReportVO ins){
@@ -83,6 +93,7 @@ public class ReportController {
 		return new ResponseEntity<>(service.getByNo(kind, no), HttpStatus.OK);
 	}
 	
+	@PreAuthorize("principal.username == #upt.mid")
 	@PutMapping(value="/{rno}", consumes = "application/json", produces = {MediaType.TEXT_PLAIN_VALUE})
 	@ResponseBody
 	public ResponseEntity<String> modify(@PathVariable("rno") Long rno, @RequestBody ReportVO upt){
@@ -90,10 +101,19 @@ public class ReportController {
 		return service.modify(upt)>0?new ResponseEntity<>("success", HttpStatus.OK) : new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR); 
 	}
 	
-	@DeleteMapping(value="/{rno}", produces = {MediaType.TEXT_PLAIN_VALUE})
+	@PreAuthorize("principal.username == #del.mid")
+	@DeleteMapping(value="/{rno}", consumes = "application/json", produces = {MediaType.TEXT_PLAIN_VALUE})
 	@ResponseBody
-	public ResponseEntity<String> remove(@PathVariable("rno") Long rno){
+	public ResponseEntity<String> remove(@PathVariable("rno") Long rno, @RequestBody ReportVO del){
 		log.info("신고 삭제 : "+rno);
 		return service.remove(rno)>0?new ResponseEntity<>("success", HttpStatus.OK) : new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+	}
+	
+	@GetMapping(value="/top", produces = {MediaType.APPLICATION_JSON_UTF8_VALUE, MediaType.APPLICATION_XML_VALUE})
+	@ResponseBody
+	public ResponseEntity<List<ReportVO>> top(){
+		Criteria cri = new Criteria(); 
+		String object = "all"; 
+		return new ResponseEntity<>(service.getList(cri, object), HttpStatus.OK);
 	}
 }

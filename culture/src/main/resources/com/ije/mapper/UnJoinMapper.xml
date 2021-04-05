@@ -27,4 +27,9 @@
 	<select id="read" resultType="com.ije.domain.UnjoinVO">
 	select * from tb_unjoin where uno=#{uno}
 	</select>
+	
+	<select id="getCountList" resultType="com.ije.domain.UnjoinVO">
+	select reason, count(*) as cnt from tb_unjoin 
+	group by reason
+	</select>
 </mapper>

@@ -80,7 +80,7 @@ public class MemberMapperTests {
 		log.info("...........................................");
 		Criteria cri = new Criteria(); 
 		cri.setType("N");
-		cri.setKeyword("user");
+		//cri.setKeyword("user");
 		log.info(mapper.getCount(cri));
 	}
 }

@@ -1,5 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>      
 <%@ taglib prefix="c"  uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt"  uri="http://java.sun.com/jsp/jstl/fmt" %>    
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %> 
@@ -152,7 +153,7 @@
 											</div>
                                             <div class="form-group mt-4 mb-0 text-right">
                                              	<sec:authorize access="isAuthenticated()">
-                                             		<c:if test="${pinfo.member.mno eq culture.mno}">
+                                             		<c:if test="${pinfo.member.mno eq culture.mno || fn:contains(pinfo.member.authList, 'ROLE_ADMIN')}">
 	                                            		<button type="button" class="btn btn-primary" data-oper="modify">수정</button>
 	                                            		<button type="button" class="btn btn-danger" data-oper="remove">삭제</button>
 	                                            		<button type="button" class="btn btn-secondary"  data-oper="list">목록</button>
@@ -200,6 +201,11 @@
 	 var formObj = $("#mainForm");
 	 var formRe = $("#reportForm");
 	 var mno = '<sec:authentication property="principal.member.mno"/>'; 
+	 var auth = null; 
+	 <sec:authorize access="isAuthenticated()">
+		auth = '<sec:authentication property="principal.member.authList" />';
+	 </sec:authorize>	
+	 if(auth.includes("ADMIN")) mno = "0";	
 	 (function(){
 			var cno = '<c:out value="${culture.cno}" />';
 			$.getJSON("/culture/getAttachList", {cno : cno}, function(arr){
@@ -250,7 +256,7 @@
 			 formObj.attr("action", "/culture/modify").attr("method", "get").submit();
 		 }else if(oper === "remove"){
 			 formObj.append('<input type="hidden" id="${_csrf.parameterName}" name="${_csrf.parameterName}" value="${_csrf.token}" />');
-			 formObj.append('<input type="hidden" name="mno" value="'+mno+'"/>');
+			 formObj.append('<input type="hidden" name="object" value="'+mno+'"/>');
 			 formObj.attr("action", "/culture/remove").submit();
 		 }else if(oper === "list"){
 			 formObj.find("#cno").remove();
@@ -300,8 +306,23 @@
 			 });
 			 
 		 }else if(oper == "del"){
+			 var report; 
+			 var title = formRe.find("input[name='title']").val();
+			 var content = formRe.find("#content").val();
 			 var rno = formRe.find("input[name='rno']").val();
-			 reportService.remove(rno, function(data){
+			 var state = formRe.find("input[name='state']").val();
+			 var reason = formRe.find("input[name='reason']").val();
+			 var mid = formRe.find("input[name='mid']").val();
+	
+			 report = {
+				title : title, 
+				content : content, 
+				rno : rno, 
+				state : state, 
+				reason : reason, 
+				mid : mid
+			 }; 			 
+			 reportService.remove(report, function(data){
 					alert("삭제되었습니다.");  
 					location.reload();
 			 });
@@ -324,10 +345,14 @@
 		 var oper = $(this).text(); 
 		 //console.log(oper);
 		 if(oper.includes("신고하기")){
-			formRe.find("#regBtn").show();
-			formRe.find("#modBtn").hide();
-			formRe.find("#delBtn").hide();
-			$(".warningWrapper").show(); 	
+			if(auth.includes("MEMBER")){
+				formRe.find("#regBtn").show();
+				formRe.find("#modBtn").hide();
+				formRe.find("#delBtn").hide();
+				$(".warningWrapper").show(); 				
+			}else{
+				alert("신고할 수 없습니다.");
+			}
 		 }else{
 			 var reporter = '<sec:authentication property="principal.username"/>'; 
 			 var no = '<c:out value="${culture.cno}" />'; 
