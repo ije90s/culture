@@ -24,15 +24,15 @@ public class ReportServiceImpl implements ReportService {
 	private final BoardMapper boardMapper; 
 	
 	@Override
-	public List<ReportVO> getList(Criteria cri, String repoter) {
+	public List<ReportVO> getList(Criteria cri, String object, String tab) {
 		log.info("리스트 출력............................");
-		return mapper.getList(cri, repoter);
+		return mapper.getList(cri, object, tab);
 	}
 
 	@Override
-	public int getCount(Criteria cri, String repoter) {
+	public int getCount(Criteria cri, String object, String tab) {
 		log.info("건수 출력............................");
-		return mapper.getCount(cri, repoter);
+		return mapper.getCount(cri, object, tab);
 	}
 
 	@Transactional

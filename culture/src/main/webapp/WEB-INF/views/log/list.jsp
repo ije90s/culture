@@ -17,7 +17,7 @@
                                 	<option value="T" <c:out value="${page.cri.type eq 'T'?'selected':''}"/>>아이디</option>
                                 	</select>
                                 	<div class="input-group-prepend"><input type="text" name="keyword" class="form-control" value='<c:out value="${page.cri.keyword}"/>' /></div>  	
-									<div class="input-group-prepend"><button class="btn btn-primary">검색</button></div>
+									<div class="input-group-prepend"><button class="btn btn-primary" data-oper="search">검색</button></div>
 								</div>	
                                 </form>
                             </div>
@@ -67,8 +67,45 @@
 	<input type="hidden" name="type" value="${page.cri.type }"/>
 	<input type="hidden" name="keyword" value="${page.cri.keyword }"/>
 </form> 
+<!-- The Modal -->
+<div class="modal fade" id="myModal" role="dialog">
+  <div class="modal-dialog">
+    <div class="modal-content">
+
+      <!-- Modal Header -->
+      <div class="modal-header">
+        <h4 class="modal-title">처리결과</h4>
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+      </div>
+
+      <!-- Modal body -->
+      <div class="modal-body">
+     	 정상적으로 처리되었습니다.
+      </div>
+
+      <!-- Modal footer -->
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+      </div>
+
+    </div>
+  </div>
+</div>            	
+<!-- The Modal 끝 -->                                   
 <script>
 $(document).ready(function(){
+	var result = '<c:out value="${result}"/>';
+	checkModal(result); 
+	history.replaceState({}, null, null);
+
+	
+	//모달창
+	function checkModal(result){
+		if(result === '' || history.state){
+			return; 
+		}
+		$("#myModal").modal("show");
+	}	
 	
 	var form = $("#listForm"); 
 	$(".move").click(function(e){
@@ -89,17 +126,20 @@ $(document).ready(function(){
 	var search = $("#searchForm"); 
 	$(".btn").on("click", function(e){
 		e.preventDefault(); 
-		if(!search.find("option:selected").val()){
-			alert("종류를 선택하세요."); 
-			return false; 
-		}
-			
-		if(!search.find("input[name='keyword']").val()){
-			alert("키워드를 입력하세요."); 
-			return false; 
-		}
-		search.find("input[name='pageNum']").val("1");
-		search.attr("action", "/log/list").submit();					
+		var oper = $(this).data("oper"); 
+		if(oper == "search"){
+			if(!search.find("option:selected").val()){
+				alert("종류를 선택하세요."); 
+				return false; 
+			}
+				
+			if(!search.find("input[name='keyword']").val()){
+				alert("키워드를 입력하세요."); 
+				return false; 
+			}
+			search.find("input[name='pageNum']").val("1");
+			search.attr("action", "/log/list").submit();							
+		}		
 	});	
 });
 </script>                	

@@ -7,6 +7,7 @@ import java.util.Locale;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -15,6 +16,8 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -39,6 +42,8 @@ public class HomeController {
 	private static final Logger logger = LoggerFactory.getLogger(HomeController.class);
 	
 	private final LoginService service; 
+	
+	private final BoardService boardService;
 
 	/**
 	 * Simply selects the home view to render by returning its name.
@@ -73,4 +78,19 @@ public class HomeController {
 		d.addAttribute("type", type); 
 		d.addAttribute("keyword", keyword); 
 	}
+	
+	@GetMapping("/activity")
+	@PreAuthorize("isAuthenticated()")
+	public void activity(@ModelAttribute("cri") Criteria cri, Model d) {
+		String kind = "all"; 
+		d.addAttribute("list", boardService.getListPaging(cri, kind)); 
+		d.addAttribute("page", new PageVO(cri, boardService.getCount(cri, kind)));
+	}
+	
+	@GetMapping(value="/login/{id}/count", produces = {MediaType.APPLICATION_JSON_UTF8_VALUE, MediaType.APPLICATION_XML_VALUE})
+	@ResponseBody
+	public ResponseEntity<Integer> count(@PathVariable("id") String id){
+		return new ResponseEntity<>(service.getCount(id), HttpStatus.OK);
+	}
+	
 }

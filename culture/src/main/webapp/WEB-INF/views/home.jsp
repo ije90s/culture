@@ -8,7 +8,7 @@
 	<div class="container-fluid">
 		<sec:authorize access="hasAnyRole('ROLE_MEMBER','ROLE_USER')">      
 			<h3 class="mt-4"><sec:authentication property="principal.member.name"/> 환영합니다. 
-			<button id="regBtn" class="btn btn-primary float-right">문화기록 등록</button></h3>
+			<button id="regBtn" class="btn btn-primary float-right">문화기록 등록</button></h3>			
 			<div class="card mt-4 mb-4">
 	        	<div class="card-header"><h6>문화기록<button class="btn btn-secondary float-right move" data-oper="culture">더보기</button></h6></div>
 	            <div class="card-body">
@@ -90,7 +90,7 @@
 	    </div> <!-- card mb-4 끝 -->    
 	    <div class="card mt-4 mb-4">
 	    	<div class="card-header">탈퇴사유</div>
-	    	<div class="card-body"><canvas id="myChart" width="400" height="400"></canvas></div>
+	    	<div class="card-body" id="myChartContainer"><canvas id="myChart" width="400" height="400"></canvas></div>
 	    </div>      
         </sec:authorize>
         <!-- admin 끝-->
@@ -146,6 +146,8 @@ $(document).ready(function(){
 			reasons[i]=reason; 
 			colors[i]=color;
 			datas[i]=list[i].cnt;
+			$("#myChart").remove(); 
+			$("#myChartContainer").append('<canvas id="myChart" width="100" height="100"></canvas>');
 			var ctx = document.getElementById('myChart');
 			var myChart = new Chart(ctx, {
 				type: 'doughnut', 

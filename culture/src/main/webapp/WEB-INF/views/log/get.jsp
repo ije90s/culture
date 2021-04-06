@@ -44,16 +44,17 @@ $(document).ready(function(){
 	var subPage = '<c:out value="${subPage}" />';
 	showList(target, subPage); 
 	var form = $("#mainForm"); 
-	$(".btn").click(function(e){
+	$(".btn").on("click", function(e){
 		e.preventDefault(); 
 		var oper = $(this).data("oper"); 
+		console.log(oper);
 		if(oper == "list"){
 			form.attr("action", "/log/list").submit();
-		}else{
+		}else if(oper=="more"){
 			var length = $(".move").length; 
 			subPage = Math.ceil(parseInt(length)/3)+1; 
 			showList(target, subPage); 
-		}		
+		}
 	});	
 	
 	function showList(target, subPage){
@@ -98,12 +99,26 @@ $(document).ready(function(){
 				str+="<td>"+logService.displyTime(log[i].mdate)+"</td>"; 	
 				str+="</tr>"; 
 				str+="<tr class='table-primary'>"; 
-				str+="<td colspan='8'>"+log[i].content+"</td>";					
+				str+="<td colspan='6'>"+log[i].content+"</td>";		
+				str+='<td><button type="button" class="btn btn-warning" onclick="lnoSubmit(\'modify\', '+log[i].lno+')">수정</button> ';
+				str+='<button type="button" class="btn btn-danger" onclick="lnoSubmit(\'remove\', '+log[i].lno+')">삭제</button></td>';
 				str+="</tr>"; 
 			}
 			logBody.append(str);
 		});
 	}
 });
+
+function lnoSubmit(oper, lno){
+	var form = $("#mainForm"); 
+	if(oper=="modify"){
+		form.append("<input type='hidden' name='lno' value='"+lno+"' />"); 
+		form.attr("action", "/log/modify").submit();
+	}else{
+		form.append("<input type='hidden' name='lno' value='"+lno+"' />");
+		form.append('<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />');
+		form.attr("action", "/log/remove").attr("method", "post").submit();
+	}
+}
 </script>       
 <%@ include file="../includes/footer.jsp"  %>

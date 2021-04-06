@@ -51,6 +51,7 @@
 						background-color:white; 
 						border : 1px solid gray;
 					}
+					.invalid{color:red !important;}
 					</style>
                     <div class="container-fluid">
                         <h3 class="mt-4">
@@ -167,12 +168,14 @@
 	<div class="warningDiv">
 		<form id="reportForm">
 	    	<div class="form-group">
-	        	<label class="small mb-1" for="title">제목</label>
-	            <input class="form-control py-4" name="title" id="title" type="text"/>
+	        	<label class="small mb-1" for="title">제목<medium class="invalid">*</medium></label>
+	            <input class="form-control py-4 chk" name="title" id="title" type="text" value="${reportVO.title}"/>
+	            <small></small>
 	        </div>
 	        <div class="form-group">
-	            <label class="small mb-1" for="content">내용</label>
-	            <textarea class="form-control" name="content" rows="5" id="content"></textarea>
+	            <label class="small mb-1" for="content">내용<medium class="invalid">*</medium></label>
+	            <textarea class="form-control chk" name="content" rows="5" id="content">${reportVO.content}</textarea>
+	            <small></small>
 	        </div>
 	        <div class="form-group mt-4 mb-0 text-right">
 		        <button type="button" class="btn btn-primary btn-sm" id="regBtn" data-oper="reg">등록</button>
@@ -248,6 +251,21 @@
 	});	 
 	 
 
+	$(".chk").blur(function(e){
+		reportService.validate($(this)); 
+	});
+	
+
+	//invalid 항목 검사
+	function checkItem(item){
+		if(item.siblings('small').hasClass("invalid")){
+			item.focus(); 
+			return false; 
+		}else {
+			return true; 
+		}	
+	}		
+	
 	 $(".btn").on("click",function(e){
 		 e.preventDefault(); 
 		 var oper = $(this).data("oper"); 
@@ -262,6 +280,14 @@
 			 formObj.find("#cno").remove();
 			 formObj.attr("action", "/culture/list/"+mno).attr("method","get").submit();
 		 }else if(oper == "reg"){
+
+			 $(".chk").blur(function(e){
+			   reportService.validate($(this)); 
+		     });
+					 
+			 if(!checkItem(formRe.find("input[name='title']"))) return false;		
+		     if(!checkItem(formRe.find("#content"))) return false;				 
+			 
 			 var report; 
 			 var reporter = '<sec:authentication property="principal.username"/>'; 
 			 var no = '<c:out value="${culture.cno}" />';
@@ -281,8 +307,21 @@
 			 reportService.add(report, function(data){
 				alert("등록되었습니다.");
 				location.reload();
-			 });		 
+			 }, function(error){
+					alert("입력값을 확인하세요.");
+					$(".chk").each(function(){
+						reportService.validate($(this));
+					});
+				 });		 
 		 }else if(oper == "mod"){	 	 
+		
+			 $(".chk").blur(function(e){
+				reportService.validate($(this)); 
+			 });
+				 
+		     if(!checkItem(formRe.find("input[name='title']"))) return false;		
+			 if(!checkItem(formRe.find("#content"))) return false;				 
+			 
 			 var report; 
 			 var title = formRe.find("input[name='title']").val();
 			 var content = formRe.find("#content").val();
@@ -291,6 +330,7 @@
 			 var reason = formRe.find("input[name='reason']").val();
 			 var mid = formRe.find("input[name='mid']").val();
 	
+			 
 			 report = {
 				title : title, 
 				content : content, 
@@ -303,6 +343,11 @@
 			 reportService.modify(report, function(data){
 				alert("수정되었습니다.");  
 				location.reload();
+			 }, function(error){
+				alert("입력값을 확인하세요.");
+				$(".chk").each(function(){
+					reportService.validate($(this));
+				});
 			 });
 			 
 		 }else if(oper == "del"){
@@ -378,8 +423,7 @@
 
 			 });
 		 }
-	 });
-	 
+	 });	
  });
  </script>               	
 <%@ include file="../includes/footer.jsp"  %>

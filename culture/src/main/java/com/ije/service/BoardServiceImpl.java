@@ -113,10 +113,18 @@ public class BoardServiceImpl implements BoardService {
 	}
 
 	@Override
-	public int getWriterCount(String writer) {
+	public int getWriterCount(Criteria cri, String writer) {
 		// TODO Auto-generated method stub
-		return mapper.getWriterCount(writer);
+		return mapper.getWriterCount(cri, writer);
 	}
+
+	@Override
+	public List<BoardVO> getWriterList(Criteria cri, String writer) {
+		// TODO Auto-generated method stub
+		return mapper.getWriterList(cri, writer);
+	}
+
+
 	
 
 }

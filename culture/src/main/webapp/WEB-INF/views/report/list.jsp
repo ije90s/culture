@@ -5,7 +5,12 @@
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>    
 <%@ include file="../includes/header.jsp"  %>
                     <div class="container-fluid">
-                        <h3 class="mt-4">신고리스트</h3>
+                        <h3 class="mt-4">신고리스트 <div class="btn-group float-right" role="group">
+                       				<button type="button" class="btn btn-outline-primary  <c:if test="${tab eq 'all'}"><c:out value="active"/></c:if>" data-oper="all">전체</button>
+		                         	<button type="button" class="btn btn-outline-primary <c:if test="${tab eq 'ing'}"><c:out value="active"/></c:if>" data-oper="ing">처리중</button>
+		  							<button type="button" class="btn btn-outline-primary <c:if test="${tab eq 'done'}"><c:out value="active"/></c:if>" data-oper="done">완료</button>
+		  							<button type="button" class="btn btn-outline-primary <c:if test="${tab eq 'no'}"><c:out value="active"/></c:if>" data-oper="no">미처리</button>
+		                        </div></h3>
                         <div class="card mt-4 mb-4">
                             <div class="card-header">
                                 <form id="searchForm" method="get">
@@ -23,9 +28,10 @@
 	                                	<option value="TCR" <c:out value="${page.cri.type eq 'TCR'?'selected':''}"/>>제목+내용+신고자</option>
 	                                	</select>
 	                                	<div class="input-group-prepend"><input type="text" name="keyword" class="form-control" value='<c:out value="${page.cri.keyword}"/>' /></div>
-										<div class="input-group-prepend"><button class="btn btn-primary">검색</button></div>						
+										<div class="input-group-prepend"><button class="btn btn-primary" data-oper="search">검색</button></div>		
 									</div>
-                                </form>							                  
+                                </form>	
+                               			                  
                             </div>
                             <div class="card-body">
                                 <div class="table-responsive">
@@ -81,6 +87,7 @@
 	<input type="hidden" name="amount" value="${page.cri.amount }" />
 	<input type="hidden" name="type" value="${page.cri.type }" />
 	<input type="hidden" name="keyword" value="${page.cri.keyword }" />
+	<input type="hidden" name="tab" value="${tab}" />
 </form>
 <!-- form 끝 -->                        
 <!-- The Modal -->
@@ -132,6 +139,8 @@ $(document).ready(function(){
 		$("#myModal").modal("show");
 	}
 	
+	
+	
 	//페이징
 	$("ul.pagination li.page-item a").on("click", function(e){
 		e.preventDefault(); 
@@ -150,22 +159,38 @@ $(document).ready(function(){
 	});
 
 	var search = $("#searchForm"); 
-	$("#searchForm button").on("click", function(e){
+	$(".btn").click(function(e){
 		e.preventDefault(); 
-		
-		if(!search.find("option:selected").val()){
-			alert("종류를 선택하세요."); 
-			return false; 
-		}
+		var oper = $(this).data("oper"); 
+		if(oper == "search"){
+			if(!search.find("option:selected").val()){
+				alert("종류를 선택하세요."); 
+				return false; 
+			}
+				
+			if(!search.find("input[name='keyword']").val()){
+				alert("키워드를 입력하세요."); 
+				return false; 
+			}
 			
-		if(!search.find("input[name='keyword']").val()){
-			alert("키워드를 입력하세요."); 
-			return false; 
+			search.find("input[name='pageNum']").val("1");
+			search.attr("action", "/report/list/"+object).submit();						
+		}else if(oper == "ing"){
+			form.find($("input[name='tab']")).val("ing"); 
+			form.attr("action", "/report/list/"+object).submit();
+		}else if(oper == "done"){
+			form.find($("input[name='tab']")).val("done"); 
+			form.attr("action", "/report/list/"+object).submit();
+		}else if(oper == "no"){
+			form.find($("input[name='tab']")).val("no"); 
+			form.attr("action", "/report/list/"+object).submit();
+		}else if(oper == "all"){
+			form.find($("input[name='tab']")).val("all"); 
+			form.attr("action", "/report/list/"+object).submit();
 		}
-		
-		search.find("input[name='pageNum']").val("1");
-		search.attr("action", "/report/list/"+object).submit();				
 	});
+	
+
 });
 </script>                	
 <%@ include file="../includes/footer.jsp"  %>

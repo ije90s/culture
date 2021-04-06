@@ -74,4 +74,8 @@
 	<delete id="delete">
 	delete tb_member_log where lno=#{lno}
 	</delete>
+	
+	<update id="updateReason">
+	update tb_member_log set reason=#{reason}, mid=#{mid}, mdate=sysdate where lno=#{lno}
+	</update>
 </mapper>

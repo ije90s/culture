@@ -67,4 +67,16 @@ public class ReplyServiceImpl implements ReplyService {
 		return new ReplyPageDTO(mapper.getCountByRno(bno), mapper.getListPaing(cri, bno));
 	}
 
+	@Override
+	public int getCountByReplyer(String replyer) {
+		// TODO Auto-generated method stub
+		return mapper.getCountByReplyer(replyer);
+	}
+
+	@Override
+	public List<ReplyVO> getListReplyer(Criteria cri, String replyer) {
+		// TODO Auto-generated method stub
+		return mapper.getListReplyer(cri, replyer);
+	}
+
 }

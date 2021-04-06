@@ -13,4 +13,6 @@ public interface ReplyService {
 	public boolean modify(ReplyVO upt); 
 	public boolean remove(Long rno);
 	public ReplyPageDTO getListPaging(Criteria cri, Long bno);
+	public int getCountByReplyer(String replyer);
+	public List<ReplyVO> getListReplyer(Criteria cri, String replyer);
 }

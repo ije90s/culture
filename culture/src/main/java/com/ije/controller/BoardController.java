@@ -225,6 +225,17 @@ public class BoardController {
 	@ResponseBody
 	public int count(@PathVariable("writer") String writer) {
 		log.info("게시판 등록 건수 : " + writer);
-		return service.getWriterCount(writer);
+		Criteria cri = new Criteria(); 
+		return service.getWriterCount(cri, writer);
+	}
+	
+	@GetMapping(value="/writer/{writer}/pages/{page}", produces = {MediaType.APPLICATION_JSON_UTF8_VALUE, MediaType.APPLICATION_XML_VALUE})
+	@ResponseBody
+	public ResponseEntity<List<BoardVO>> writer(@PathVariable("writer") String writer, @PathVariable("page") int page){
+		log.info("writer : " +writer);
+		Criteria cri = new Criteria(); 
+		cri.setPageNum(page);
+		log.info(service.getWriterCount(cri, writer));
+		return new ResponseEntity<>(service.getWriterList(cri, writer), HttpStatus.OK);
 	}
 }

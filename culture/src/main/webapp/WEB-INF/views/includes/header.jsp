@@ -45,7 +45,8 @@
                     <div class="dropdown-menu dropdown-menu-right" aria-labelledby="userDropdown">
                         <a class="dropdown-item" href='/member/myprofile/<sec:authentication property="principal.member.mno"/>'>나의 정보</a>
                         <sec:authorize access="hasRole('ROLE_MEMBER')">
-                        <a class="dropdown-item" href='/report/list/<sec:authentication property="principal.username"/>'>신고리스트</a>
+                        <a class="dropdown-item" href="/activity">나의 활동</a>
+                        <a class="dropdown-item" href='/report/list/<sec:authentication property="principal.username"/>?tab=all'>신고리스트</a>
                         </sec:authorize>
                         <div class="dropdown-divider"></div>
                         <sec:authorize access="isAuthenticated()">
@@ -97,7 +98,7 @@
                             <sec:authorize access="hasRole('ROLE_ADMIN')"> 
                              <div class="sb-sidenav-menu-heading">그 외</div>
                              <a class="nav-link" href="/culture/list/0">문화기록</a>  
-	                         <a class="nav-link" href="/report/list/all">신고리스트</a>
+	                         <a class="nav-link" href="/report/list/all?tab=all">신고리스트</a>
 	        			     <a class="nav-link" href="/unjoin/list">탈퇴리스트</a>            
 	                        </sec:authorize> 
                         </div>

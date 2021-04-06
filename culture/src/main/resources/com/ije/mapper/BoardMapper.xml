@@ -24,7 +24,7 @@
 		</foreach>
 		</trim>
 	</sql>
-
+	
 	<select id="getList" resultType="com.ije.domain.BoardVO">
 	Select * from tb_board where bno > 0 
 	</select>
@@ -38,7 +38,7 @@
 	]]>	
 	<include refid="criteria"></include>
 	<![CDATA[
-	kind=#{kind} and #{cri.pageNum}*#{cri.amount} >= ROWNUM
+	#{cri.pageNum}*#{cri.amount} >= ROWNUM and kind = #{kind}
 	START WITH refno=0 
 	CONNECT BY PRIOR bno=refno 
 	ORDER siblings BY bno DESC) Where rn > (#{cri.pageNum}-1)*#{cri.amount} 
@@ -49,7 +49,7 @@
 	<select id="getCount" resultType="int">
 	Select count(*) From tb_board where
 	<include refid="criteria"></include>
-	kind=#{kind}
+	kind = #{kind}
 	</select>
 	
 	<insert id="insert">
@@ -107,13 +107,28 @@
 	</select>
 	
 	<select id="getWriterCount" resultType="int">
-	select count(*) from tb_board where writer=#{writer}
+	select count(*) from tb_board where
+	<include refid="criteria"></include>
+	writer=#{writer}
 	</select>
 	
 	<update id="updateReplyCnt">
 	update tb_board set replycnt = replycnt+#{amount} where bno=#{bno}
 	</update>
 	
+	<select id="getWriterList" resultType="com.ije.domain.BoardVO">
+	<![CDATA[
+	Select * from (
+		Select /*+ INDEX_DESC(tb_board pk_board) */
+		ROWNUM rn,  bno, kind, title, content, writer, rdate, udate, replycnt, refno
+		From tb_board Where 
+	]]>	
+	<include refid="criteria"></include>
+	<![CDATA[
+	#{cri.pageNum}*#{cri.amount} >= ROWNUM and writer = #{writer}
+	) Where rn > (#{cri.pageNum}-1)*#{cri.amount} 
+	]]>
+	</select>
 
 
 </mapper>

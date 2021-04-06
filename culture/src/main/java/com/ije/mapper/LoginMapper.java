@@ -13,5 +13,5 @@ public interface LoginMapper {
 	public void insert(LoginVO ins);
 	
 	public int getCount(String id);
-	
+		
 }

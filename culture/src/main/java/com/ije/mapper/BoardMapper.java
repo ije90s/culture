@@ -24,7 +24,8 @@ public interface BoardMapper {
 	public int getCount(@Param("cri") Criteria cri, @Param("kind") String kind);
 	public List<BoardVO> topList(String kind);
 	public List<BoardVO> topWriterList(String writer);
-	public int getWriterCount(String writer);
+	public List<BoardVO> getWriterList(@Param("cri") Criteria cri, @Param("writer") String writer); 
+	public int getWriterCount(@Param("cri") Criteria cri, @Param("writer") String writer);
 	/* 댓글수 업데이트 */
 	public void updateReplyCnt(@Param("bno") Long bno, @Param("amount") int amount);
 	
@@ -35,4 +36,6 @@ public interface BoardMapper {
 	public BoardVO findByLast(Long gno);
 	public Long findByGno(Long refno);
 	public int deleteGno(Long gno);
+	
+	
 }

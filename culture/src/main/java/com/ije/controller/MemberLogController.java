@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.ije.domain.Criteria;
 import com.ije.domain.MemberLogVO;
@@ -52,6 +53,31 @@ public class MemberLogController {
 		log.info("조회 : "+target);
 		d.addAttribute("target", target); 
 		d.addAttribute("subPage", subPage);
+	}
+	
+	@GetMapping("/modify")
+	@PreAuthorize("hasRole('ROLE_ADMIN')")
+	public void modify(@RequestParam("lno") Long lno, @ModelAttribute("cri") Criteria cri, Model d) {
+		log.info("조회 : "+lno);
+		d.addAttribute("log", service.get(lno));
+	}
+	
+	@PostMapping("/modify")
+	public String modify(@ModelAttribute("log") MemberLogVO upt, @ModelAttribute("cri") Criteria cri, RedirectAttributes rd) {
+		log.info(upt);
+		if(service.modifyReason(upt)) {
+			rd.addFlashAttribute("result", 1); 
+		}
+		return "redirect:/log/list"+cri.getListLink();
+	}
+	
+	@PostMapping("/remove")
+	public String remove(@RequestParam("lno") Long lno, @ModelAttribute("cri") Criteria cri, RedirectAttributes rd) {
+		log.info(lno);
+		if(service.remove(lno)) {
+			rd.addFlashAttribute("result", 1); 
+		}
+		return "redirect:/log/list"+cri.getListLink();
 	}
 	
 	@GetMapping(value="/{target}/pages/{subPage}", produces = {MediaType.APPLICATION_JSON_UTF8_VALUE, MediaType.APPLICATION_XML_VALUE})

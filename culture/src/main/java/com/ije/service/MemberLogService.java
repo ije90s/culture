@@ -15,4 +15,5 @@ public interface MemberLogService {
 	public boolean remove(Long lno);
 	public List<MemberLogVO> getByTarget(Criteria cri, String target); 
 	public int getByTargetCount(String target);
+	public boolean modifyReason(MemberLogVO upt);
 }

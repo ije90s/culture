@@ -81,8 +81,7 @@ public class MemberLogServiceImpl implements MemberLogService {
 		return mapper.delete(lno)>0;
 	}
 
-	@Override
-	
+	@Override	
 	public List<MemberLogVO> getByTarget(Criteria cri, String target) {
 		log.info("아이디별 조회 : "+target);
 		return mapper.read2(cri, target);
@@ -96,6 +95,11 @@ public class MemberLogServiceImpl implements MemberLogService {
 	@Override
 	public int getByTargetCount(String target) {
 		return mapper.getCount2(target);
+	}
+
+	@Override
+	public boolean modifyReason(MemberLogVO upt) {
+		return mapper.updateReason(upt)>0;
 	}
 	
 	

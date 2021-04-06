@@ -51,6 +51,7 @@
 						background-color:white; 
 						border : 1px solid gray;
 					}	
+					.invalid{color:red !important;}
 					</style>
                     <div class="container-fluid">
                         <h3 class="mt-4">
@@ -122,12 +123,14 @@
 	<div class="warningDiv">
 		<form id="reportForm">
 	    	<div class="form-group">
-	        	<label class="small mb-1" for="title">제목</label>
-	            <input class="form-control py-4" name="title" id="title" type="text"/>
+	        	<label class="small mb-1" for="title">제목<medium class="invalid">*</medium></label>
+	            <input class="form-control py-4 chk" name="title" id="title" type="text" value="${reportVO.title}"/>
+	            <small></small>
 	        </div>
 	        <div class="form-group">
-	            <label class="small mb-1" for="content">내용</label>
-	            <textarea class="form-control" name="content" rows="5" id="content"></textarea>
+	            <label class="small mb-1" for="content">내용<medium class="invalid">*</medium></label>
+	            <textarea class="form-control chk" name="content" rows="5" id="content">${reportVO.content}</textarea>
+	            <small></small>
 	        </div>
 	        <div class="form-group mt-4 mb-0 text-right">
 		        <button type="button" class="btn btn-primary btn-sm" id="regReport" data-oper="reg">등록</button>
@@ -235,6 +238,21 @@ $(document).ready(function(){
 	 	showImg(path.replace(new RegExp(/\\/g),"/"));
 	});	
 	
+	$(".chk").blur(function(e){
+		reportService.validate($(this)); 
+	});
+	
+
+	//invalid 항목 검사
+	function checkItem(item){
+		if(item.siblings('small').hasClass("invalid")){
+			item.focus(); 
+			return false; 
+		}else {
+			return true; 
+		}	
+	}	
+	
 	$(".btn").click(function(e){
 		e.preventDefault(); 
 		var oper = $(this).data("oper"); 
@@ -255,6 +273,14 @@ $(document).ready(function(){
 			form.append('<input type="hidden" name="refno" value="${board.bno}" />'); 
 			form.attr("action", "/board/register").submit(); 
 		}else if(oper == "reg"){
+		
+			 $(".chk").blur(function(e){
+				   reportService.validate($(this)); 
+			 });
+						 
+		     if(!checkItem(formRe.find("input[name='title']"))) return false;		
+			 if(!checkItem(formRe.find("#content"))) return false;
+			 
 			 var report; 
 			 var reporter = '<sec:authentication property="principal.username"/>'; 
 			 var no = '<c:out value="${board.bno}" />';
@@ -272,14 +298,27 @@ $(document).ready(function(){
 			 console.log(report);
 			 
 			 reportService.add(report, function(data){
-				console.log(data);
+				//console.log(data);
 				if(data=="success"){
 					alert("등록되었습니다.");
 					$(".warningWrapper").hide();
 					location.reload();
 				}
-			 });		 
+			 }, function(error){
+					alert("입력값을 확인하세요.");
+					$(".chk").each(function(){
+						reportService.validate($(this));
+					});
+				 });		 
 		 }else if(oper == "mod"){	 	 
+
+			 $(".chk").blur(function(e){
+				   reportService.validate($(this)); 
+			 });
+						 
+		     if(!checkItem(formRe.find("input[name='title']"))) return false;		
+			 if(!checkItem(formRe.find("#content"))) return false;			 
+			 
 			 var report; 
 			 var title = formRe.find("input[name='title']").val();
 			 var content = formRe.find("#content").val();
@@ -301,11 +340,31 @@ $(document).ready(function(){
 				alert("수정되었습니다.");  
 				$(".warningWrapper").hide();
 				location.reload();
-			 });
+			 }, function(error){
+					alert("입력값을 확인하세요.");
+					$(".chk").each(function(){
+						reportService.validate($(this));
+					});
+				 });
 			 
 		 }else if(oper == "del"){
+			 var report; 
+			 var title = formRe.find("input[name='title']").val();
+			 var content = formRe.find("#content").val();
 			 var rno = formRe.find("input[name='rno']").val();
-			 reportService.remove(rno, function(data){
+			 var state = formRe.find("input[name='state']").val();
+			 var reason = formRe.find("input[name='reason']").val();
+			 var mid = formRe.find("input[name='mid']").val();
+	
+			 report = {
+				title : title, 
+				content : content, 
+				rno : rno, 
+				state : state, 
+				reason : reason, 
+				mid : mid
+			 };
+			 reportService.remove(report, function(data){
 					alert("삭제되었습니다.");  
 					$(".warningWrapper").hide();
 					location.reload();

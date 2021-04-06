@@ -71,4 +71,19 @@ public class ReplyController {
 		return service.remove(rno)? new ResponseEntity<>("success", HttpStatus.OK) : new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
 	}
 	
+	@GetMapping(value="/{replyer}/count", produces = {MediaType.APPLICATION_JSON_UTF8_VALUE, MediaType.APPLICATION_XML_VALUE})
+	@ResponseBody
+	public ResponseEntity<Integer> count(@PathVariable("replyer") String replyer){
+		return new ResponseEntity<>(service.getCountByReplyer(replyer), HttpStatus.OK);
+	}
+	
+	@GetMapping(value="/{replyer}/pages/{page}", produces = {MediaType.APPLICATION_JSON_UTF8_VALUE, MediaType.APPLICATION_XML_VALUE})
+	@ResponseBody
+	public ResponseEntity<List<ReplyVO>> replyer(@PathVariable("replyer") String replyer, @PathVariable("page") int page){
+		Criteria cri = new Criteria(); 
+		cri.setPageNum(page);
+		log.info(service.getListReplyer(cri, replyer));
+		return new ResponseEntity<>(service.getListReplyer(cri, replyer), HttpStatus.OK);
+	}
+	
 }

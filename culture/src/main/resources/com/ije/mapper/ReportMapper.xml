@@ -34,6 +34,22 @@
 			</choose>
 		</trim>
 	</sql>
+	
+	<sql id="tab">
+		<trim suffix=" And ">
+			<choose>
+				<when test="tab == 'ing'.toString()">
+				 	state = 0
+				</when>
+				<when test="tab == 'done'.toString()">
+				 	state = 1
+				</when>
+				<when test="tab == 'no'.toString()">
+				 	state = 2
+				</when>
+			</choose>	
+		</trim>
+	</sql>
 		
 	<select id="getList" resultType="com.ije.domain.ReportVO">
 	select * from (
@@ -42,6 +58,7 @@
 		state, rdate, mid, mdate from tb_report where
 		<include refid="criteria"></include>
 		<include refid="object"></include>	
+		<include refid="tab"></include>	
 	<![CDATA[
 		ROWNUM <= #{cri.pageNum}*#{cri.amount}
 	) where rn > (#{cri.pageNum}-1)*#{cri.amount}
@@ -52,6 +69,7 @@
 	select count(*) from tb_report where 
 	<include refid="criteria"></include>
 	<include refid="object"></include>
+	<include refid="tab"></include>	
 	1=1
 	</select>
 	

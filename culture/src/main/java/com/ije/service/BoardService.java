@@ -20,7 +20,8 @@ public interface BoardService {
 
 	public List<BoardVO> topList(String kind);
 	public List<BoardVO> topWriterList(String writer);
-	public int getWriterCount(String writer); 
+	public List<BoardVO> getWriterList(Criteria cri, String writer);
+	public int getWriterCount(Criteria cri, String writer); 
 
 	
 	public List<AttachVO> getAttachList(Long bno);

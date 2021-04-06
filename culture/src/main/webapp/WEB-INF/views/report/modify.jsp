@@ -3,8 +3,12 @@
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>   
 <%@ taglib prefix="c"  uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt"  uri="http://java.sun.com/jsp/jstl/fmt" %>
-<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>       
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>     
+<%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>   
 <%@ include file="../includes/header.jsp"  %>
+					<style>
+					.invalid{color:red !important;}
+					</style>
                     <div class="container-fluid">
                         <h3 class="mt-4">신고 수정</h3>
                         <div class="card mb-4">
@@ -18,14 +22,17 @@
 										<input type="hidden" name="amount" value="${cri.amount}" />
 										<input type="hidden" name="type" value="${cri.type}" />
 										<input type="hidden" name="keyword" value="${cri.keyword}" />
+										<input type="hidden" name="tab" value="${tab}" />
 										<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
 											<div class="form-group">
-                                                <label class="small mb-1" for="title">제목</label>
-                                                <input class="form-control py-4" name="title" id="title" type="text" value="${report.title}" <c:if test="${fn:contains(pinfo.member.authList, 'ROLE_ADMIN')}"><c:out value="readonly"/></c:if>/>
+                                                <label class="small mb-1" for="title">제목<medium class="invalid">*</medium></label>
+                                                <input class="form-control py-4 chk" name="title" id="title" type="text" value="${report.title}" <c:if test="${fn:contains(pinfo.member.authList, 'ROLE_ADMIN')}"><c:out value="readonly"/></c:if>/>
+                                            	<small></small>
                                             </div>
                                             <div class="form-group">
-                                                <label class="small mb-1" for="content">내용</label>
-                                                <textarea class="form-control" name="content" rows="5" id="content" <c:if test="${fn:contains(pinfo.member.authList, 'ROLE_ADMIN')}"><c:out value="readonly"/></c:if>>${report.content}</textarea>
+                                                <label class="small mb-1" for="content">내용<medium class="invalid">*</medium></label>
+                                                <textarea class="form-control chk" name="content" rows="5" id="content" <c:if test="${fn:contains(pinfo.member.authList, 'ROLE_ADMIN')}"><c:out value="readonly"/></c:if>>${report.content}</textarea>
+												<small></small>
 											</div>
 											<div class="form-group">
                                                 <label class="small mb-1" for="reporter">신고자</label>
@@ -73,7 +80,7 @@
                              </div> <!-- card-body 끝  -->
                         </div> <!-- card mb-4 끝 -->
                 	</div> <!-- container-fluid 끝 -->   
-             	
+<script src="/resources/scripts/report.js"></script>             	
 <script>
 $(document).ready(function(){
 	var formObj = $("#mainForm"); 
@@ -83,12 +90,45 @@ $(document).ready(function(){
 		auth = '<sec:authentication property="principal.member.authList" />';
 	</sec:authorize>
 	if(auth.includes("ADMIN")) object = "all";
+
+	$(".chk").blur(function(e){
+		reportService.validate($(this)); 
+	});
+	hasErrors();
+
+	//invalid 항목 검사
+	function checkItem(item){
+		if(item.siblings('small').hasClass("invalid")){
+			item.focus(); 
+			return false; 
+		}else {
+			return true; 
+		}	
+	}	
+
+	//서버에서 받아온 error 검사
+	function hasErrors(){
+		<spring:hasBindErrors name="report">
+		$(".chk").each(function(){
+			reportService.validate($(this));	
+		}); 
+		</spring:hasBindErrors>			
+	}		
 	
 	$(".btn").click(function(e){
 		e.preventDefault(); 
 		var oper = $(this).data("oper");
 		console.log(oper);
 		if(oper === "modify"){
+			
+			$(".chk").each(function(){
+				reportService.validate($(this));	
+			}); 
+	
+			 if(!checkItem($("input[name='title']"))) return false;		
+			 if(!checkItem($("#content"))) return false;
+			 
+			 
 			if(confirm("수정하시겠습니까?")){	
 				formObj.append("<input type='hidden' name='object' value='"+object+"' />");
 				formObj.submit();
@@ -99,11 +139,13 @@ $(document).ready(function(){
 			var amount = $("input[name='amount']").clone(); 
 			var type = formObj.find("input[name='type']");
 			var keyword = formObj.find("input[name='keyword']");
+			var tab = formObj.find("input[name='tab']");
 			formObj.empty(); 
 			formObj.append(pageNum); 
 			formObj.append(amount); 
 			formObj.append(type);
 			formObj.append(keyword);
+			formObj.append(tab);
 			formObj.submit();
 		}
 	});

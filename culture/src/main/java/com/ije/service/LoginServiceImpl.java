@@ -24,5 +24,11 @@ public class LoginServiceImpl implements LoginService {
 	public void register(LoginVO vo) {
 		mapper.insert(vo);
 	}
+
+	@Override
+	public int getCount(String id) {
+		// TODO Auto-generated method stub
+		return mapper.getCount(id);
+	}
 	
 }

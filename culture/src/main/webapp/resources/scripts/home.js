@@ -67,6 +67,88 @@ var homeService = (function(){
 		});	
 	}	
 	
+	function loginCount(id, callback, error){
+		
+		$.get("/login/"+id+"/count.json", function(result){
+			if(callback){
+				callback(result); 
+			}
+		}).fail(function(xhr, status, err){
+			if(error){
+				error(er); 
+			}
+		});		
+	}
+	
+	function cultureCount(mno, callback, error){
+		
+		$.get("/culture/"+mno+"/count.json", function(result){
+			if(callback){
+				callback(result); 
+			}
+		}).fail(function(xhr, status, err){
+			if(error){
+				error(er); 
+			}
+		});		
+	}
+	
+	function boardCount(writer, callback, error){
+		
+		$.get("/board/writer/"+writer+"/count.json", function(result){
+			if(callback){
+				callback(result); 
+			}
+		}).fail(function(xhr, status, err){
+			if(error){
+				error(er); 
+			}
+		});		
+	}
+	
+	function replyCount(replyer, callback, error){
+		
+		$.get("/reply/"+replyer+"/count.json", function(result){
+			if(callback){
+				callback(result); 
+			}
+		}).fail(function(xhr, status, err){
+			if(error){
+				error(er); 
+			}
+		});		
+	}			
+	
+	function getBoardList(writer, page, callback, error){
+		console.log("getListPaging................."); 
+		
+		$.getJSON("/board/writer/"+writer+"/pages/"+page+".json",
+			function(data){
+				if(callback){
+					callback(data); 
+				}
+			}).fail(function(xhr, status, err){
+				if(error){
+					error(); 
+				}
+			}); 
+	}	
+	
+	function getReplyList(replyer, page, callback, error){
+		console.log("getListPaging................."); 
+		
+		$.getJSON("/reply/"+replyer+"/pages/"+page+".json",
+			function(data){
+				if(callback){
+					callback(data); 
+				}
+			}).fail(function(xhr, status, err){
+				if(error){
+					error(); 
+				}
+			}); 
+	}	
+	
 	function displyTime(time){
 		var dateObj = new Date(time); 
 		var yy = dateObj.getFullYear(); 
@@ -83,6 +165,12 @@ var homeService = (function(){
 		displyTime : displyTime,
 		countList : countList,
 		reportList : reportList,
-		chartList : chartList
+		chartList : chartList,
+		loginCount : loginCount,
+		cultureCount : cultureCount,
+		boardCount : boardCount, 
+		replyCount : replyCount,
+		getBoardList : getBoardList,
+		getReplyList : getReplyList
 	};
 })();

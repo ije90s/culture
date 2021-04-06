@@ -79,23 +79,18 @@
 			<trim prefix="OR">
 				<choose>
 					<when test="type == 'N'.toString()">
-						state = '0'
+						state = '0' and id like '%'||#{cri.keyword}||'%'
 					</when>
 					<when test="type == 'B'.toString()">
-						state = '1'
+						state = '1' and id like '%'||#{cri.keyword}||'%'
 					</when>
 					<when test="type == 'E'.toString()">
-						state = '2'
+						state = '2' and id like '%'||#{cri.keyword}||'%'
 					</when>
 					
 				</choose>
 			</trim>
-		</foreach>
-		<trim prefix=" AND ">
-			<if test="cri.keyword !=null">
-				id like '%'||#{cri.keyword}||'%'
-			</if>
-		</trim>		
+		</foreach>	
 		</trim>
 	</sql>
 
@@ -115,8 +110,12 @@
 	</select>
 	
 	<select id="getCount" resultType="int">
+	<![CDATA[
 	select count(*) from tb_member a left outer join tb_member_auth b on a.mno=b.mno where
+	]]>	
 	<include refid="criteria"></include>
+	<![CDATA[
 	auth in('ROLE_USER','ROLE_MEMBER')
+	]]>
 	</select>
 </mapper>

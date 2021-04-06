@@ -56,4 +56,19 @@
 	CONNECT BY PRIOR rno = refno)
 	</select>
 	
+	<select id="getCountByReplyer" resultType="int">
+	select count(*) from tb_reply where replyer = #{replyer}
+	</select>
+	
+	<select id="getListReplyer" resultType="com.ije.domain.ReplyVO">
+	<![CDATA[
+	Select * from (
+		Select /*+ INDEX(tb_reply, idx_reply) */
+		rownum rn, rno, reply, replyer, rdate, udate, bno, refno
+		from tb_reply 
+		Where replyer=#{replyer} and rno > 0 and rownum <= #{cri.pageNum} * #{cri.amount}
+		) Where rn > (#{cri.pageNum}-1)*#{cri.amount}
+	]]>	
+	</select>
+	
 </mapper>

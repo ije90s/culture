@@ -17,4 +17,5 @@ public interface MemberLogMapper {
 	public int insert(MemberLogVO ins); 
 	public int update(MemberLogVO upt); 
 	public int delete(Long lno); 
+	public int updateReason(MemberLogVO upt);
 }
