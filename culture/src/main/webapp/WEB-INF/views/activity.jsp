@@ -67,17 +67,16 @@
 <script src="/resources/scripts/home.js"></script>
 <script>
 $(document).ready(function(){
-	var mno = null;
+
 	var id = null; 
 	 <sec:authorize access="isAuthenticated()">
-	  mno = '<sec:authentication property="principal.member.mno" />';
 	  id = '<sec:authentication property="principal.username" />';
 	 </sec:authorize>	
 	  
 	homeService.loginCount(id, function(data){
 		$("#login").html(data+"건");
 	});
-	homeService.cultureCount(mno, function(data){
+	homeService.cultureCount(id, function(data){
 		$("#culture").html(data+"건");
 	});
 	homeService.boardCount(id, function(data){

@@ -17,15 +17,15 @@ public interface CultureService {
 	public int modify(CultureVO upt);
 	public int remove(Long cno);
 	
-	public List<CultureVO> getListPaging(Criteria cri, Long mno); 
-	public int getCount(Criteria cri, Long mno);  
+	public List<CultureVO> getListPaging(Criteria cri, String id); 
+	public int getCount(Criteria cri, String id);  
 	
 	public List<AttachVO> getAttachList(Long cno);
 
-	public List<CultureVO> getMonList(Criteria cri, Long mno); 
-	public List<CultureVO> getYearList(Criteria cri, Long mno);
-	public List<CultureVO> getChartList(Criteria cri, Long mno);
-	public List<CultureVO> getBySdate(Criteria cri, Long mno); 
+	public List<CultureVO> getMonList(Criteria cri, String id); 
+	public List<CultureVO> getYearList(Criteria cri,  String id);
+	public List<CultureVO> getChartList(Criteria cri, String id);
+	public List<CultureVO> getBySdate(Criteria cri,  String id); 
 	
 	public List<CultureVO> getListSearch(Criteria cri);
 

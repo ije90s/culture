@@ -96,13 +96,13 @@
         <!-- admin 끝-->
 	</div> <!-- container-fluid 끝 -->   
 <form method="get">
-	<input type="hidden" name="mno" value='<sec:authentication property="principal.member.mno"/>' />
+	<input type="hidden" name="id" value='<sec:authentication property="principal.username"/>' />
 </form>	
 <script src="/resources/scripts/home.js"></script>
 <script>
 $(document).ready(function(){
 	var formObj = $("form"); 
-	var mno = formObj.find("input[name='mno']").val(); 
+	var id = formObj.find("input[name='id']").val(); 
 	$("#regBtn").click(function(){
 		self.location="/culture/register";
 	});
@@ -110,7 +110,7 @@ $(document).ready(function(){
 	$(".move").click(function(){
 		var oper = $(this).data("oper");
 		if(oper=="culture"){
-			self.location="/culture/list/"+mno;
+			self.location="/culture/list/"+id;
 		}else if(oper == "report"){
 			self.location="/report/list/all";
 		}else{
@@ -120,9 +120,9 @@ $(document).ready(function(){
 		
 	var categories = ["culture", "notice", "free"];
 	<sec:authorize access="hasAnyRole('ROLE_MEMBER','ROLE_USER')">      
-		for(var i=0;i<categories.length;i++){
-			showTopList('member', categories[i]); 
-		}
+	for(var i=0;i<categories.length;i++){
+		showTopList('member', categories[i]); 
+	}
 	</sec:authorize>
 		
 	<sec:authorize access="hasAnyRole('ROLE_ADMIN')">      
@@ -169,7 +169,7 @@ $(document).ready(function(){
 		if(gubun == "member"){
 			if(category=="culture"){
 				var top = {
-					mno : mno,	
+					id : id,	
 					category : category
 				};	
 				homeService.cultureList(top, function(culture){				

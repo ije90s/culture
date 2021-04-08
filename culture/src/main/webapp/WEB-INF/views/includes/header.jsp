@@ -43,7 +43,7 @@
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" id="userDropdown" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fas fa-user fa-fw"></i></a>
                     <div class="dropdown-menu dropdown-menu-right" aria-labelledby="userDropdown">
-                        <a class="dropdown-item" href='/member/myprofile/<sec:authentication property="principal.member.mno"/>'>나의 정보</a>
+                        <a class="dropdown-item" href='/member/myprofile/<sec:authentication property="principal.username"/>'>나의 정보</a>
                         <sec:authorize access="hasRole('ROLE_MEMBER')">
                         <a class="dropdown-item" href="/activity">나의 활동</a>
                         <a class="dropdown-item" href='/report/list/<sec:authentication property="principal.username"/>?tab=all'>신고리스트</a>
@@ -85,8 +85,8 @@
 	                            </a>
 	                            <div class="collapse" id="collapseLayouts" aria-labelledby="headingOne" data-parent="#sidenavAccordion">
 	                                <nav class="sb-sidenav-menu-nested nav">
-	                                    <a class="nav-link" href='/culture/list/<sec:authentication property="principal.member.mno"/>'>리스트</a>
-	                                    <a class="nav-link" href='/culture/stats/<sec:authentication property="principal.member.mno"/>'>통계</a>
+	                                    <a class="nav-link" href='/culture/list/<sec:authentication property="principal.username"/>'>리스트</a>
+	                                    <a class="nav-link" href='/culture/stats/<sec:authentication property="principal.username"/>'>통계</a>
 	                                </nav>
 	                            </div>
 	                        </sec:authorize>    
@@ -97,7 +97,7 @@
                             <a class="nav-link" href="/board/list/share">공유마당</a>
                             <sec:authorize access="hasRole('ROLE_ADMIN')"> 
                              <div class="sb-sidenav-menu-heading">그 외</div>
-                             <a class="nav-link" href="/culture/list/0">문화기록</a>  
+                             <a class="nav-link" href="/culture/list/all">문화기록</a>  
 	                         <a class="nav-link" href="/report/list/all?tab=all">신고리스트</a>
 	        			     <a class="nav-link" href="/unjoin/list">탈퇴리스트</a>            
 	                        </sec:authorize> 

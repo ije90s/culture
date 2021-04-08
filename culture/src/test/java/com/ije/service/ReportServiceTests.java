@@ -23,7 +23,7 @@ public class ReportServiceTests {
 	public void getList() {
 		log.info("............................................");
 		Criteria cri = new Criteria(); 
-		service.getList(cri).forEach(list -> log.info(list));
+		//service.getList(cri).forEach(list -> log.info(list));
 	}
 	
 	@Test

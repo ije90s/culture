@@ -130,6 +130,7 @@
 $(document).ready(function(){
 	var result = '<c:out value="${result}"/>';
 	var mno = '<sec:authentication property="principal.member.mno"/>'; 
+	var writer = '<sec:authentication property="principal.username"/>'; 
 	var form = $("#listForm"); 
 	checkModal(result); 
 	history.replaceState({}, null, null);
@@ -156,7 +157,7 @@ $(document).ready(function(){
 		console.log("click");
 	
 		form.find("input[name='pageNum']").val($(this).attr("href"));
-		form.attr("action", "/culture/list/"+mno).submit();
+		form.attr("action", "/culture/list/"+writer).submit();
 	});
 	
 	//상세페이지 이동
@@ -169,9 +170,9 @@ $(document).ready(function(){
 		e.preventDefault(); 
 		var text = $(this).text(); 
 		if(text == "리스트"){
-			self.location="/culture/list/"+mno; 	
+			self.location="/culture/list/"+writer; 	
 		}else{
-			self.location="/culture/stats/"+mno; 	
+			self.location="/culture/stats/"+writer; 	
 		}
 	});
 	var search = $("#searchForm"); 
@@ -189,7 +190,7 @@ $(document).ready(function(){
 				return false; 
 			}
 			search.find("input[name='pageNum']").val("1");
-			search.attr("action", "/culture/list/"+mno).submit();			
+			search.attr("action", "/culture/list/"+writer).submit();			
 		}else{
 			self.location="/culture/register";
 		}

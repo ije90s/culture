@@ -5,11 +5,11 @@ var statsService= (function(){
 	function getList(param, callback, error){
 		
 		var tab = param.tab||"mon";
-		var mno = param.mno;
+		var id = param.id;
 		var sdate = param.sdate; 
 		var edate = param.edate; 
 		
-		$.getJSON("/culture/"+tab+"/"+mno+"/"+sdate+"/"+edate+".json", 
+		$.getJSON("/culture/"+tab+"/"+id+"/"+sdate+"/"+edate+".json", 
 			function(data){
 				if(callback){
 					callback(data); 
@@ -22,9 +22,9 @@ var statsService= (function(){
 	}
 	
 	function get(param, callback, error){
-		var mno = param.mno;
+		var id = param.id;
 		var sdate = param.sdate;
-		$.get("/culture/"+mno+"/"+sdate+".json", function(result){
+		$.get("/culture/"+id+"/"+sdate+".json", function(result){
 			if(callback){
 				callback(result);
 			}

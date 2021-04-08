@@ -21,13 +21,13 @@ public interface CultureMapper {
 	public int reportUpdate(@Param("reporter") String reporter, @Param("cno") Long cno);
 	
 	//페이징 처리 
-	public List<CultureVO> getListPaging(@Param("cri") Criteria cri, @Param("object") Long mno);
-	public int getCount(@Param("cri") Criteria cri, @Param("object") Long mno); 
+	public List<CultureVO> getListPaging(@Param("cri") Criteria cri, @Param("object") String id);
+	public int getCount(@Param("cri") Criteria cri, @Param("object") String id); 
 	public List<CultureVO> getListSearch(@Param("cri") Criteria cri);
 	
 	//통계 
-	public List<CultureVO> getMonList(@Param("cri") Criteria cri, @Param("mno") Long mno); 
-	public List<CultureVO> getYearList(@Param("cri") Criteria cri, @Param("mno") Long mno);
-	public List<CultureVO> getChartList(@Param("cri") Criteria cri, @Param("mno") Long mno);
-	public List<CultureVO> read2(@Param("cri") Criteria cri, @Param("mno") Long mno); 
+	public List<CultureVO> getMonList(@Param("cri") Criteria cri, @Param("id") String id); 
+	public List<CultureVO> getYearList(@Param("cri") Criteria cri, @Param("id") String id);
+	public List<CultureVO> getChartList(@Param("cri") Criteria cri, @Param("id") String id);
+	public List<CultureVO> read2(@Param("cri") Criteria cri, @Param("id") String id); 
 }

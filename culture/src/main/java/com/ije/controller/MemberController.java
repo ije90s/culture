@@ -7,6 +7,8 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import javax.xml.crypto.URIDereferencer;
 
@@ -77,7 +79,7 @@ public class MemberController {
 		return "redirect:/customLogin"; 
 	}
 	
-	@GetMapping(value="/{id}", produces ={MediaType.TEXT_PLAIN_VALUE})
+	@GetMapping(value="/chkId/{id}", produces ={MediaType.TEXT_PLAIN_VALUE})
 	@ResponseBody
 	public ResponseEntity<String> confirm(@PathVariable("id") String id){
 		MemberVO vo = service.read(id); 
@@ -87,7 +89,7 @@ public class MemberController {
 	}
 	
 	
-	@GetMapping(value="/{id}/{pw}", produces = {MediaType.TEXT_PLAIN_VALUE})
+	@GetMapping(value="/chkPw/{id}/{pw}", produces = {MediaType.TEXT_PLAIN_VALUE})
 	@ResponseBody
 	public ResponseEntity<String> confirm(@PathVariable("id") String id, @PathVariable("pw") String pw){
 		MemberVO vo = service.read(id); 
@@ -98,11 +100,11 @@ public class MemberController {
 		return new ResponseEntity<>(result, HttpStatus.OK);
 	}
 
-	@GetMapping("/myprofile/{mno}")
+	@GetMapping("/myprofile/{id}")
 	@PreAuthorize("isAuthenticated()")
-	public String myprofile(@PathVariable("mno") Long mno, Model d) {
+	public String myprofile(@PathVariable("id") String id, Model d) {
 		log.info("프로필 화면..........");
-		d.addAttribute("member", service.read2(mno));
+		d.addAttribute("member", service.read(id));
 		return "/member/myprofile";
 	}
 	
@@ -185,12 +187,12 @@ public class MemberController {
 	}
 	
 	
-	@PreAuthorize("principal.member.mno == #mno")
-	@PutMapping(value="/modifyPhoto/{mno}", consumes = "application/json", produces = {MediaType.TEXT_PLAIN_VALUE})
-	public ResponseEntity<String> modifyPhoto(@PathVariable("mno") Long mno, @RequestBody AttachFileVO files) {
+	@PreAuthorize("principal.username == #id")
+	@PutMapping(value="/modifyPhoto/{id}", consumes = "application/json", produces = {MediaType.TEXT_PLAIN_VALUE})
+	public ResponseEntity<String> modifyPhoto(@PathVariable("id") String id, @RequestBody AttachFileVO files) {
 		log.info("사진 바꾸기"); 
 		log.info("upt :"+files);
-		MemberVO upt = service.read2(mno);
+		MemberVO upt = service.read(id);
 		
 		//이전 파일 삭제 
 		List<AttachVO> attachList = service.getAttach(upt.getMno()); 
@@ -207,21 +209,21 @@ public class MemberController {
 		List<AttachVO> fileList = new ArrayList<AttachVO>();
 		fileList.add(vo); 
 		
-		upt.setMno(mno);
 		upt.setAttachList(fileList);
 		if(upt.getAttachList()!=null && upt.getAttachList().size()>0) {
 			service.modifyPhoto(upt);
 		}
 		return new ResponseEntity<>(HttpStatus.OK);
 	}
-	@PreAuthorize("principal.member.mno == #mno")
-	@DeleteMapping(value="/deletePhoto/{mno}", produces = {MediaType.TEXT_PLAIN_VALUE})
-	public ResponseEntity<String> deletePhoto(@PathVariable("mno") Long mno){
-		log.info(mno);
-		List<AttachVO> attachList = service.getAttach(mno);
+	@PreAuthorize("principal.username == #id")
+	@DeleteMapping(value="/deletePhoto/{id}", produces = {MediaType.TEXT_PLAIN_VALUE})
+	public ResponseEntity<String> deletePhoto(@PathVariable("id") String id){
+		log.info(id);
+		MemberVO vo = service.read(id);
+		List<AttachVO> attachList = service.getAttach(vo.getMno());
 		if(attachList!=null && attachList.size()>0) {
 			deleteFiles(attachList.get(0).getFileList()); 
-			service.deletePhoto(mno);
+			service.deletePhoto(vo.getMno());
 		}
 		return new ResponseEntity<>(HttpStatus.OK);
 	}
@@ -257,8 +259,22 @@ public class MemberController {
 	public ResponseEntity<Integer> getCount(@PathVariable("type") String type){
 		Criteria cri = new Criteria(); 
 		cri.setType(type);
+		cri.setKeyword("");
 		log.info(type);
 		log.info(service.getCount(cri));
 		return new ResponseEntity<>(service.getCount(cri), HttpStatus.OK); 
+	}
+	
+	@GetMapping(value="/findId/{name}/{email}", produces = {MediaType.APPLICATION_JSON_UTF8_VALUE, MediaType.APPLICATION_XML_VALUE})
+	@ResponseBody
+	public ResponseEntity<MemberVO> findId(@PathVariable("name") String name, @PathVariable("email") String email){
+		log.info("아이디 찾기");
+		log.info(name + " "+"email");
+		return new ResponseEntity<>(service.findById(name, email), HttpStatus.OK);
+	}
+	
+	@PostMapping("/findPw")
+	public void findPw(@ModelAttribute MemberVO member, HttpServletResponse resp) throws Exception{
+		service.findPw(resp, member);
 	}
 }

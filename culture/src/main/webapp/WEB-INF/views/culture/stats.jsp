@@ -96,7 +96,7 @@ if(month < 10) month = "0"+month;
 	
 sdate = year+"-"+month+"-01"; 
 edate = year+"-"+month+"-31";	
-var mno = '<sec:authentication property="principal.member.mno"/>';
+var writer = '<sec:authentication property="principal.username"/>';
 
 $(document).ready(function(){	
 	var datepicker_default = {
@@ -176,7 +176,7 @@ $(document).ready(function(){
 		var date = $(this).data("date");
 		var str; 
 		modalThead.html("<tr><td>구분</td><td>제목</td><td>평점</td></tr>");
-		statsService.get({mno:mno, sdate:date}, function(list){
+		statsService.get({id:writer, sdate:date}, function(list){
 			for(var i=0, len=list.length||0; i<len;i++){
 				switch(list[i].kind){
 				case 1 : kind="공연";break;
@@ -200,7 +200,7 @@ $(document).ready(function(){
 	$("#myChartContainer").on("dblclick","#myChart", function(){
 		var str; 
 		modalThead.html("<tr><td>구분</td><td>합계</td><td>비율</td></tr>");
-		statsService.getList({tab:tab, mno:mno, sdate:sdate, edate:edate}, function(list){
+		statsService.getList({tab:tab, id:writer, sdate:sdate, edate:edate}, function(list){
 			for(var i=0, len=list.length||0; i<len;i++){
 				switch(list[i].kind){
 				case 1 : kind="공연";break;
@@ -224,11 +224,11 @@ $(document).ready(function(){
 	$(".btn-group").on("click", "button", function(e){
 		e.preventDefault(); 
 		var text = $(this).text(); 
-		var mno = '<sec:authentication property="principal.member.mno"/>';
+		//var mno = '<sec:authentication property="principal.member.mno"/>';
 		if(text == "리스트"){
-			self.location="/culture/list/"+mno; 	
+			self.location="/culture/list/"+writer; 	
 		}else{
-			self.location="/culture/stats/"+mno; 	
+			self.location="/culture/stats/"+writer; 	
 		}
 	});	
 	
@@ -247,7 +247,7 @@ function showList(tab, sdate, edate){
 	}	
 	$("#sdate").val(sdate.substr(0,sdate.length-3));
 	showTab(tab, sdate, edate);
-	statsService.getList({tab:tab, mno:mno, sdate:sdate, edate:edate}, function(list){
+	statsService.getList({tab:tab, id:writer, sdate:sdate, edate:edate}, function(list){
 		for(var i=0, len=list.length||0; i<len;i++){
 			//console.log(list[i]);
 			switch(list[i].kind){

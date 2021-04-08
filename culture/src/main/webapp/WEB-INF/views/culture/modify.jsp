@@ -37,6 +37,7 @@
                             <div class="card-body">
 									<form id="mainForm" role="form" action="/culture/modify" method="post">
 										<input type="hidden" name="mno" value="${culture.mno}" />
+										<input type="hidden" name="writer" value="${culture.writer}" />
 										<input type="hidden" name="cno" value="${culture.cno }" />
 										<input type="hidden" name="pageNum" value="${cri.pageNum}"/>
 										<input type="hidden" name="amount" value="${cri.amount}" />
@@ -154,7 +155,7 @@
                                             <div class="form-group mt-4 mb-0 text-right">
                                             	<sec:authentication property="principal" var="pinfo"/>
                                              	<sec:authorize access="isAuthenticated()">
-                                             		<c:if test="${pinfo.member.mno eq culture.mno || fn:contains(pinfo.member.authList, 'ROLE_ADMIN')}">
+                                             		<c:if test="${pinfo.username eq culture.writer || fn:contains(pinfo.member.authList, 'ROLE_ADMIN')}">
                                             			<button type="button" class="btn btn-primary" data-oper="modify">수정</button>
                                             		</c:if>
                                             	</sec:authorize>
@@ -196,6 +197,7 @@
 $(document).ready(function(){
 	var formObj = $("#mainForm"); 
 	var mno = '<sec:authentication property="principal.member.mno"/>'; 
+	var writer = '<sec:authentication property="principal.username"/>';
 	var csrfHeader = "${_csrf.headerName}"; 
 	var csrfToken = "${_csrf.token}";
 	
@@ -204,7 +206,7 @@ $(document).ready(function(){
 	 <sec:authorize access="isAuthenticated()">
 		auth = '<sec:authentication property="principal.member.authList" />';
 	 </sec:authorize>	
-	 if(auth.includes("ADMIN")) mno = "0";		
+	 if(auth.includes("ADMIN")) writer = "all";		
 	
 	
 	$(".chk").blur(function(e){
@@ -311,7 +313,7 @@ $(document).ready(function(){
 					str+="<input type='hidden' name='attachList[0].fileList["+i+"].fileType' value='"+jobj.data("type")+"'/>";
 				});
 				
-				str+="<input type='hidden' name='object' value='"+mno+"' />"; 
+				str+="<input type='hidden' name='object' value='"+writer+"' />"; 
 				
 				$(".chk").each(function(e){
 					cultureService.validate($(this));	
@@ -330,7 +332,7 @@ $(document).ready(function(){
 				formObj.append(str).submit();
 			}
 		}else{
-			formObj.attr("action", "/culture/list/"+mno).attr("method", "get"); 
+			formObj.attr("action", "/culture/list/"+writer).attr("method", "get"); 
 			var pageNum = formObj.find("input[name='pageNum']"); 
 			var amount = formObj.find("input[name='amount']"); 
 			var type = formObj.find("input[name='type']");   

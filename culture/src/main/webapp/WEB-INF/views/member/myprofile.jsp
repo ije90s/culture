@@ -477,7 +477,7 @@ $(document).ready(function(){
 					fileType : obj.image	
 			};
 			
-			memberService.modifyPhoto(mno.val(), files,  function(data){
+			memberService.modifyPhoto(id.val(), files,  function(data){
 				alert("프로필 사진이 변경되었습니다."); 
 				location.reload();
 			});
@@ -489,7 +489,7 @@ $(document).ready(function(){
 	$(".uploadResult").on("click", ".deletePhoto", function(e){
 		e.preventDefault(); 
 		console.log("사진 삭제");
-		memberService.deletePhoto(mno.val(),  function(data){
+		memberService.deletePhoto(id.val(),  function(data){
 			alert("프로필 사진이 삭제되었습니다."); 
 			location.reload();
 		}); 

@@ -327,13 +327,14 @@ $(document).ready(function(){
 		var kind = $("input[name='kind']:checked").val();	
 		if(!kind)
 			if(!checkItem($("input[name='kind']"))) return false;
-		
+			
 		if(kind=="R"){
 			if(!checkItem($("input[name='auth']"))) return false;
+	
 		}else if(kind=="B"){
 			if(!checkItem($("input[name='sdate']"))) return false;
 			if(!checkItem($("input[name='edate']"))) return false;
-		}		
+		}
 		if(!checkItem($("#content"))) return false;
 		
 		var auth = $("input[name='auth']:checked").val(); 
@@ -342,6 +343,7 @@ $(document).ready(function(){
 		var target = modal.data("target"); 
 		var oldauth = modal.data("oldauth"); 
 		var state = modal.data("state");
+		
 		
 		log={
 			kind : kind, 
@@ -378,7 +380,7 @@ $(document).ready(function(){
 		var kind = $("input[name='kind']:checked").val();	
 		if(!kind)
 			if(!checkItem($("input[name='kind']"))) return false;
-		
+			
 		if(kind=="R"){
 			if(!checkItem($("input[name='auth']"))) return false;
 		}else if(kind=="B"){

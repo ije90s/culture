@@ -25,10 +25,12 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.ije.domain.Criteria;
 import com.ije.domain.LoginVO;
+import com.ije.domain.MemberVO;
 import com.ije.domain.PageVO;
 import com.ije.service.BoardService;
 import com.ije.service.CultureService;
 import com.ije.service.LoginService;
+import com.ije.service.MemberService;
 
 import lombok.RequiredArgsConstructor;
 
@@ -44,7 +46,9 @@ public class HomeController {
 	private final LoginService service; 
 	
 	private final BoardService boardService;
-
+	
+	private final MemberService memberService;
+	
 	/**
 	 * Simply selects the home view to render by returning its name.
 	 */
@@ -61,6 +65,7 @@ public class HomeController {
 		
 		UserDetails userDetails = (UserDetails)	auth.getPrincipal(); 
 		String id = userDetails.getUsername();  
+		
 		LoginVO ins = service.get(id, rdate); 
 		if(ins==null && !userDetails.getAuthorities().toString().contains("ROLE_ADMIN")) {
 			ins = new LoginVO(); 
@@ -93,4 +98,8 @@ public class HomeController {
 		return new ResponseEntity<>(service.getCount(id), HttpStatus.OK);
 	}
 	
+	@GetMapping(value={"/findId", "/findPw"})
+	public void find() {
+		logger.info("아이디/비밀번호 찾기");
+	}
 }

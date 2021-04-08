@@ -72,4 +72,6 @@
 	<delete id="deleteByMno">
 	delete TB_ATTACH_GROUP where mno=#{mno} 
 	</delete>
+	
+
 </mapper>

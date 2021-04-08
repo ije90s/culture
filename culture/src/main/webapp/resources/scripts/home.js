@@ -5,10 +5,10 @@ var homeService = (function(){
 	
 	function cultureList(param, callback, error){
 		
-		var mno = param.mno; 
+		var id = param.id; 
 		var category = param.category; 
 		
-		$.get("/"+category+"/"+mno+"/top.json", function(result){
+		$.get("/"+category+"/top/"+id+".json", function(result){
 			if(callback){
 				callback(result); 
 			}
@@ -80,9 +80,9 @@ var homeService = (function(){
 		});		
 	}
 	
-	function cultureCount(mno, callback, error){
+	function cultureCount(id, callback, error){
 		
-		$.get("/culture/"+mno+"/count.json", function(result){
+		$.get("/culture/count/"+id+".json", function(result){
 			if(callback){
 				callback(result); 
 			}
@@ -149,6 +149,19 @@ var homeService = (function(){
 			}); 
 	}	
 	
+	function getId(name, email, callback, error){
+		$.getJSON("/member/findId/"+name+"/"+email+".json",
+			function(data){
+				if(callback){
+					callback(data); 
+				}
+			}).fail(function(xhr, status, err){
+				if(error){
+					error(); 
+				}
+			}); 		
+	}
+	
 	function displyTime(time){
 		var dateObj = new Date(time); 
 		var yy = dateObj.getFullYear(); 
@@ -171,6 +184,7 @@ var homeService = (function(){
 		boardCount : boardCount, 
 		replyCount : replyCount,
 		getBoardList : getBoardList,
-		getReplyList : getReplyList
+		getReplyList : getReplyList,
+		getId : getId
 	};
 })();

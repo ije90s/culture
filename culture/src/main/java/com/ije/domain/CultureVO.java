@@ -36,4 +36,5 @@ public class CultureVO {
 	private int ratio; 
 	private String open;
 	private String report;
+	private String writer;
 }

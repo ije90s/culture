@@ -154,7 +154,7 @@
 											</div>
                                             <div class="form-group mt-4 mb-0 text-right">
                                              	<sec:authorize access="isAuthenticated()">
-                                             		<c:if test="${pinfo.member.mno eq culture.mno || fn:contains(pinfo.member.authList, 'ROLE_ADMIN')}">
+                                             		<c:if test="${pinfo.username eq culture.writer || fn:contains(pinfo.member.authList, 'ROLE_ADMIN')}">
 	                                            		<button type="button" class="btn btn-primary" data-oper="modify">수정</button>
 	                                            		<button type="button" class="btn btn-danger" data-oper="remove">삭제</button>
 	                                            		<button type="button" class="btn btn-secondary"  data-oper="list">목록</button>
@@ -204,11 +204,12 @@
 	 var formObj = $("#mainForm");
 	 var formRe = $("#reportForm");
 	 var mno = '<sec:authentication property="principal.member.mno"/>'; 
+	 var writer = '<sec:authentication property="principal.username"/>';
 	 var auth = null; 
 	 <sec:authorize access="isAuthenticated()">
 		auth = '<sec:authentication property="principal.member.authList" />';
 	 </sec:authorize>	
-	 if(auth.includes("ADMIN")) mno = "0";	
+	 if(auth.includes("ADMIN")) writer = "all";	
 	 (function(){
 			var cno = '<c:out value="${culture.cno}" />';
 			$.getJSON("/culture/getAttachList", {cno : cno}, function(arr){
@@ -274,11 +275,11 @@
 			 formObj.attr("action", "/culture/modify").attr("method", "get").submit();
 		 }else if(oper === "remove"){
 			 formObj.append('<input type="hidden" id="${_csrf.parameterName}" name="${_csrf.parameterName}" value="${_csrf.token}" />');
-			 formObj.append('<input type="hidden" name="object" value="'+mno+'"/>');
+			 formObj.append('<input type="hidden" name="object" value="'+writer+'"/>');
 			 formObj.attr("action", "/culture/remove").submit();
 		 }else if(oper === "list"){
 			 formObj.find("#cno").remove();
-			 formObj.attr("action", "/culture/list/"+mno).attr("method","get").submit();
+			 formObj.attr("action", "/culture/list/"+writer).attr("method","get").submit();
 		 }else if(oper == "reg"){
 
 			 $(".chk").blur(function(e){

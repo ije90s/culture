@@ -20,7 +20,5 @@ public interface AttachMapper {
 	public void deleteByCno(Long cno);
 	public void deleteByBno(Long bno); 
 	public void deleteByMno(Long mno);
-
-
 	
 }

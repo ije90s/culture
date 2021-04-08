@@ -43,9 +43,9 @@
 				                                    <label class="custom-control-label" for="rememberCheck">자동로그인</label>
 				                                </div>
 				                             </div>
-				                             <div class="form-group d-flex align-items-center justify-content-between mt-4 mb-0">
-				                             	<a class="small" href="#">아이디/비밀번호찾기</a>
-				                                <button type="submit" class="btn btn-primary">로그인</button>
+				                             <div class="form-group align-items-center justify-content-between mt-4 mb-0">
+				                             	<a class="small" href="/findId">아이디/</a><a class="small" href="/findPw">비밀번호 찾기</a>  
+				                                <button type="submit" class="btn btn-primary float-right">로그인</button>
 				                             </div>
 				                        </form>
 				                     </div>

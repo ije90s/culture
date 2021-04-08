@@ -16,6 +16,7 @@
 									<form id="mainForm" role="form" action="/culture/register" method="post">
 										<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
 										<input type="hidden" name="mno" value='<sec:authentication property="principal.member.mno"/>' />
+										<input type="hidden" name="writer" value='<sec:authentication property="principal.username"/>' />
 									        <div class="form-group">
                                                 <label class="small mb-1" for="cdate">날짜<medium class="invalid">*</medium></label>
                                                 <input class="form-control py-4 chk" name="cdate" id="cdate" type="date" value="${cultureVO.cdate}"/>

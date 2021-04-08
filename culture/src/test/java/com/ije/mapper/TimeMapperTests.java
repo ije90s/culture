@@ -1,5 +1,9 @@
 package com.ije.mapper;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,4 +31,6 @@ public class TimeMapperTests {
 		log.info("...................................");
 		log.info(mapper.getTime2());
 	}
+	
+
 }

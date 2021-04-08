@@ -28,7 +28,7 @@ var memberService = (function(){
 			}else{
 				$.ajax({
 					type : 'get', 
-					url : '/member/'+value, 
+					url : '/member/chkId/'+value, 
 					success : function(data){
 						if(data!="ok"){
 							msg = "중복된 아이디입니다.";
@@ -115,7 +115,7 @@ var memberService = (function(){
 				pw = encodeURIComponent(pw);
 				$.ajax({
 					type : 'get', 
-					url : '/member/'+id+'/'+pw, 
+					url : '/member/chkPw/'+id+'/'+pw, 
 					success : function(data){
 						console.log(data);
 						if(data!="ok"){
@@ -232,12 +232,12 @@ var memberService = (function(){
 		});						
 	}
 	
-	function modifyPhoto(mno, files, callback, error){
+	function modifyPhoto(id, files, callback, error){
 		console.log("modifyPhoto................"); 
 		console.log(JSON.stringify(files));	
 		$.ajax({
 			type : 'put', 
-			url : '/member/modifyPhoto/'+mno, 
+			url : '/member/modifyPhoto/'+id, 
 			data : JSON.stringify(files), 
 			contentType : "application/json; charset=UTF-8", 
 			success : function(result, status, xhr){
@@ -253,11 +253,11 @@ var memberService = (function(){
 		});			
 	}
 	
-	function deletePhoto(mno, callback, error){
+	function deletePhoto(id, callback, error){
 		console.log("deletePhoto................"); 
 		$.ajax({
 			type : 'delete', 
-			url : '/member/deletePhoto/'+mno, 
+			url : '/member/deletePhoto/'+id, 
 			success : function(result, status, xhr){
 				if(callback){
 					callback(result); 
@@ -273,10 +273,10 @@ var memberService = (function(){
 	
 	function cultureList(param, callback, error){
 		
-		var mno = param.mno; 
+		var id = param.id; 
 		var category = param.category; 
 		
-		$.get("/"+category+"/"+mno+"/top.json", function(result){
+		$.get("/"+category+"/top/"+id+".json", function(result){
 			if(callback){
 				callback(result); 
 			}
@@ -299,8 +299,8 @@ var memberService = (function(){
 		}); 
 	}	
 	
-	function cultureCount(mno, callback, error){
-		$.get("/culture/"+mno+"/count.json", function(result){
+	function cultureCount(id, callback, error){
+		$.get("/culture/count/"+id+".json", function(result){
 			if(callback){
 				callback(result); 
 			}

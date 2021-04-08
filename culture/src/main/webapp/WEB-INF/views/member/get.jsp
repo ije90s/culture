@@ -142,7 +142,7 @@ $(document).ready(function(){
 		var str="", kind=""; 
 		if(category=="culture"){
 			var top = {
-				mno : mno,	
+				id : writer,	
 				category : category
 			};	
 			console.log(top);
@@ -181,7 +181,7 @@ $(document).ready(function(){
 			});			
 		}
 	}
-	memberService.cultureCount(mno, function(data){
+	memberService.cultureCount(writer, function(data){
 		$("#cultureCount").append(" <kbd>"+data+"</kbd>");
 	});
 	

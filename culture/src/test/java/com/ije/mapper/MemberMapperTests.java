@@ -1,6 +1,9 @@
 package com.ije.mapper;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import org.junit.Test;
@@ -83,4 +86,16 @@ public class MemberMapperTests {
 		//cri.setKeyword("user");
 		log.info(mapper.getCount(cri));
 	}
+	
+	@Test
+	public void getDate() throws ParseException {
+		Date today = new Date(); 
+		SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+		Date edate = df.parse("2021-04-05"); 
+		log.info(today.compareTo(edate));
+		log.info(edate.compareTo(today));
+		log.info(today.before(edate));
+		log.info(today.after(edate));
+	}
+	
 }

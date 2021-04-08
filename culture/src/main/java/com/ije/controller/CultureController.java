@@ -57,12 +57,12 @@ public class CultureController {
 		d.addAttribute("list", service.getList()); 
 	}*/
 	
-	@GetMapping("/list/{mno}")
+	@GetMapping("/list/{id}")
 	@PreAuthorize("isAuthenticated()")
-	public String list(@PathVariable("mno") Long mno, Criteria cri, Model d) {
+	public String list(@PathVariable("id") String id, Criteria cri, Model d) {
 		log.info("페이징 호출..............................................");
-		d.addAttribute("list", service.getListPaging(cri,mno)); 
-		d.addAttribute("page", new PageVO(cri, service.getCount(cri,mno)));
+		d.addAttribute("list", service.getListPaging(cri,id)); 
+		d.addAttribute("page", new PageVO(cri, service.getCount(cri,id)));
 		return "/culture/list";
 	}
 		
@@ -119,7 +119,7 @@ public class CultureController {
 		service.registerKey(ins);
 		log.info("register : " + ins);
 		rttr.addFlashAttribute("result", "1");
-		return "redirect:/culture/list/"+ins.getMno(); 
+		return "redirect:/culture/list/"+ins.getWriter(); 
 	}
 	
 	@GetMapping("/modify")
@@ -130,9 +130,9 @@ public class CultureController {
 		d.addAttribute("culture", service.get(cno)); 
 	}
 	
-	@PreAuthorize("principal.member.mno == #upt.mno or hasRole('ROLE_ADMIN')")
+	@PreAuthorize("principal.username == #upt.writer or hasRole('ROLE_ADMIN')")
 	@PostMapping("/modify")
-	public String modify(@RequestParam("object") Long object, @RequestHeader("User-Agent") String userAgent, @Valid @ModelAttribute("culture") CultureVO upt, BindingResult result, @ModelAttribute("cri") Criteria cri, RedirectAttributes rttr) {
+	public String modify(@RequestParam("object") String object, @RequestHeader("User-Agent") String userAgent, @Valid @ModelAttribute("culture") CultureVO upt, BindingResult result, @ModelAttribute("cri") Criteria cri, RedirectAttributes rttr) {
 		
 		if(result.hasErrors()) {
 			for(ObjectError obj : result.getAllErrors()) {
@@ -192,9 +192,9 @@ public class CultureController {
 		});
 	}
 	
-	@PreAuthorize("principal.member.mno == #mno or hasRole('ROLE_ADMIN')")
+	@PreAuthorize("principal.username == #object or hasRole('ROLE_ADMIN')")
 	@PostMapping("/remove")
-	public String remove(@RequestParam("cno") Long cno, @RequestParam("object") Long object, @ModelAttribute("cri") Criteria cri, RedirectAttributes rttr) {
+	public String remove(@RequestParam("cno") Long cno, @RequestParam("object") String object, @ModelAttribute("cri") Criteria cri, RedirectAttributes rttr) {
 		log.info("삭제하기 호출...............................................");
 		log.info("cno : " + cno);
 		log.info("...........................................");
@@ -219,46 +219,46 @@ public class CultureController {
 		return new ResponseEntity<>(service.getAttachList(cno), HttpStatus.OK);
 	}
 	
-	@GetMapping("/stats/{mno}")
+	@GetMapping("/stats/{id}")
 	@PreAuthorize("isAuthenticated()")
-	public String stats(@PathVariable("mno") Long mno, Criteria cri, Model d) {
+	public String stats(@PathVariable("id") String id, Criteria cri, Model d) {
 		log.info("통계..............................................");
 		return "/culture/stats";
 	}
 	
 
 	
-	@GetMapping(value="/{tab}/{mno}/{sdate}/{edate}", produces= {MediaType.APPLICATION_XML_VALUE, MediaType.APPLICATION_JSON_UTF8_VALUE})
-	public ResponseEntity<List<CultureVO>> stats(@PathVariable("tab") String tab,@PathVariable("mno") Long mno,  @PathVariable("sdate") String sdate, @PathVariable("edate") String edate,  Criteria cri, Model d) {
+	@GetMapping(value="/{tab}/{id}/{sdate}/{edate}", produces= {MediaType.APPLICATION_XML_VALUE, MediaType.APPLICATION_JSON_UTF8_VALUE})
+	public ResponseEntity<List<CultureVO>> stats(@PathVariable("tab") String tab,@PathVariable("id") String id,  @PathVariable("sdate") String sdate, @PathVariable("edate") String edate,  Criteria cri, Model d) {
 		log.info("통계..............................................");
 		cri.setSdate(sdate);
 		cri.setEdate(edate);
 		List<CultureVO> list = new ArrayList<CultureVO>(); 
 		if(tab.equals("mon")) {
-			list = service.getMonList(cri,mno);
+			list = service.getMonList(cri,id);
 		}else if(tab.equals("year")) {
-			list = service.getYearList(cri,mno); 
+			list = service.getYearList(cri,id); 
 		}else {
-			list = service.getChartList(cri,mno);
+			list = service.getChartList(cri,id);
 		}
 		log.info(list);
 		return new ResponseEntity<>(list, HttpStatus.OK);
 	}
 	
-	@GetMapping(value="/{mno}/{sdate}", produces= {MediaType.APPLICATION_XML_VALUE, MediaType.APPLICATION_JSON_UTF8_VALUE})
-	public ResponseEntity<List<CultureVO>> get(@PathVariable("mno") Long mno, @PathVariable("sdate") String sdate, Criteria cri){
+	@GetMapping(value="/{id}/{sdate}", produces= {MediaType.APPLICATION_XML_VALUE, MediaType.APPLICATION_JSON_UTF8_VALUE})
+	public ResponseEntity<List<CultureVO>> get(@PathVariable("id") String id, @PathVariable("sdate") String sdate, Criteria cri){
 		log.info("get : " + sdate);
 		cri.setSdate(sdate);
-		return new ResponseEntity<>(service.getBySdate(cri,mno), HttpStatus.OK);
+		return new ResponseEntity<>(service.getBySdate(cri,id), HttpStatus.OK);
 	}
 	
 	
-	@GetMapping(value="/{mno}/top", produces = {MediaType.APPLICATION_XML_VALUE, MediaType.APPLICATION_JSON_UTF8_VALUE})
+	@GetMapping(value="/top/{id}", produces = {MediaType.APPLICATION_XML_VALUE, MediaType.APPLICATION_JSON_UTF8_VALUE})
 	@ResponseBody
-	public ResponseEntity<List<CultureVO>> top(@PathVariable("mno") Long mno){
+	public ResponseEntity<List<CultureVO>> top(@PathVariable("id") String id){
 		log.info("최근 글 10기만 가져오기"); 
 		Criteria cri = new Criteria(); 
-		return new ResponseEntity<>(service.getListPaging(cri,mno), HttpStatus.OK); 
+		return new ResponseEntity<>(service.getListPaging(cri,id), HttpStatus.OK); 
 	}	
 	
 	@GetMapping(value="/search/pages/{page}/{type}/{keyword}", produces = {MediaType.APPLICATION_JSON_UTF8_VALUE, MediaType.APPLICATION_XML_VALUE})
@@ -271,11 +271,11 @@ public class CultureController {
 		return new ResponseEntity<>(service.getListSearch(cri), HttpStatus.OK);
 	}
 	
-	@GetMapping(value="/{mno}/count", produces = {MediaType.APPLICATION_JSON_UTF8_VALUE, MediaType.APPLICATION_XML_VALUE})
+	@GetMapping(value="/count/{id}", produces = {MediaType.APPLICATION_JSON_UTF8_VALUE, MediaType.APPLICATION_XML_VALUE})
 	@ResponseBody
-	public int count(@PathVariable("mno") Long mno){
-		log.info("문화기록 등록건수 : " + mno);
+	public int count(@PathVariable("id") String id){
+		log.info("문화기록 등록건수 : " + id);
 		Criteria cri = new Criteria(); 
-		return service.getCount(cri, mno); 
+		return service.getCount(cri, id); 
 	}
 }

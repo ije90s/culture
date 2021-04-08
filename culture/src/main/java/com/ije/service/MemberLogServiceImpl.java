@@ -74,7 +74,9 @@ public class MemberLogServiceImpl implements MemberLogService {
 		log.info("remove : "+lno);
 		MemberLogVO vo = mapper.read(lno);
 		MemberVO vo2 = memberMapper.read(vo.getTarget()); 
+		boolean enabled = true;
 		if(vo.getLno() == vo2.getLno()) {
+			if(vo.getState() != 0) enabled = false;
 			memberMapper.updateAuth(vo.getOldauth(), vo2.getMno().toString()); 
 			memberMapper.updateState(vo.getState(), vo.getTarget());			
 		}

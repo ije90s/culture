@@ -24,10 +24,10 @@
 	<sql id="object">
 		<trim suffix=" And ">
 			<choose>
-				<when test="object != 0">
-					mno=#{object}
+				<when test="object != 'all'.toString()">
+					writer=#{object}
 				</when>
-				<when test="object == 0">
+				<when test="object == 'all'.toString()">
 					open in (1,2)
 				</when>
 			</choose>
@@ -63,7 +63,7 @@
 	<![CDATA[
 	SELECT TO_CHAR(TO_DATE(cdate), 'yyyy-MM-dd') As day, kind, count(*) AS sum
 	FROM tb_culture
-	WHERE 1=1 AND TO_CHAR(TO_DATE(cdate), 'yyyy-MM-dd') between #{cri.sdate} and #{cri.edate} And mno=#{mno}
+	WHERE 1=1 AND TO_CHAR(TO_DATE(cdate), 'yyyy-MM-dd') between #{cri.sdate} and #{cri.edate} And writer=#{id}
 	GROUP BY TO_CHAR(TO_DATE(cdate), 'yyyy-MM-dd'), kind
 	ORDER BY TO_CHAR(TO_DATE(cdate), 'yyyy-MM-dd'), kind 
 	]]>
@@ -73,7 +73,7 @@
 	<![CDATA[
 	SELECT TO_CHAR(cdate, 'yyyy-MM') As day, kind, COUNT(*) AS sum
 	FROM tb_culture
-	WHERE 1=1 AND TO_CHAR(TO_DATE(cdate), 'yyyy-MM-dd') between #{cri.sdate} and #{cri.edate} And mno=#{mno}
+	WHERE 1=1 AND TO_CHAR(TO_DATE(cdate), 'yyyy-MM-dd') between #{cri.sdate} and #{cri.edate} And writer=#{id}
 	GROUP BY TO_CHAR(cdate, 'yyyy-MM'), kind
 	ORDER BY TO_CHAR(cdate, 'yyyy-MM'), kind
 	]]>
@@ -83,27 +83,27 @@
 	SELECT kind, count(*) AS sum, 
 	ROUND(RATIO_TO_REPORT(count(*)) over(PARTITION BY GROUPING_ID(kind)) * 100,0) as ratio
 	FROM tb_culture
-	WHERE 1=1 AND TO_CHAR(TO_DATE(cdate), 'yyyy-MM-dd') between #{cri.sdate} and #{cri.edate} And mno=#{mno}
+	WHERE 1=1 AND TO_CHAR(TO_DATE(cdate), 'yyyy-MM-dd') between #{cri.sdate} and #{cri.edate} And writer=#{id}
 	GROUP BY ROLLUP(kind)	
 	</select>
 	
 	<select id="read2" resultType="com.ije.domain.CultureVO">
 	Select cno, cdate, kind, title, content, rank, rdate, udate, mno 
 	From tb_culture
-	Where 1=1 AND TO_CHAR(TO_DATE(cdate), 'yyyy-MM-dd') = #{cri.sdate} and mno=#{mno}
+	Where 1=1 AND TO_CHAR(TO_DATE(cdate), 'yyyy-MM-dd') = #{cri.sdate} And writer=#{id}
 	</select>
 	
 	<insert id="insert">
-	INSERT INTO tb_culture(cno, cdate, kind, title, content, RANK, mno)
-	Values(seq_culture.nextval, #{cdate}, #{kind}, #{title}, #{content}, #{rank}, #{mno})
+	INSERT INTO tb_culture(cno, cdate, kind, title, content, RANK, mno, writer)
+	Values(seq_culture.nextval, #{cdate}, #{kind}, #{title}, #{content}, #{rank}, #{mno}, #{writer})
 	</insert>
 	
 	<insert id="insertKey">
 		<selectKey keyProperty="cno" order="BEFORE" resultType="Long">
 		Select seq_culture.nextval from dual
 		</selectKey>
-	INSERT INTO tb_culture(cno, cdate, kind, title, content, RANK, mno, open)
-	Values(#{cno}, #{cdate}, #{kind}, #{title}, #{content}, #{rank}, #{mno}, #{open})	
+	INSERT INTO tb_culture(cno, cdate, kind, title, content, RANK, mno, open, writer)
+	Values(#{cno}, #{cdate}, #{kind}, #{title}, #{content}, #{rank}, #{mno}, #{open}, #{writer})	
 	</insert>
 	
 	<select id="read" resultType="com.ije.domain.CultureVO">

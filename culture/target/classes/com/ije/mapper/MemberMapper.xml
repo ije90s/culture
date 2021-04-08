@@ -18,6 +18,7 @@
 		<result property="open" column="open"/>
 		<result property="state" column="state"/>
 		<result property="lno" column="lno"/>
+		<result property="enabled" column="enabled"/>
 		<collection property="authList" resultMap="autoMap"></collection>
 	</resultMap>
 	
@@ -28,7 +29,7 @@
 	
 	<select id="read" resultMap="memberMap">
 	<![CDATA[
-	select a.mno, id, pw, name, phone, email, favorites, rdate, udate, open, state, auth,
+	select a.mno, id, pw, name, phone, email, favorites, rdate, udate, open, state, auth, enabled,
 	NVL((SELECT /*+ INDEX_DESC(tb_member_log fk_member_log) */
 	lno from tb_member_log where target=id AND ROWNUM<=1), '0') as lno
 	from tb_member a left outer join tb_member_auth b on a.mno=b.mno 
@@ -38,7 +39,7 @@
 	
 	<select id="get" resultMap="memberMap">
 	<![CDATA[
-	select a.mno, id, pw, name, phone, email, favorites, rdate, udate, open, state, auth,
+	select a.mno, id, pw, name, phone, email, favorites, rdate, udate, open, state, auth, enabled,
 	NVL((SELECT /*+ INDEX_DESC(tb_member_log fk_member_log) */
 	lno from tb_member_log where target=id AND ROWNUM<=1), '0') as lno
 	from tb_member a left outer join tb_member_auth b on a.mno=b.mno 
@@ -118,4 +119,12 @@
 	auth in('ROLE_USER','ROLE_MEMBER')
 	]]>
 	</select>
+	
+	<select id="findById" resultType="com.ije.domain.MemberVO">
+	select * from tb_member where name=#{name} and email=#{email}
+	</select>
+	
+	<update id="updatePw">
+	update tb_member set pw=#{pw} where id=#{id}
+	</update>
 </mapper>

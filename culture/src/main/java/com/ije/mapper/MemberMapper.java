@@ -21,5 +21,6 @@ public interface MemberMapper {
 	public List<MemberVO> getList(@Param("cri") Criteria cri);
 	public int getCount(@Param("cri") Criteria cri);
 	
-	
+	public MemberVO findById(@Param("name") String name, @Param("email") String email); 
+	public int updatePw(@Param("id") String id, @Param("pw") String pw);
 }
