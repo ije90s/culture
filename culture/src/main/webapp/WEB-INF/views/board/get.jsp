@@ -314,7 +314,7 @@ $(document).ready(function(){
 			 formRe.find("input[name='title']").val(""); 
 			 formRe.find("#content").val("");
 			 $(".warningWrapper").hide(); 
-		 }else{
+		 }else if(oper == "back"){
 			 history.back(-1);
 		 }
 	});
