@@ -21,8 +21,8 @@ var cultureService = (function(){
 			}
 		}else if(name=="kind"){
 			small=$(".kind");
-			var str=""; 
-			if(!t.is(':checked') && str!=""){
+			var str=""; 		
+			if(!t.is(':checked') && str==false){
 				msg = "종류를 선택하세요.";
 				tag = "invalid";
 			}else {

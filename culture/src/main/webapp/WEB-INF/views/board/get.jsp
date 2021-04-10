@@ -5,60 +5,12 @@
 <%@ taglib prefix="fmt"  uri="http://java.sun.com/jsp/jstl/fmt" %>   
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>  
 <%@ include file="../includes/header.jsp"  %>
-					<style>
-					.originPictureWrapper{
-						position:absolute; 
-						display:none; 
-						justify-content:center; 
-						align-items:center; 
-						top:0%;
-						width:100%; 
-						height:100%; 
-						background-color:gray; 
-						z-index:100; 
-						background:rgba(255,255,255,0.5); 
-					}
-					.originPicture{
-						position:relative; 
-						display:flex; 
-						justify-content:center; 
-						align-items:center; 
-					}
-					.originPicture img{
-						width:600px; 
-					}
-				    .warningWrapper{
-						position:absolute; 
-						display:none; 
-						justify-content:center; 
-						align-items:center; 
-						top:0%;
-						width:100%;
-						height:100%; 
- 						background-color:gray; 
-						z-index:100; 
-						background:rgba(255,255,255,0.6); 
-					}
-					.warningDiv{
-						position:relative; 
-						display:flex; 
-						justify-content:center; 
-						align-items:center; 
-						padding : 5px 0;
-						top:15%;
-						left : 5%;
-						width : 30%;
-						background-color:white; 
-						border : 1px solid gray;
-					}	
-					.invalid{color:red !important;}
-					</style>
                     <div class="container-fluid">
                         <h3 class="mt-4">
                          <c:if test="${board.kind eq 'notice' }">공지사항</c:if>
 	                     <c:if test="${board.kind eq 'free' }">자유게시판</c:if>
 	                     <c:if test="${board.kind eq 'question' }">질문&답변</c:if>
-	                     <c:if test="${board.kind eq 'share' }">공유마당</c:if> 상세</h3>
+	                     <c:if test="${board.kind eq 'share' }">공유마당</c:if> 상세 <button type="button" class="btn btn-success float-right" data-oper="back">뒤로</button></h3>
                         <div class="card mt-4 mb-4">
                             <div class="card-header"><h6 id="report" style="cursor:pointer;">
 		                    	<i class="fas fa-bullhorn" style="color:red"></i> 
@@ -198,12 +150,9 @@
 $(document).ready(function(){
 	var form = $("#mainFrom"); 
 	var formRe = $("#reportForm");
-	history.pushState(null, null, location.href);
-	console.log(history.state);
-	window.onpopstate = function(event) {
-	    history.go(1);
-	};
 
+
+	 //첨부파일 출력
 	 (function(){
 			var bno = '<c:out value="${board.bno}" />';
 			$.getJSON("/board/getAttachList", {bno : bno}, function(arr){
@@ -231,6 +180,7 @@ $(document).ready(function(){
 			});
 	 })();	 
 	 
+	//첨부파일 이미지 보기  
 	$(".uploadResult").on("click", "li", function(e){
 		console.log("clicked");
 		var liObj = $(this); 
@@ -238,21 +188,12 @@ $(document).ready(function(){
 	 	showImg(path.replace(new RegExp(/\\/g),"/"));
 	});	
 	
+	// 유효성 검사
 	$(".chk").blur(function(e){
 		reportService.validate($(this)); 
 	});
-	
-
-	//invalid 항목 검사
-	function checkItem(item){
-		if(item.siblings('small').hasClass("invalid")){
-			item.focus(); 
-			return false; 
-		}else {
-			return true; 
-		}	
-	}	
-	
+		
+	//버튼 처리 
 	$(".btn").click(function(e){
 		e.preventDefault(); 
 		var oper = $(this).data("oper"); 
@@ -272,7 +213,7 @@ $(document).ready(function(){
 			form.append('<input type="hidden" name="kind" value="${board.kind}"/>');
 			form.append('<input type="hidden" name="refno" value="${board.bno}" />'); 
 			form.attr("action", "/board/register").submit(); 
-		}else if(oper == "reg"){
+		}else if(oper == "reg"){ //신고글 작성 
 		
 			 $(".chk").blur(function(e){
 				   reportService.validate($(this)); 
@@ -310,7 +251,7 @@ $(document).ready(function(){
 						reportService.validate($(this));
 					});
 				 });		 
-		 }else if(oper == "mod"){	 	 
+		 }else if(oper == "mod"){ //신고글 수정	 	 
 
 			 $(".chk").blur(function(e){
 				   reportService.validate($(this)); 
@@ -347,7 +288,7 @@ $(document).ready(function(){
 					});
 				 });
 			 
-		 }else if(oper == "del"){
+		 }else if(oper == "del"){ //신고글 삭제
 			 var report; 
 			 var title = formRe.find("input[name='title']").val();
 			 var content = formRe.find("#content").val();
@@ -373,6 +314,8 @@ $(document).ready(function(){
 			 formRe.find("input[name='title']").val(""); 
 			 formRe.find("#content").val("");
 			 $(".warningWrapper").hide(); 
+		 }else{
+			 history.back(-1);
 		 }
 	});
 		
@@ -381,6 +324,8 @@ $(document).ready(function(){
 	var pageNum = 1; 
 	var replyPageFooter = $(".card-footer"); 
 	showList(1); 
+	
+	//댓글 출력
 	function showList(page){
 		
 		console.log("show list "+ page);
@@ -420,6 +365,7 @@ $(document).ready(function(){
 		});
 	}
 
+	//댓글 페이징
 	function showReplyPage(replyCnt){
 		var endNum = Math.ceil(pageNum/10.0)*10; 
 		var startNum = endNum -9; 

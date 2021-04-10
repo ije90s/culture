@@ -10247,3 +10247,57 @@ body {
 .sb-sidenav-light .sb-sidenav-footer {
   background-color: #e9ecef;
 }
+
+					.originPictureWrapper{
+						position:absolute; 
+						display:none; 
+						justify-content:center; 
+						align-items:center; 
+						top:0%;
+						width:100%; 
+						height:100%; 
+						background-color:gray; 
+						z-index:100; 
+						background:rgba(255,255,255,0.5); 
+					}
+					.originPicture{
+						position:relative; 
+						display:flex; 
+						justify-content:center; 
+						align-items:center; 
+					}
+					.originPicture img{
+						width:600px; 
+					}
+				    .warningWrapper{
+						position:absolute; 
+						display:none; 
+						justify-content:center; 
+						align-items:center; 
+						top:0%;
+						width:100%;
+						height:100%; 
+ 						background-color:gray; 
+						z-index:100; 
+						background:rgba(255,255,255,0.6); 
+					}
+					.warningDiv{
+						position:relative; 
+						display:flex; 
+						justify-content:center; 
+						align-items:center; 
+						padding : 5px 0;
+						top:15%;
+						left : 5%;
+						width : 30%;
+						background-color:white; 
+						border : 1px solid gray;
+					}	
+					.invalid{color:red !important;}
+					.valid{color:green !important;}
+					.ui-datepicker-trigger {
+						width:25px; 
+						height:25px;
+						margin-left:5px;
+					}
+					table.ui-datepicker-calendar { display:none; }

@@ -8,7 +8,7 @@ var memberService = (function(){
 		var name = t.attr("name");
 		var value = t.val(); 
 		var small = t.siblings('small'); 
-		var msg ="", tag="valid"; 	
+		var msg ="", tag="valid";
 		if(name=="id"){
 			if(value==""){
 				msg = "아이디를 입력하세요."; 
@@ -92,20 +92,23 @@ var memberService = (function(){
 				tag = "invalid"; 
 			}
 		}else if(name == "phone"){
-			reg = /^01([0|1|6|7|8|9]?)?([0-9]{3,4})?([0-9]{4})$/;
-			if(!reg.test(value) && value!=""){
+			reg = /(01[016789])(\d{4}|\d{3})(\d{4})$/g; 
+			if(!reg.test(value)){
 				msg = "형식에 맞춰서 입력하세요."; 
 				tag = "invalid"; 
 			}else if(value.length > 12){
 				msg = "최대 12자리까지 입력가능합니다."; 
 				tag = "invalid"; 
+			}else{
+				msg = "형식이 일치합니다."; 
+				tag = "valid";
 			}
 		}else if(name == "email"){
 			reg = /^[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*.[a-zA-Z]{2,3}$/i;
 			if(value.match(space)){
 				msg = "공백이 포함되어 있습니다."; 
 				tag = "invalid"; 
-			}else if(!reg.test(value) && value !=""){
+			}else if(!reg.test(value)){
 				msg = "이메일 주소를 재확인 해보세요."; 
 				tag = "invalid"; 
 			}

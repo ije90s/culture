@@ -6,7 +6,7 @@
 <%@ include file="../includes/header.jsp"  %>
 					<div class="container-fluid">
                         <h3 class="mt-4">탈퇴리스트</h3>
-                        <div class="card mb-4">
+                        <div class="card mt-4 mb-4">
                             <div class="card-header"></div>
                             <div class="card-body">
                                 <div class="table-responsive">

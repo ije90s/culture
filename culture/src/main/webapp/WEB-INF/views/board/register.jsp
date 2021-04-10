@@ -5,9 +5,6 @@
 <%@ taglib prefix="fmt"  uri="http://java.sun.com/jsp/jstl/fmt" %>    
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>    
 <%@ include file="../includes/header.jsp"  %>
-					<style>
-        			.invalid{color:red !important;}
-        			</style>
                     <div class="container-fluid">
                         <h3 class="mt-4">
                             <c:if test="${kind eq 'notice' }">공지사항</c:if>
@@ -17,7 +14,7 @@
 	                    	<c:if test="${refno eq 0}">등록</c:if>
 	                    	<c:if test="${refno ne 0}">답글</c:if>
 	                    </h3>
-                        <div class="card mb-4">
+                        <div class="card mt-4 mb-4">
                             <div class="card-header"><h6><medium class="invalid">*</medium>(별표)가 있는 항목만 필수값입니다.</h6></div>
                             <div class="card-body">
                             	<form id="mainForm" role="form" action="/board/register" method="post">
@@ -27,12 +24,12 @@
                             		<input type="hidden" name="refno" value="${refno}" />
 	                            	<div class="form-group">
 	                                	<label class="small mb-1" for="title">제목<medium class="invalid">*</medium></label>
-	                                    <input class="form-control py-4" name="title" id="title" type="text" value="${boardVo.title}"/>
+	                                    <input class="form-control py-4 chk" name="title" id="title" type="text" value="${boardVo.title}"/>
 	                                    <small></small>
 	                                </div>
 	                                <div class="form-group">
 	                                	<label class="small mb-1" for="content">내용<medium class="invalid">*</medium></label>
-	                                    <textarea class="form-control" name="content" rows="5" id="content"><c:if test="${refno ne 0 }"><c:if test="${!fn:contains(boardVo.content, '답글')}">============답글===========</c:if></c:if>${boardVo.content}</textarea>
+	                                    <textarea class="form-control chk" name="content" rows="5" id="content"><c:if test="${refno ne 0 }"><c:if test="${!fn:contains(boardVo.content, '답글')}">============답글===========</c:if></c:if>${boardVo.content}</textarea>
 	                                    <small></small>
 									</div>
 									<div class="form-group uploadDiv">
@@ -59,7 +56,7 @@ $(document).ready(function(){
 	var csrfHeader = "${_csrf.headerName}"; 
 	var csrfToken = "${_csrf.token}";
 	
-	$(".form-control").blur(function(e){
+	$(".chk").blur(function(e){
 		boardService.validate($(this)); 
 	});
 	hasErrors();
@@ -77,7 +74,7 @@ $(document).ready(function(){
 			str+="<input type='hidden' name='attachList[0].fileList["+i+"].fileType' value='"+jobj.data("type")+"'/>";
 		});
 		
-		$(".form-control").each(function(e){
+		$(".chk").each(function(e){
 			boardService.validate($(this));	
 		});
 	
@@ -87,20 +84,11 @@ $(document).ready(function(){
 		formObj.append(str).submit();
 	});	
 	
-	//invalid 항목 검사
-	function checkItem(item){
-		if(item.siblings('small').hasClass("invalid")){
-			item.focus(); 
-			return false; 
-		}else {
-			return true; 
-		}	
-	}	
-	
+
 	//서버에서 받아온 error 검사
 	function hasErrors(){
 		<spring:hasBindErrors name="boardVO">
-		$(".form-control").each(function(){
+		$(".chk").each(function(){
 			boardService.validate($(this));	
 		}); 
 		var str=""; 

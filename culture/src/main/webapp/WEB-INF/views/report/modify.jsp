@@ -6,12 +6,9 @@
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>     
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>   
 <%@ include file="../includes/header.jsp"  %>
-					<style>
-					.invalid{color:red !important;}
-					</style>
                     <div class="container-fluid">
                         <h3 class="mt-4">신고 수정</h3>
-                        <div class="card mb-4">
+                        <div class="card mt-4 mb-4">
                             <div class="card-header"><h6><medium class="invalid">*</medium>(별표)가 있는 항목만 필수값입니다.</h6></div>
                             <div class="card-body">
                             		<sec:authentication property="principal" var="pinfo"/>
@@ -79,7 +76,8 @@
                               		</form> <!-- form 끝  -->                            
                              </div> <!-- card-body 끝  -->
                         </div> <!-- card mb-4 끝 -->
-                	</div> <!-- container-fluid 끝 -->   
+                	</div> <!-- container-fluid 끝 -->
+<script src="/resources/scripts/common.js"></script>                	   
 <script src="/resources/scripts/report.js"></script>             	
 <script>
 $(document).ready(function(){
@@ -95,16 +93,6 @@ $(document).ready(function(){
 		reportService.validate($(this)); 
 	});
 	hasErrors();
-
-	//invalid 항목 검사
-	function checkItem(item){
-		if(item.siblings('small').hasClass("invalid")){
-			item.focus(); 
-			return false; 
-		}else {
-			return true; 
-		}	
-	}	
 
 	//서버에서 받아온 error 검사
 	function hasErrors(){

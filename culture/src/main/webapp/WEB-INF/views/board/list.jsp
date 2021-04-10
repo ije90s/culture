@@ -11,7 +11,7 @@
 	                        <c:if test="${kind eq 'question' }">질문&답변</c:if>
 	                        <c:if test="${kind eq 'share' }">공유마당</c:if>
                         </h3>
-                        <div class="card mb-4">
+                        <div class="card mt-4 mb-4">
                             <div class="card-header">
                                  <form id="searchForm" action="/board/list" method="get">
                                  <input type="hidden" name="pageNum" value='<c:out value="${page.cri.pageNum }"/>' />
@@ -29,14 +29,15 @@
                                 	</select>
                                 	<div class="input-group-prepend"><input type="text" name="keyword" class="form-control" value='<c:out value="${page.cri.keyword}"/>' /></div>  	
 									<div class="input-group-prepend"><button class="btn btn-primary" data-oper="search">검색</button></div>
+									<div class="input-group-prepend"><button type="button" class="btn btn-success" data-oper="back">초기화</button></div>
 									<c:if test="${kind ne 'notice' }">
 										<sec:authorize access="hasAnyRole('ROLE_ADMIN','ROLE_MEMBER')">
-											<button class="btn btn-secondary" style="position:absolute; right:5px;" data-oper="regiter">등록</button>
+											<button class="btn btn-secondary" style="position:absolute; right:5px;" data-oper="register">등록</button>
 										</sec:authorize>
 									</c:if>
 									<c:if test="${kind eq 'notice' }">
 										<sec:authorize access="hasRole('ROLE_ADMIN')">
-											<button class="btn btn-secondary" style="position:absolute; right:5px;" data-oper="regiter">등록</button>
+											<button class="btn btn-secondary" style="position:absolute; right:5px;" data-oper="register">등록</button>
 										</sec:authorize>
 									</c:if>
 								</div>	
@@ -159,11 +160,13 @@ $(document).ready(function(){
 			}
 			search.find("input[name='pageNum']").val("1");
 			search.attr("action", "/board/list/"+kind).submit();			
-		}else{
+		}else if(oper == "register"){
 			search.empty();
 			search.append("<input type='hidden' name='kind' value='"+kind+"'/>");
 			search.append("<input type='hidden' name='refno' value='0' />");
 			search.attr("action", "/board/register").submit();			
+		}else {
+			self.location="/board/list/"+kind;
 		}
 		
 	});

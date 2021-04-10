@@ -48,7 +48,7 @@
 	<![CDATA[
 	select * from ( 
 		select /*+ INDEX_DESC(tb_culture pk_culture)*/ 
-		ROWNUM rn, cno, cdate, kind, title, rank, content, rdate, udate, mno 
+		ROWNUM rn, cno, cdate, kind, title, rank, content, rdate, udate, mno, open 
 		From tb_culture where 
 	]]>	
 	<include refid="criteria"></include>
@@ -129,7 +129,7 @@
 	<![CDATA[
 	select * from ( 
 		select /*+ INDEX_DESC(tb_culture pk_culture)*/ 
-		ROWNUM rn, cno, title, content, rdate
+		ROWNUM rn, cno, title, content, rdate, open
 		From tb_culture where 
 	]]>	
 	<include refid="criteria"></include>

@@ -6,13 +6,9 @@
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>   
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %> 
 <%@ include file="../includes/header.jsp"  %>
-			        <style>
-			        .invalid{color:red !important;}
-			        .valid{color:green !important;}
-			        </style>
 					<div class="container">
 						<h3 class="mt-4">회원정보</h3>
-						<div class="card mb-4">
+						<div class="card mt-4 mb-4">
                             <div class="card-header">
                             	<div class="float-right"> 
 	                            	<ul class="list-group list-group-horizontal">
@@ -79,7 +75,7 @@
 										</div>
 									</div> <!-- id="favorites" 끝  -->								
                             	</div> <!--  form-group 그룹 끝-->      
-                                <div class="form-group modify">
+                                <div class="form-group">
 						            <label class="small mb-1" for="open">공개여부</label>
 						            <div id="open">
 							            <div class="form-check-inline">
@@ -123,14 +119,14 @@
      		<small></small>
      	</div>
    		<div class="form-group modify">
-     		<label>휴대폰</label>
+     		<label>휴대폰<medium class="invalid">*</medium></label>
      		<input class="form-control chk" name="phone" type="phone" value="${member.phone }"/>
-     		<small></small>
+     		 <small class="valid">숫자만 가능</small>
      	</div>
      	<div class="form-group modify">
-  			<label>이메일</label>
+  			<label>이메일<medium class="invalid">*</medium></label>
      		<input class="form-control chk" name="email" type="email" value="${member.email}"/>   	
-     		<small></small>
+     		<small class="valid">이메일 형식에 맞춰 입력</small>
      	</div>    	
         <div class="form-group modify">
             <label class="small mb-1" for="favorites">관심사</label>
@@ -317,19 +313,16 @@ $(document).ready(function(){
 		var member;
 		
 		//invalid 한번 더 체크
-		$(".chk").each(function(e){
+		$("."+link).each(function(e){
 			memberService.validate($(this));
-		});	
+		});		
 		
 		if(link == "modify"){
-			if(!checkItem($("input[name='name']"))) return false;			
-			//이메일, 휴대폰번호 체크
-			if($("input[name='phone']").val() != "") {	
-				if(!checkItem($("input[name='phone']"))) return false;
-			}else{$("input[name='phone']").val("");}
-			if($("input[name='email']").val() != "") {
-				if(!checkItem($("input[name='email']"))) return false;
-			}else{$("input[name='email']").val("");}
+
+			if(!checkItem($("input[name='name']"))) return false;	
+			if(!checkItem($("input[name='phone']"))) return false;
+			if(!checkItem($("input[name='email']"))) return false;
+
 			
 			//체크된 관심사만 저장
 			var checked =""; 
@@ -419,17 +412,7 @@ $(document).ready(function(){
 				
 		
 	});
-	
-	//invalid 항목 검사
-	function checkItem(item){
-		if(item.siblings('small').hasClass("invalid")){
-			item.focus(); 
-			return false; 
-		}else {
-			return true; 
-		}	
-	}
-	
+		
 	$(".photo").click(function(e){
 		e.preventDefault(); 
 		 $("input[name='upload']").click();

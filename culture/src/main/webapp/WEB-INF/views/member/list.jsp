@@ -3,13 +3,10 @@
 <%@ taglib prefix="c"  uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt"  uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>      
-<%@ include file="../includes/header.jsp"  %>
-					<style>
-        			.invalid{color:red !important;}
-        			</style>                   
+<%@ include file="../includes/header.jsp"  %>                 
                     <div class="container-fluid">
                         <h3 class="mt-4">회원리스트</h3>
-                        <div class="card mb-4">
+                        <div class="card mt-4 mb-4">
                             <div class="card-header">
                                  <form id="searchForm" action="/member/list" method="get">
                                  <input type="hidden" name="pageNum" value='<c:out value="${page.cri.pageNum }"/>' />
@@ -22,7 +19,8 @@
                                 	<option value="E" <c:out value="${page.cri.type eq 'E'?'selected':''}"/>>강퇴</option>
                                 	</select>
                                 	<div class="input-group-prepend"><input type="text" name="keyword" class="form-control" value='<c:out value="${page.cri.keyword}"/>' /></div>  	
-									<div class="input-group-prepend"><button class="btn btn-primary">검색</button></div>
+									<div class="input-group-prepend"><button class="btn btn-primary" data-oper="search">검색</button></div>
+									<div class="input-group-prepend"><button type="button" class="btn btn-success" data-oper="back">초기화</button></div>
 								</div>	
                                 </form>
                             </div>
@@ -178,18 +176,22 @@ $(document).ready(function(){
 	var search = $("#searchForm"); 
 	$("#searchForm button").on("click", function(e){
 		e.preventDefault(); 	
-	
-		if(!search.find("option:selected").val()){
-			alert("종류를 선택하세요."); 
-			return false; 
+		var oper = $(this).data("oper"); 
+		if(oper == "search"){
+			if(!search.find("option:selected").val()){
+				alert("종류를 선택하세요."); 
+				return false; 
+			}
+				
+			if(!search.find("input[name='keyword']").val()){
+				alert("키워드를 입력하세요."); 
+				return false; 
+			}
+			search.find("input[name='pageNum']").val("1");
+			search.attr("action", "/member/list").submit();					
+		}else{
+			self.location="/member/list";	
 		}
-			
-		if(!search.find("input[name='keyword']").val()){
-			alert("키워드를 입력하세요."); 
-			return false; 
-		}
-		search.find("input[name='pageNum']").val("1");
-		search.attr("action", "/member/list").submit();			
 	});
 
 	
@@ -424,16 +426,6 @@ $(document).ready(function(){
 			location.reload();
 		});		
 	});
-	
-	//invalid 항목 검사
-	function checkItem(item){
-		if(item.siblings('small').hasClass("invalid")){
-			item.focus(); 
-			return false; 
-		}else {
-			return true; 
-		}	
-	}
 });
 </script>               	
 <%@ include file="../includes/footer.jsp"  %>

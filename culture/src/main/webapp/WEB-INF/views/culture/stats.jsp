@@ -74,15 +74,6 @@
   </div>
 </div>            	
 <!-- The Modal 끝 -->                   	
-                	     	
-<style>
-.ui-datepicker-trigger {
-	width:25px; 
-	height:25px;
-	margin-left:5px;
-}
-table.ui-datepicker-calendar { display:none; }
-</style>
 <script type="text/javascript" src="/resources/scripts/stats.js"></script>                	            
 <script>
 

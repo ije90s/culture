@@ -5,62 +5,14 @@
 <%@ taglib prefix="fmt"  uri="http://java.sun.com/jsp/jstl/fmt" %>    
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %> 
 <%@ include file="../includes/header.jsp"  %>
-					<style>
-					.originPictureWrapper{
-						position:absolute; 
-						display:none; 
-						justify-content:center; 
-						align-items:center; 
-						top:0%;
-						width:100%; 
-						height:100%; 
-						background-color:gray; 
-						z-index:100; 
-						background:rgba(255,255,255,0.5); 
-					}
-					.originPicture{
-						position:relative; 
-						display:flex; 
-						justify-content:center; 
-						align-items:center; 	
-					}
-					.originPicture img{
-						width:600px; 
-					}
-					.warningWrapper{
-						position:absolute; 
-						display:none; 
-						justify-content:center; 
-						align-items:center; 
-						top:0%;
-						width:100%;
-						height:100%; 
- 						background-color:gray; 
-						z-index:100; 
-						background:rgba(255,255,255,0.6); 
-					}
-					.warningDiv{
-						position:relative; 
-						display:flex; 
-						justify-content:center; 
-						align-items:center; 
-						padding : 5px 0;
-						top:15%;
-						left : 5%;
-						width : 30%;
-						background-color:white; 
-						border : 1px solid gray;
-					}
-					.invalid{color:red !important;}
-					</style>
                     <div class="container-fluid">
                         <h3 class="mt-4">
                         <sec:authentication property="principal" var="pinfo"/>
                         <sec:authorize access="isAuthenticated()">
                         	<c:if test="${pinfo.member.mno eq culture.mno}">나의 </c:if>
                         	<c:if test="${pinfo.member.mno ne culture.mno}">문화</c:if>
-                        </sec:authorize>기록 상세</h3>
-                        <div class="card mb-4">
+                        </sec:authorize>기록 상세 <c:if test="${culture.open ne '0' }"><button type="button" class="btn btn-success float-right" data-oper="back">뒤로</button></c:if></h3>
+                        <div class="card mt-4 mb-4">
                             <div class="card-header">
                             	<c:if test="${culture.open ne '0' }">
 	                                <h6 id="report" style="cursor:pointer;">
@@ -210,6 +162,7 @@
 		auth = '<sec:authentication property="principal.member.authList" />';
 	 </sec:authorize>	
 	 if(auth.includes("ADMIN")) writer = "all";	
+	 
 	 (function(){
 			var cno = '<c:out value="${culture.cno}" />';
 			$.getJSON("/culture/getAttachList", {cno : cno}, function(arr){
@@ -255,17 +208,6 @@
 	$(".chk").blur(function(e){
 		reportService.validate($(this)); 
 	});
-	
-
-	//invalid 항목 검사
-	function checkItem(item){
-		if(item.siblings('small').hasClass("invalid")){
-			item.focus(); 
-			return false; 
-		}else {
-			return true; 
-		}	
-	}		
 	
 	 $(".btn").on("click",function(e){
 		 e.preventDefault(); 
@@ -376,6 +318,8 @@
 			 formRe.find("input[name='title']").val(""); 
 			 formRe.find("#content").val("");
 			 $(".warningWrapper").hide(); 
+		 }else{
+			 history.back(-1);
 		 }
 	 });
 	 

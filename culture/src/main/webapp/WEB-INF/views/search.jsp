@@ -49,7 +49,10 @@
 	var keyword='<c:out value="${keyword}"/>'; 
 	var cultureUL = $(".culture"); 	
 	var listArr = ['culture', 'notice', 'free', 'question', 'share']; 
-	
+	 var auth = null; 
+	 <sec:authorize access="isAuthenticated()">
+		auth = '<sec:authentication property="principal.member.authList" />';
+	 </sec:authorize>		
 	for(var i=0;i<listArr.length;i++){
 		setList(listArr[i]);
 	}
@@ -68,7 +71,7 @@
 				keyword : keyword
 			};
 			serachService.culture(cri, function(list){
-				var str=""; 
+				var str="", href=""; 
 				
 				if(list==null || list.length==0){
 					$(".culture").siblings(".btn").hide();
@@ -82,9 +85,15 @@
 					if(content.length > 50){
 						content = content.substr(0,2)+"…";
 					}
+					var open = list[i].open; 
+					if(open==1 && auth.includes("USER")){
+						href='javascript: alert("등급이 낮아 상세 내용을 볼 수 없습니다.");'; 
+					}else{
+						href="/culture/get?cno="+list[i].cno;
+					}
 					str+="<li class='list-group-item'>";
 					str+="<div><div class='header'>";
-					str+="<a href='/culture/get?cno="+list[i].cno+"'><strong class='primary-font'>"+list[i].title+"</strong></a>";
+					str+="<a href='"+href+"'><strong class='primary-font'>"+list[i].title+"</strong></a>";
 					str+="<small class='float-right text-muted'>"+serachService.displyTime(list[i].rdate)+"</small></div>";
 					str+="<p>"+content+"</p></div>";	
 					str+="</li>";

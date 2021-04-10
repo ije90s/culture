@@ -34,8 +34,9 @@
 	                                	</select>
 	                                	<div class="input-group-prepend"><input type="text" name="keyword" class="form-control" value='<c:out value="${page.cri.keyword}"/>' /></div>
 										<div class="input-group-prepend"><button class="btn btn-primary" data-oper="search">검색</button></div>
+										<div class="input-group-prepend"><button type="button" class="btn btn-success" data-oper="back">초기화</button></div>
 										<sec:authorize access="hasAnyRole('ROLE_USER','ROLE_MEMBER')">
-											<button class="btn btn-secondary" style="position:absolute; right:5px;" data-oper="regiter">등록</button>
+											<button class="btn btn-secondary" style="position:absolute; right:5px;" data-oper="register">등록</button>
 										</sec:authorize>
 									</div>
                                 </form>							                  
@@ -49,6 +50,7 @@
                                                 <th>종류</th>
                                                 <th>제목</th>
                                                 <th>평점</th>
+                                                <th>공개여부</th>
                                                 <th>날짜</th>
                                             </tr>
                                         </thead>
@@ -66,6 +68,11 @@
      											</td>
      											<td><a class="move" href="${culture.cno}">${culture.title}</a></td>
      											<td>${culture.rank}점</td>
+     											<td>
+     												<c:if test="${culture.open eq 0 }">비공개</c:if>
+     												<c:if test="${culture.open eq 1 }">멤버공개</c:if>
+     												<c:if test="${culture.open eq 2 }">전체공개</c:if>
+     											</td>
      											<td>
      											<fmt:parseDate value="${culture.cdate}" var="cdate" pattern="yyyy-MM-dd"/>
      											<fmt:formatDate value="${cdate}" pattern="yyyy-MM-dd"/></td>
@@ -140,7 +147,7 @@ $(document).ready(function(){
 		auth = '<sec:authentication property="principal.member.authList" />';
 	</sec:authorize>
 
-	if(auth.includes("ADMIN")) mno = "0";	
+	if(auth.includes("ADMIN")) writer = "all";	
 	
 	//모달창
 	function checkModal(result){
@@ -191,8 +198,10 @@ $(document).ready(function(){
 			}
 			search.find("input[name='pageNum']").val("1");
 			search.attr("action", "/culture/list/"+writer).submit();			
-		}else{
+		}else if(oper == "register"){
 			self.location="/culture/register";
+		}else{
+			self.location="/culture/list/"+writer;
 		}
 		
 	});

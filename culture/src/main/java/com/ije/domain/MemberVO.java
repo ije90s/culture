@@ -35,4 +35,5 @@ public class MemberVO {
 	private List<AuthVO> authList;
 	private List<AttachVO> attachList;	
 	private Long lno;
+	private String pw2;
 }

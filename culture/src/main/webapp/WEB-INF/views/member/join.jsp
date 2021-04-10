@@ -50,7 +50,7 @@
                                                 <div class="col-md-6">
                                                     <div class="form-group">
                                                         <label class="small mb-1" for="pw2">비밀번호 재확인<medium class="invalid">*</medium></label>
-                                                        <input class="form-control py-4" id="pw2" name="pw2" type="password" value="${memberVO.pw2}" placeholder="비밀번호 재확인을 입력하세요."/>
+                                                        <input class="form-control py-4" id="pw2" name="pw2" type="password"  placeholder="비밀번호 재확인을 입력하세요."/>
                                                         <small class="valid">영문(대/소문자),숫자,특수문자 가능</small>
                                                     </div>
                                                 </div>  
@@ -61,12 +61,12 @@
                                                 <small class="valid"></small>
                                             </div>
                                             <div class="form-group">
-                                                <label class="small mb-1" for="phone">휴대폰</label>
+                                                <label class="small mb-1" for="phone">휴대폰<medium class="invalid">*</medium></label>
                                                 <input class="form-control py-4" id="phone" name="phone" type="phone"  value="${memberVO.phone}" placeholder="01012341234" />
                                                 <small class="valid">숫자만 가능</small>
                                             </div>                                                                                                                                      
                                             <div class="form-group">
-                                                <label class="small mb-1" for="email">이메일</label>
+                                                <label class="small mb-1" for="email">이메일<medium class="invalid">*</medium></label>
                                                 <input class="form-control py-4" id="email" name="email" type="email"  value="${memberVO.email}"  placeholder="aaa@gmail.com" />
                                                 <small class="valid">이메일 형식에 맞춰 입력</small>
                                             </div>
@@ -140,17 +140,12 @@
 			//필수항목 체크
 			if(!checkItem($("input[name='id']"))) return false;
 			if(!checkItem($("input[name='pw']"))) return false;
-			if(!checkItem($("input[name='pw2']"))) return false;
+			if(!checkItem($("#pw2"))) return false;
 			if(!checkItem($("input[name='name']"))) return false;			
+			if(!checkItem($("input[name='phone']"))) return false;
+			if(!checkItem($("input[name='email']"))) return false;
 			
-			//이메일, 휴대폰번호 체크
-			if($("input[name='phone']").val() != "") {	
-				if(!checkItem($("input[name='phone']"))) return false;
-			}else{$("input[name='phone']").val("");}
-			if($("input[name='email']").val() != "") {
-				if(!checkItem($("input[name='email']"))) return false;
-			}else{$("input[name='email']").val("");}
-			
+		
 			//체크된 관심사만 저장
 			var checked =""; 
 			$("input:checkbox[name=favorite]:checked").each(function() {

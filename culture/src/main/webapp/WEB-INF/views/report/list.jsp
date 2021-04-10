@@ -16,6 +16,8 @@
                                 <form id="searchForm" method="get">
                                 	<input type="hidden" name="pageNum" value='<c:out value="${page.cri.pageNum }"/>' />
 									<input type="hidden" name="amount" value='<c:out value="${page.cri.amount }"/>' />
+									<input type="hidden" name="tab" value='<c:out value="${tab}" />' />
+									
                                 	<div class="input-group">
 	                                	<select name="type" class="custom-select" style="flex:none; width:120px;">
 	                                	<option value="" <c:out value="${page.cri.type==null?'selected':''}"/>>선택</option>
@@ -28,7 +30,8 @@
 	                                	<option value="TCR" <c:out value="${page.cri.type eq 'TCR'?'selected':''}"/>>제목+내용+신고자</option>
 	                                	</select>
 	                                	<div class="input-group-prepend"><input type="text" name="keyword" class="form-control" value='<c:out value="${page.cri.keyword}"/>' /></div>
-										<div class="input-group-prepend"><button class="btn btn-primary" data-oper="search">검색</button></div>		
+										<div class="input-group-prepend"><button class="btn btn-primary" data-oper="search">검색</button></div>
+										<div class="input-group-prepend"><button type="button" class="btn btn-success" data-oper="back">초기화</button></div>		
 									</div>
                                 </form>	
                                			                  
@@ -187,6 +190,9 @@ $(document).ready(function(){
 		}else if(oper == "all"){
 			form.find($("input[name='tab']")).val("all"); 
 			form.attr("action", "/report/list/"+object).submit();
+		}else{
+			var tab = '<c:out value="${tab}"/>';
+			self.location="/report/list/"+object+"?tab="+tab;
 		}
 	});
 	

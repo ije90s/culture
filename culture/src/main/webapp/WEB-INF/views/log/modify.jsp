@@ -8,7 +8,7 @@
 <%@ include file="../includes/header.jsp"  %>
                     <div class="container-fluid">
                         <h3 class="mt-4">로그 상세</h3>
-                        <div class="card mb-4">
+                        <div class="card mt-4 mb-4">
                             <div class="card-header"><h6>메모만 수정가능합니다.</h6></div>
                             <div class="card-body">
 									<form id="mainForm" role="form" action="/log/modify" method="post">

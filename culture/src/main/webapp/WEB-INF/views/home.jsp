@@ -112,7 +112,7 @@ $(document).ready(function(){
 		if(oper=="culture"){
 			self.location="/culture/list/"+id;
 		}else if(oper == "report"){
-			self.location="/report/list/all";
+			self.location="/report/list/all?tab=all";
 		}else{
 			self.location="/board/list/"+oper;
 		}

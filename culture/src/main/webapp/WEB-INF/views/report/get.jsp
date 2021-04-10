@@ -6,8 +6,8 @@
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %> 
 <%@ include file="../includes/header.jsp"  %>
                     <div class="container-fluid">
-                        <h3 class="mt-4">신고 상세</h3>
-                        <div class="card mb-4">
+                        <h3 class="mt-4">신고 상세 <button type="button" class="btn btn-success float-right" data-oper="back">뒤로</button></h3>
+                        <div class="card mt-4 mb-4">
                             <div class="card-header"></div>
                             <div class="card-body">
                                            <div class="form-group">
@@ -99,6 +99,8 @@
 			 if(kind=="culture"){href="/culture/get?cno="+no; }
 			 else{href="/board/get?bno="+no; }
 			 window.open(href, '_blank'); 
+		 }else{
+			 history.back(-1);
 		 } 
 	 });	
  });

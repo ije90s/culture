@@ -6,7 +6,7 @@
 <%@ include file="../includes/header.jsp"  %>
 					<div class="container-fluid">
                         <h3 class="mt-4">로그리스트</h3>
-                        <div class="card mb-4">
+                        <div class="card mt-4 mb-4">
                             <div class="card-header">
                                  <form id="searchForm" action="/log/list" method="get">
                                  <input type="hidden" name="pageNum" value='<c:out value="${page.cri.pageNum }"/>' />
@@ -18,6 +18,7 @@
                                 	</select>
                                 	<div class="input-group-prepend"><input type="text" name="keyword" class="form-control" value='<c:out value="${page.cri.keyword}"/>' /></div>  	
 									<div class="input-group-prepend"><button class="btn btn-primary" data-oper="search">검색</button></div>
+									<div class="input-group-prepend"><button type="button" class="btn btn-success" data-oper="back">초기화</button></div>
 								</div>	
                                 </form>
                             </div>
@@ -139,6 +140,8 @@ $(document).ready(function(){
 			}
 			search.find("input[name='pageNum']").val("1");
 			search.attr("action", "/log/list").submit();							
+		}else{
+			self.location="/log/list";
 		}		
 	});	
 });

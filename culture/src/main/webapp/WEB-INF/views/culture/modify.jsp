@@ -6,33 +6,9 @@
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>   
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %> 
 <%@ include file="../includes/header.jsp"  %>
-					<style>
-        			.invalid{color:red !important;}
-        			.originPictureWrapper{
-						position:absolute; 
-						display:none; 
-						justify-content:center; 
-						align-items:center; 
-						top:0%;
-						width:100%; 
-						height:100%; 
-						background-color:gray; 
-						z-index:100; 
-						background:rgba(255,255,255,0.5); 
-					}
-					.originPicture{
-						position:relative; 
-						display:flex; 
-						justify-content:center; 
-						align-items:center; 
-					}
-					.originPicture img{
-						width:600px; 
-					}
-        			</style>
                     <div class="container-fluid">
                         <h3 class="mt-4">나의 기록 수정</h3>
-                        <div class="card mb-4">
+                        <div class="card mt-4 mb-4">
                             <div class="card-header"><h6><medium class="invalid">*</medium>(별표)가 있는 항목만 필수값입니다.</h6></div>
                             <div class="card-body">
 									<form id="mainForm" role="form" action="/culture/modify" method="post">
@@ -346,17 +322,7 @@ $(document).ready(function(){
 			formObj.submit();
 		}
 	});
-	
-	//invalid 항목 검사
-	function checkItem(item){
-		if(item.siblings('small').hasClass("invalid")){
-			item.focus(); 
-			return false; 
-		}else {
-			return true; 
-		}	
-	}
-	
+		
 	//서버에서 받아온 error 검사
 	function hasErrors(){
 		$(".chk").each(function(){

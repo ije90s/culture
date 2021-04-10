@@ -4,7 +4,7 @@
 <%@ taglib prefix="fmt"  uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ include file="../includes/header.jsp"  %>
 					<div class="container-fluid">
-                        <h3 class="mt-4">${target} 로그 상세</h3>
+                        <h3 class="mt-4">${target} 로그 상세 <button type="button" class="btn btn-success float-right" data-oper="back">뒤로</button></h3>
                         <div class="card mt-4 mb-4">
                             <div class="card-header"></div>
                             <div class="card-body">      
@@ -54,6 +54,8 @@ $(document).ready(function(){
 			var length = $(".move").length; 
 			subPage = Math.ceil(parseInt(length)/3)+1; 
 			showList(target, subPage); 
+		}else{
+			history.back(-1);
 		}
 	});	
 	

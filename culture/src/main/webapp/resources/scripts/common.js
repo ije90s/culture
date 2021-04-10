@@ -46,4 +46,13 @@
 		.animate({width:'100%', height:'100%'},1000);		
 	}
 
+	//invalid 항목 검사
+	function checkItem(item){
+		if(item.siblings('small').hasClass("invalid")){
+			item.focus(); 
+			return false; 
+		}else {
+			return true; 
+		}	
+	}
 	

@@ -6,30 +6,6 @@
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>   
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>   
 <%@ include file="../includes/header.jsp"  %>
-					<style>
-        			.invalid{color:red !important;}
-					.originPictureWrapper{
-						position:absolute; 
-						display:none; 
-						justify-content:center; 
-						align-items:center; 
-						top:0%;
-						width:100%; 
-						height:100%; 
-						background-color:gray; 
-						z-index:100; 
-						background:rgba(255,255,255,0.5); 
-					}
-					.originPicture{
-						position:relative; 
-						display:flex; 
-						justify-content:center; 
-						align-items:center; 
-					}
-					.originPicture img{
-						width:600px; 
-					}        			
-        			</style>
                     <div class="container-fluid">
                         <h3 class="mt-4">                        
                          <c:if test="${board.kind eq 'notice' }">공지사항</c:if>
@@ -50,12 +26,12 @@
                          			<input type="hidden" name="kind" value="${board.kind}" />								
 	                            	<div class="form-group">
 	                                	<label class="small mb-1" for="title">제목<medium class="invalid">*</medium></label>
-	                                    <input class="form-control py-4" name="title" id="title" value="${board.title}" type="text"/>
+	                                    <input class="form-control py-4 chk" name="title" id="title" value="${board.title}" type="text"/>
 	                                    <small></small>
 	                                </div>
 	                                <div class="form-group">
 	                                	<label class="small mb-1" for="content">내용<medium class="invalid">*</medium></label>
-	                                    <textarea class="form-control" name="content" rows="5" id="content">${board.content}</textarea>
+	                                    <textarea class="form-control chk" name="content" rows="5" id="content">${board.content}</textarea>
 	                                    <small></small>
 									</div>
 									<div class="form-group uploadDiv">
@@ -91,7 +67,7 @@ $(document).ready(function(){
 	var csrfToken = "${_csrf.token}";
 	
 	
-	$(".form-control").blur(function(e){
+	$(".chk").blur(function(e){
 		boardService.validate($(this)); 
 	});
 	hasErrors();
@@ -182,7 +158,7 @@ $(document).ready(function(){
 					str+="<input type='hidden' name='attachList[0].fileList["+i+"].fileType' value='"+jobj.data("type")+"'/>";
 				});
 				
-				$(".form-control").each(function(e){
+				$(".chk").each(function(e){
 					boardService.validate($(this));	
 				});
 			
@@ -211,25 +187,17 @@ $(document).ready(function(){
 				$(".originPictureWrapper").hide();
 			},1000);
 		 });	
+	 
+	//서버에서 받아온 error 검사
+	 function hasErrors(){
+	 	<spring:hasBindErrors name="board">
+	 	$(".chk").each(function(){
+	 		boardService.validate($(this));	
+	 	}); 	
+	 	</spring:hasBindErrors>			
+	 }		 
 });
 
-//invalid 항목 검사
-function checkItem(item){
-	if(item.siblings('small').hasClass("invalid")){
-		item.focus(); 
-		return false; 
-	}else {
-		return true; 
-	}	
-}	
 
-//서버에서 받아온 error 검사
-function hasErrors(){
-	<spring:hasBindErrors name="board">
-	$(".form-control").each(function(){
-		boardService.validate($(this));	
-	}); 	
-	</spring:hasBindErrors>			
-}	
 </script>                                                        
 <%@ include file="../includes/footer.jsp"  %>                            

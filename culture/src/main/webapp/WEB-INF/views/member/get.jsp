@@ -8,7 +8,7 @@
  					<div class="container-fluid">
                         <h3 class="mt-4">회원정보 상세</h3>
                         <div class="card mt-4 mb-4">
-                            <div class="card-header"></div>
+                            <div class="card-header">* 비공개된 문화기록은 상세로 넘어가지 않습니다.</div>
                             <div class="card-body">      
                            		<div class="form-group">
                                 	<label class="small mb-1" for="id">아이디</label>
@@ -139,7 +139,7 @@ $(document).ready(function(){
 	}
 	
 	function showTopList(category){
-		var str="", kind=""; 
+		var str="", kind="", href=""; 
 		if(category=="culture"){
 			var top = {
 				id : writer,	
@@ -157,8 +157,13 @@ $(document).ready(function(){
 						case 6 : kind="기타";break;
 						default : kind="";
 					}	
+					//console.log(culture[j].open);
+					if(culture[j].open!=0) 
+						href= "/culture/get?cno="+culture[j].cno;
+					else
+						href='javascript:alert("비공개 게시글입니다.")';
 					str+="<tr>";
-					str+="<td>"+kind+"</td><td><a href='#' >"+culture[j].title+"</a></td>";
+					str+="<td>"+kind+"</td><td><a href='"+href+"'>"+culture[j].title+"</a></td>";
 					str+="<td>"+memberService.displyTime(culture[j].cdate)+"</td>"; 
 					str+="</tr>";	
 				}	
