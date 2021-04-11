@@ -250,6 +250,7 @@ public class MemberController {
 	}
 	
 	@GetMapping("/get")
+	@PreAuthorize("isAuthenticated()")
 	public void memberGet(@RequestParam("mno") Long mno, @ModelAttribute("cri") Criteria cri, Model d) {
 		log.info("회원조회....................");
 		d.addAttribute("member", service.read2(mno)); 

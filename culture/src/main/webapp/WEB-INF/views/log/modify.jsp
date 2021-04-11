@@ -62,11 +62,11 @@
 	                                           </div>
                                            </c:if>
                                            <c:if test="${log.kind eq 'B' }">
-	                                           <div class="form-group">
-	                                                <label class="small mb-1">기간</label>
+	                                           <div class="form-inline">
+	                                                <label class="small mb-1">기간</label>&nbsp;&nbsp;
 	                                                <fmt:parseDate value="${log.sdate}" var="sdate" pattern="yyyy-MM-dd"/>
 	                                                <fmt:parseDate value="${log.edate}" var="edate" pattern="yyyy-MM-dd"/>
-	                                                <input class="form-control py-4 chk" name="sdate" type="date" value="<fmt:formatDate value="${sdate}" pattern="yyyy-MM-dd"/>" readonly/>
+	                                                <input class="form-control py-4 chk" name="sdate" type="date" value="<fmt:formatDate value="${sdate}" pattern="yyyy-MM-dd"/>" readonly/>&nbsp;&nbsp;
 	                                                <input class="form-control py-4 chk" name="edate" type="date" value="<fmt:formatDate value="${edate}" pattern="yyyy-MM-dd"/>" readonly/>
 	                                           </div>                                              
                                            </c:if>

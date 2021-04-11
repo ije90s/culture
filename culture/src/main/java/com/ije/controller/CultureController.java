@@ -67,6 +67,7 @@ public class CultureController {
 	}
 		
 	@GetMapping("/get")
+	@PreAuthorize("isAuthenticated()")
 	public void get(@RequestParam("cno") Long cno, @ModelAttribute("cri") Criteria cri, Model d) {
 		log.info("상세보기 호출.........................................");
 		log.info("cno : " + cno);

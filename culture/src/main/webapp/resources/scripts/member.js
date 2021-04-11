@@ -133,7 +133,9 @@ var memberService = (function(){
 						small.addClass(tag);	
 					}, 
 					error : function(xhr, status, err){
-						console.log(error()); 
+						console.log(xhr); 
+						console.log(status); 
+						console.log(err);
 					}
 				});			
 		}else if(name=='kind'){

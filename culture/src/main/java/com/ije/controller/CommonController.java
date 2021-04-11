@@ -1,6 +1,13 @@
 package com.ije.controller;
 
+import org.springframework.security.authentication.AccountExpiredException;
+import org.springframework.security.authentication.AuthenticationServiceException;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.CredentialsExpiredException;
+import org.springframework.security.authentication.DisabledException;
+import org.springframework.security.authentication.LockedException;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -19,11 +26,9 @@ public class CommonController {
 	
 	@GetMapping("/customLogin")
 	public void loginInput(String error, String logout, Model d) {
-		log.info("error : "+error);
-		log.info("logout : "+logout);
 		
 		if(error!=null) {
-			d.addAttribute("error", "로그인 실패"); 
+			d.addAttribute("error", "로그인실패!!"); 
 		}
 		
 		if(logout!=null) {

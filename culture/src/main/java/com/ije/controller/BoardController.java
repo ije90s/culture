@@ -62,6 +62,7 @@ public class BoardController {
 	}
 	
 	@GetMapping({"/get","/modify"})
+	@PreAuthorize("isAuthenticated()")
 	public void modify(@RequestParam("bno") Long bno, @ModelAttribute("cri") Criteria cri , Model d) {
 		log.info("게시글 : " + bno);
 		d.addAttribute("board", service.get(bno)); 

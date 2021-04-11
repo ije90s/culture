@@ -52,7 +52,7 @@
 															<input type="radio" class="form-check-input chk" name="kind" value="6" <c:if test="${cultureVO.kind eq '6'}">checked</c:if>>기타
 														</label>
 													</div><br>
-													<small class="kind"></small>
+													<small id="kindchk"></small>
 												</div>																																																							                                            			
                                             </div>
                                            <div class="form-group">
@@ -183,7 +183,7 @@ $(document).ready(function(){
 		$(".chk").each(function(e){
 			cultureService.validate($(this));	
 		});
-		
+
 		if(!checkItem($("input[name='cdate']"))) return false;
 		if(!checkItem($("input[name='kind']"))) return false;
 		if(!checkItem($("input[name='title']"))) return false;

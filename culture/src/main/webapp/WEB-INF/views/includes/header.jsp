@@ -43,17 +43,17 @@
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" id="userDropdown" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fas fa-user fa-fw"></i></a>
                     <div class="dropdown-menu dropdown-menu-right" aria-labelledby="userDropdown">
-                        <a class="dropdown-item" href='/member/myprofile/<sec:authentication property="principal.username"/>'>나의 정보</a>
-                        <sec:authorize access="hasRole('ROLE_MEMBER')">
-                        <a class="dropdown-item" href="/activity">나의 활동</a>
-                        <a class="dropdown-item" href='/report/list/<sec:authentication property="principal.username"/>?tab=all'>신고리스트</a>
-                        </sec:authorize>
-                        <div class="dropdown-divider"></div>
                         <sec:authorize access="isAuthenticated()">
-                        	<a class="dropdown-item" href="#" onclick="document.getElementById('logoutForm').submit();"><i class="fa fa-toggle-off"></i> Logout</a>
-                        	<form id="logoutForm" action="/customLogout" method="POST">
-   								<input name="${_csrf.parameterName}" type="hidden" value="${_csrf.token}"/>
-							</form>
+                        	<a class="dropdown-item" href='/member/myprofile/<sec:authentication property="principal.username"/>'>나의 정보</a>
+		                        <sec:authorize access="hasRole('ROLE_MEMBER')">
+		                        <a class="dropdown-item" href="/activity">나의 활동</a>
+		                        <a class="dropdown-item" href='/report/list/<sec:authentication property="principal.username"/>?tab=all'>신고리스트</a>
+		                        </sec:authorize>
+                        		<div class="dropdown-divider"></div>
+                        		<a class="dropdown-item" href="#" onclick="document.getElementById('logoutForm').submit();"><i class="fa fa-toggle-off"></i> Logout</a>
+	                        	<form id="logoutForm" action="/customLogout" method="POST">
+	   								<input name="${_csrf.parameterName}" type="hidden" value="${_csrf.token}"/>
+								</form>
                         </sec:authorize>
                     </div>
                 </li>
@@ -64,43 +64,45 @@
                 <nav class="sb-sidenav accordion sb-sidenav-dark" id="sidenavAccordion">
                     <div class="sb-sidenav-menu">
                         <div class="nav">
-                        	<sec:authorize access="hasRole('ROLE_ADMIN')">
-	                            <div class="sb-sidenav-menu-heading">회원</div>
-	                            <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#memberLayouts" aria-expanded="false" aria-controls="collapseLayouts">
-	                                                                        회원관리
-	                                <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
-	                            </a>
-	                            <div class="collapse" id="memberLayouts" aria-labelledby="headingOne" data-parent="#sidenavAccordion">
-	                                <nav class="sb-sidenav-menu-nested nav">
-	                                    <a class="nav-link" href='/member/list'>회원정보</a>
-	                                    <a class="nav-link" href='/log/list'>회원로그</a>
-	                                </nav>
-	                            </div>
-                            </sec:authorize> 
-                            <sec:authorize access="hasAnyRole('ROLE_MEMBER','ROLE_USER')">                   
-	                            <div class="sb-sidenav-menu-heading">문화기록</div>
-	                            <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseLayouts" aria-expanded="false" aria-controls="collapseLayouts">
-	                                                                        나의 기록
-	                                <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
-	                            </a>
-	                            <div class="collapse" id="collapseLayouts" aria-labelledby="headingOne" data-parent="#sidenavAccordion">
-	                                <nav class="sb-sidenav-menu-nested nav">
-	                                    <a class="nav-link" href='/culture/list/<sec:authentication property="principal.username"/>'>리스트</a>
-	                                    <a class="nav-link" href='/culture/stats/<sec:authentication property="principal.username"/>'>통계</a>
-	                                </nav>
-	                            </div>
-	                        </sec:authorize>    
-                            <div class="sb-sidenav-menu-heading">게시판</div>
-                            <a class="nav-link" href="/board/list/notice">공지사항</a>
-                            <a class="nav-link" href="/board/list/free">자유게시판</a>
-                            <a class="nav-link" href="/board/list/question">질문&답변</a>
-                            <a class="nav-link" href="/board/list/share">공유마당</a>
-                            <sec:authorize access="hasRole('ROLE_ADMIN')"> 
-                             <div class="sb-sidenav-menu-heading">그 외</div>
-                             <a class="nav-link" href="/culture/list/all">문화기록</a>  
-	                         <a class="nav-link" href="/report/list/all?tab=all">신고리스트</a>
-	        			     <a class="nav-link" href="/unjoin/list">탈퇴리스트</a>            
-	                        </sec:authorize> 
+                        	<sec:authorize access="isAuthenticated()">
+	                        	<sec:authorize access="hasRole('ROLE_ADMIN')">
+		                            <div class="sb-sidenav-menu-heading">회원</div>
+		                            <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#memberLayouts" aria-expanded="false" aria-controls="collapseLayouts">
+		                                                                        회원관리
+		                                <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
+		                            </a>
+		                            <div class="collapse" id="memberLayouts" aria-labelledby="headingOne" data-parent="#sidenavAccordion">
+		                                <nav class="sb-sidenav-menu-nested nav">
+		                                    <a class="nav-link" href='/member/list'>회원정보</a>
+		                                    <a class="nav-link" href='/log/list'>회원로그</a>
+		                                </nav>
+		                            </div>
+	                            </sec:authorize> 
+	                            <sec:authorize access="hasAnyRole('ROLE_MEMBER','ROLE_USER')">                   
+		                            <div class="sb-sidenav-menu-heading">문화기록</div>
+		                            <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseLayouts" aria-expanded="false" aria-controls="collapseLayouts">
+		                                                                        나의 기록
+		                                <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
+		                            </a>
+		                            <div class="collapse" id="collapseLayouts" aria-labelledby="headingOne" data-parent="#sidenavAccordion">
+		                                <nav class="sb-sidenav-menu-nested nav">
+		                                    <a class="nav-link" href='/culture/list/<sec:authentication property="principal.username"/>'>리스트</a>
+		                                    <a class="nav-link" href='/culture/stats/<sec:authentication property="principal.username"/>'>통계</a>
+		                                </nav>
+		                            </div>
+		                        </sec:authorize>    
+	                            <div class="sb-sidenav-menu-heading">게시판</div>
+	                            <a class="nav-link" href="/board/list/notice">공지사항</a>
+	                            <a class="nav-link" href="/board/list/free">자유게시판</a>
+	                            <a class="nav-link" href="/board/list/question">질문&답변</a>
+	                            <a class="nav-link" href="/board/list/share">공유마당</a>
+	                            <sec:authorize access="hasRole('ROLE_ADMIN')"> 
+	                             <div class="sb-sidenav-menu-heading">그 외</div>
+	                             <a class="nav-link" href="/culture/list/all">문화기록</a>  
+		                         <a class="nav-link" href="/report/list/all?tab=all">신고리스트</a>
+		        			     <a class="nav-link" href="/unjoin/list">탈퇴리스트</a>            
+		                        </sec:authorize> 
+	                        </sec:authorize>
                         </div>
                     </div>
                 </nav>

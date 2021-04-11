@@ -15,10 +15,12 @@
                         <div class="card mt-4 mb-4">
                             <div class="card-header">
                             	<c:if test="${culture.open ne '0' }">
-	                                <h6 id="report" style="cursor:pointer;">
+	                                <h6><span id="report" style="cursor:pointer;">
 		                            	<i class="fas fa-bullhorn" style="color:red"></i> 
 		                            	<c:if test="${culture.report eq 'N' }"> 신고하기</c:if>
 		                            	<c:if test="${culture.report ne 'N' }"> 신고확인중</c:if>
+		                            </span>	
+		                            <div class="float-right">작성자 : ${culture.writer}</div>
 	                                </h6>
                                 </c:if>
                             </div>
@@ -122,12 +124,12 @@
 	    	<div class="form-group">
 	        	<label class="small mb-1" for="title">제목<medium class="invalid">*</medium></label>
 	            <input class="form-control py-4 chk" name="title" id="title" type="text" value="${reportVO.title}"/>
-	            <small></small>
+	            <small id="titlechk"></small>
 	        </div>
 	        <div class="form-group">
 	            <label class="small mb-1" for="content">내용<medium class="invalid">*</medium></label>
 	            <textarea class="form-control chk" name="content" rows="5" id="content">${reportVO.content}</textarea>
-	            <small></small>
+	            <small id="contentchk"></small>
 	        </div>
 	        <div class="form-group mt-4 mb-0 text-right">
 		        <button type="button" class="btn btn-primary btn-sm" id="regBtn" data-oper="reg">등록</button>
@@ -339,6 +341,10 @@
 				formRe.find("#regBtn").show();
 				formRe.find("#modBtn").hide();
 				formRe.find("#delBtn").hide();
+				formRe.find("#contentchk").text("");
+				formRe.find("#contentchk").removeClass();
+				formRe.find("#titlechk").text("");
+				formRe.find("#titlechk").removeClass();	
 				$(".warningWrapper").show(); 				
 			}else{
 				alert("신고할 수 없습니다.");
@@ -358,6 +364,10 @@
 						 formRe.find("#regBtn").hide();
 						 formRe.find("#modBtn").show();
 						 formRe.find("#delBtn").show();
+						 formRe.find("#contentchk").text("");
+						 formRe.find("#contentchk").removeClass();
+						 formRe.find("#titlechk").text("");
+						 formRe.find("#titlechk").removeClass(); 
 						 $(".warningWrapper").show(); 	
 					 }else{
 						 alert("수정할 수 없습니다."); 

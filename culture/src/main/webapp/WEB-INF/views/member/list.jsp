@@ -117,7 +117,7 @@
 					<input type="radio" class="form-check-input chk" name="kind" value="E" <c:if test="${memberLogVO.kind eq 'E'}">checked</c:if>>강퇴
 					</label>
 				</div>
-				<small class="kind"></small>
+				<small class="kind validchk"></small>
 			</div>
      	</div>
      	<div class="form-group ranking">
@@ -138,23 +138,23 @@
 					<input type="radio" class="form-check-input chk" name="auth" value="ROLE_ADMIN" <c:if test="${memberLogVO.auth eq 'ROLE_ADMIN'}">checked</c:if>>관리자
 					</label>
 				</div><br>
-				<small class="auth"></small>
+				<small class="auth validchk"></small>
 			</div>
      	</div>   
      	<div class="form-group block">
      		<label>시작일<medium class="invalid">*</medium></label>
      		<input class="form-control chk" name="sdate" type="date" value="${memberLogVO.sdate}"/> 
-     		<small></small>
+     		<small class="validchk"></small>
      	</div>
      	<div class="form-group block">
      		<label>끝일<medium class="invalid">*</medium></label>
      		<input class="form-control chk" name="edate" type="date" value="${memberLogVO.edate}"/> 
-     		<small></small>
+     		<small class="validchk"></small>
      	</div>  	
    		<div class="form-group">
      		<label>내용<medium class="invalid">*</medium></label>
   			<textarea class="form-control chk" name="content" rows="5" id="content">${memberLogVO.content}</textarea>
-  			<small></small>
+  			<small class="validchk"></small>
      	</div>
       </div>
       <!-- Modal footer -->
@@ -172,6 +172,11 @@
 <script src="/resources/scripts/member.js"></script>      	             	
 <script>
 $(document).ready(function(){
+	
+	var username = null; 
+	<sec:authorize access="isAuthenticated()">
+	username = '<sec:authentication property="principal.username" />'; 
+	</sec:authorize>
 	
 	var search = $("#searchForm"); 
 	$("#searchForm button").on("click", function(e){
@@ -218,6 +223,7 @@ $(document).ready(function(){
 	var sdate = modal.find("input[name='sdate']"); 
 	var edate = modal.find("input[name='edate']"); 
 	var content = modal.find("#content"); 
+	var validchk = modal.find(".validchk");
 	
 	var regBtn = modal.find("#regBtn"); 
 	var modBtn = modal.find("#modBtn"); 
@@ -234,6 +240,8 @@ $(document).ready(function(){
 		regBtn.show(); 
 		modBtn.hide(); 
 		delBtn.hide(); 	
+		validchk.text(""); 
+		validchk.removeClass("invalid");
 		modal.data("target", $(this).data("id"));
 		modal.data("oldauth", $(this).data("auth"));
 		modal.data("state", $(this).data("state"));
@@ -273,6 +281,8 @@ $(document).ready(function(){
 					content.val(data.content); 
 					$("input:radio[name='auth']").prop('checked', false);
 				}
+				validchk.text(""); 
+				validchk.removeClass("invalid");
 				regBtn.hide(); 
 				modBtn.show(); 
 				delBtn.show();
@@ -304,7 +314,9 @@ $(document).ready(function(){
 			$("input:radio[name='auth']").prop('checked', false);
 			sdate.val("");
 			edate.val(""); 
-		}	
+		}
+		validchk.text(""); 
+		validchk.removeClass("invalid");
 	});
 
 	var csrfHeader = "${_csrf.headerName}";
@@ -356,8 +368,8 @@ $(document).ready(function(){
 			target : target, 
 			oldauth : oldauth, 
 			state : state, 
-			rid : "admin90",
-			mid : "admin90"
+			rid : username,
+			mid : username
 		}; 
 		
 		memberService.add(log, function(data){
@@ -402,7 +414,7 @@ $(document).ready(function(){
 				sdate : sdate.val(), 
 				edate : edate.val(), 
 				content : content.val(), 
-				mid : "admin90"
+				mid : username
 		};
 		
 		memberService.modify2(log, function(data){

@@ -58,7 +58,7 @@
 															<input type="radio" class="form-check-input chk" name="kind" value="6" <c:if test="${culture.kind eq 6}"><c:out value="checked"/></c:if>>기타
 														</label>
 													</div><br>
-													<small class="kind"></small>
+													<small id="kindchk"></small>
 												</div>																																																							                                            			
                                             </div>
                                            <div class="form-group">

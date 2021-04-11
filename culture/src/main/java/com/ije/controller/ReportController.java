@@ -55,6 +55,7 @@ public class ReportController {
 	}
 	
 	@GetMapping({"/get", "/modify"})
+	@PreAuthorize("isAuthenticated()")
 	public void get(@RequestParam("rno") Long rno, @ModelAttribute("cri") Criteria cri, @ModelAttribute("tab") String tab, Model d) {
 		log.info("상세 조회 : "+rno);
 		d.addAttribute("report", service.get(rno));

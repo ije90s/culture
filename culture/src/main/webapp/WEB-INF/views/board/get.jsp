@@ -12,10 +12,12 @@
 	                     <c:if test="${board.kind eq 'question' }">질문&답변</c:if>
 	                     <c:if test="${board.kind eq 'share' }">공유마당</c:if> 상세 <button type="button" class="btn btn-success float-right" data-oper="back">뒤로</button></h3>
                         <div class="card mt-4 mb-4">
-                            <div class="card-header"><h6 id="report" style="cursor:pointer;">
-		                    	<i class="fas fa-bullhorn" style="color:red"></i> 
-		                        <c:if test="${board.report eq 'N' }"> 신고하기</c:if>
-		                        <c:if test="${board.report ne 'N' }"> 신고확인중</c:if>
+                            <div class="card-header"><h6>
+                            	<span id="report" style="cursor:pointer;"><i class="fas fa-bullhorn" style="color:red"></i>
+                            	<c:if test="${board.report eq 'N' }"> 신고하기</c:if>
+			                    <c:if test="${board.report ne 'N' }"> 신고확인중</c:if>
+		                        </span>
+		                        <div class="float-right">작성자 : ${board.writer}</div>
 	                        </h6></div>
                             <div class="card-body">                            
                             	<div class="form-group">
@@ -77,12 +79,12 @@
 	    	<div class="form-group">
 	        	<label class="small mb-1" for="title">제목<medium class="invalid">*</medium></label>
 	            <input class="form-control py-4 chk" name="title" id="title" type="text" value="${reportVO.title}"/>
-	            <small></small>
+	            <small id="titlechk"></small>
 	        </div>
 	        <div class="form-group">
 	            <label class="small mb-1" for="content">내용<medium class="invalid">*</medium></label>
 	            <textarea class="form-control chk" name="content" rows="5" id="content">${reportVO.content}</textarea>
-	            <small></small>
+	            <small id="contentchk"></small>
 	        </div>
 	        <div class="form-group mt-4 mb-0 text-right">
 		        <button type="button" class="btn btn-primary btn-sm" id="regReport" data-oper="reg">등록</button>
@@ -127,7 +129,7 @@
      	<div>
   			<label>작성일</label>
      		<input class="form-control" name="rdate" />   	
-     	</div>
+     	</div> 	
       </div>
       <!-- Modal footer -->
       <div class="modal-footer">
@@ -590,6 +592,10 @@ $(document).ready(function(){
 				formRe.find("#regReport").show();
 				formRe.find("#modReport").hide();
 				formRe.find("#delReport").hide();
+				formRe.find("#contentchk").text("");
+				formRe.find("#contentchk").removeClass();
+				formRe.find("#titlechk").text("");
+				formRe.find("#titlechk").removeClass();
 				$(".warningWrapper").show();		
 			}else{
 				alert("신고할 수 없습니다.");
@@ -610,6 +616,10 @@ $(document).ready(function(){
 						 formRe.find("#regReport").hide();
 						 formRe.find("#modReport").show();
 						 formRe.find("#delReport").show();
+						 formRe.find("#contentchk").text("");
+						 formRe.find("#contentchk").removeClass();
+						 formRe.find("#titlechk").text("");
+						 formRe.find("#titlechk").removeClass();
 						 $(".warningWrapper").show();
 					 }else{
 						 alert("수정할 수 없습니다."); 

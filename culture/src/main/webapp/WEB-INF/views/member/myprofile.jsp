@@ -266,6 +266,8 @@ $(document).ready(function(){
 		e.preventDefault();
 		var href = $(this).attr("href"); 
 		modal.data("link", href); 
+		modal.find(".invalid").text(""); 
+		modal.find(".invalid").removeClass();
 		if(href=="modify"){
 			modalTitle.html("정보변경");
 			modalBtn.text("수정");
@@ -361,6 +363,8 @@ $(document).ready(function(){
 		}else if(link == "changePw"){
 			if(!checkItem($("input[name='pw']"))) return false;				
 			if(!checkItem($("input[name='pw2']"))) return false;	
+			//공개여부 체크여부 확인
+			open = modal.find("input[name='open']:checked").val();
 			member={
 					mno : mno.val(), 
 					id : id.val(), 
@@ -369,7 +373,7 @@ $(document).ready(function(){
 					phone : phone.val(), 
 					email : email.val(), 
 					favorites : favorites.val(),
-					open : open.val()
+					open : open
 			};
 			memberService.changePw(member,function(data){
 				console.log(data);

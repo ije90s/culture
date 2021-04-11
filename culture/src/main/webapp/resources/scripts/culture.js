@@ -20,15 +20,11 @@ var cultureService = (function(){
 				tag = "invalid"; 
 			}
 		}else if(name=="kind"){
-			small=$(".kind");
-			var str=""; 		
-			if(!t.is(':checked') && str==false){
-				msg = "종류를 선택하세요.";
+			small = $("#kindchk"); 
+			value = $("input[name='kind']:checked").val();
+			if(!value){
+				msg = "종류를 선택하세요."; 
 				tag = "invalid";
-			}else {
-				msg = "";
-				tag = "";
-				str = t.is(':checked'); 
 			}
 		}else{
 			if(value==""){
