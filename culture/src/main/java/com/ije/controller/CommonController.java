@@ -1,16 +1,12 @@
 package com.ije.controller;
 
-import org.springframework.security.authentication.AccountExpiredException;
-import org.springframework.security.authentication.AuthenticationServiceException;
-import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.security.authentication.CredentialsExpiredException;
-import org.springframework.security.authentication.DisabledException;
-import org.springframework.security.authentication.LockedException;
+
+
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.AuthenticationException;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import lombok.extern.log4j.Log4j;
 
@@ -25,10 +21,19 @@ public class CommonController {
 	}
 	
 	@GetMapping("/customLogin")
-	public void loginInput(String error, String logout, Model d) {
+	public void loginInput(@RequestParam(value="error", required = false) String error, @RequestParam(value="msg", required=false) String msg, String logout, Model d) {
+		if(msg==null) {
+			msg = "로그인 실패"; 
+		}else {
+			if(msg.equals("1")) 
+				msg = "존재하지 않는 사용자입니다.";
+			else
+				msg = "아이디 또는 비밀번호가 틀립니다.";
+		}
 		
+		log.info(msg);
 		if(error!=null) {
-			d.addAttribute("error", "로그인실패!!"); 
+			d.addAttribute("error", msg); 
 		}
 		
 		if(logout!=null) {

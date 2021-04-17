@@ -70,6 +70,7 @@
        	  if(logout!=""){
        		 alert(logout);
        	  }
+       	  
        
 	     // Disable form submissions if there are invalid fields
 	     (function() {
