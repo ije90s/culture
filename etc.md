@@ -309,5 +309,12 @@ userDetail 커스텀 클래스을 이용하여 블락, 강퇴회원을 로그인
 1. 로그인 실패 수정 
 - 로그인 실패 커스텀 추가 및 에러 메시지 호출
 
+# 2021-04-20 개발이지
+1. 쪽지 테이블 구성 
+테이블명 : tb_message 
+필드 : mno(pk), sender, target, message, sdate, odate, udate, refno 
+
+2. Persistence, Service, Controller 완료 
+
 
 

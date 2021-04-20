@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper 
+	PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+	
+<mapper namespace="com.ije.mapper.MessageMapper">
+
+	<insert id="insert">
+	insert into tb_message(mno, sender, target, message)
+	values(seq_message.nextval, #{sender}, #{target}, #{message})
+	</insert>
+	
+	<select id="read" resultType="com.ije.domain.MessageVO">
+	select * from tb_message where mno=#{mno} 
+	</select>
+	
+	
+	<sql id="criteria">
+		<trim prefix="(" suffix=") And " prefixOverrides="OR">
+		<foreach item="type" collection="typeArr">
+			<trim prefix="OR">
+				<choose>
+					<when test="type == 'S'.toString()">
+						sender=#{keyword}
+					</when>
+					<when test="type == 'T'.toString()">
+						target=#{keyword}
+					</when>
+				</choose>
+			</trim>
+		</foreach>	
+		</trim>
+	</sql>
+		
+	<select id="getList" resultType="com.ije.domain.MessageVO">
+	<![CDATA[
+	select * from ( 
+		select /*+ INDEX_DESC(tb_message, pk_message) */ 
+		ROWNUM rn,  mno, sender, target, message, sdate, odate, udate, refno 
+		from tb_message  where
+	]]>	
+	<include refid="criteria"></include>
+	<![CDATA[
+		ROWNUM <= #{pageNum}*#{amount}
+	) where rn > (#{pageNum}-1)*#{amount}
+	]]>
+	</select>
+	
+	<update id="update">
+	update tb_message 
+	set message=#{message}, udate=sysdate 
+	where mno=#{mno} 
+	</update>
+	
+	<update id="updateOdate">
+	update tb_message set odate=sysdate 
+	where mno=#{mno} 
+	</update>
+	
+	<delete id="delete">
+	delete tb_message where mno=#{mno}
+	</delete>
+
+</mapper>
