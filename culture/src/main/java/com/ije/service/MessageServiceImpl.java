@@ -3,8 +3,10 @@ package com.ije.service;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.ije.domain.Criteria;
+import com.ije.domain.MessagePageDTO;
 import com.ije.domain.MessageVO;
 import com.ije.mapper.MessageMapper;
 
@@ -25,28 +27,27 @@ public class MessageServiceImpl implements MessageService {
 		return mapper.insert(ins);
 	}
 
+	@Transactional
 	@Override
-	public MessageVO get(Long mno) {
+	public MessageVO get(Long mno, String userid) {
 		log.info("쪽지 조회하기");
+		MessageVO vo = mapper.read(mno); 
+		if(vo.getOdate()==null && userid.equals(vo.getTarget())) {
+			mapper.updateOdate(mno);
+		}
 		return mapper.read(mno);
 	}
 
 	@Override
-	public List<MessageVO> getList(Criteria cri) {
+	public MessagePageDTO getList(Criteria cri) {
 		log.info("쪽지 리스트");
-		return mapper.getList(cri);
+		return new MessagePageDTO(mapper.getCount(cri), mapper.getList(cri));
 	}
 
 	@Override
 	public int modify(MessageVO upt) {
 		log.info("쪽지 수정하기");
 		return mapper.update(upt);
-	}
-
-	@Override
-	public int modifyOdate(Long mno) {
-		log.info("odate 업데이트");
-		return mapper.updateOdate(mno);
 	}
 
 	@Override

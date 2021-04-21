@@ -278,4 +278,10 @@ public class MemberController {
 	public void findPw(@ModelAttribute MemberVO member, HttpServletResponse resp) throws Exception{
 		service.findPw(resp, member);
 	}
+	
+	@GetMapping("/message")
+	@PreAuthorize("isAuthenticated()")
+	public void message() {
+		log.info("쪽지함.............");
+	}
 }

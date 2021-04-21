@@ -38,6 +38,7 @@
 	                </div>
                 </div>
             </form>
+
             <!-- Navbar-->
             <ul class="navbar-nav ml-auto ml-md-0">
                 <li class="nav-item dropdown">
@@ -50,6 +51,7 @@
 		                        <a class="dropdown-item" href='/report/list/<sec:authentication property="principal.username"/>?tab=all'>신고리스트</a>
 		                        </sec:authorize>
                         		<div class="dropdown-divider"></div>
+                        		<a class="dropdown-item" href="/member/message"><i class="fa fa-comments fa-fw"></i> 쪽지함</a>
                         		<a class="dropdown-item" href="#" onclick="document.getElementById('logoutForm').submit();"><i class="fa fa-toggle-off"></i> Logout</a>
 	                        	<form id="logoutForm" action="/customLogout" method="POST">
 	   								<input name="${_csrf.parameterName}" type="hidden" value="${_csrf.token}"/>

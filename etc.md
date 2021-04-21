@@ -309,12 +309,25 @@ userDetail 커스텀 클래스을 이용하여 블락, 강퇴회원을 로그인
 1. 로그인 실패 수정 
 - 로그인 실패 커스텀 추가 및 에러 메시지 호출
 
-# 2021-04-20 개발이지
+# 2021-04-20 개발일지
 1. 쪽지 테이블 구성 
-테이블명 : tb_message 
-필드 : mno(pk), sender, target, message, sdate, odate, udate, refno 
+- 테이블명 : tb_message 
+- 필드 : mno(pk), sender, target, message, sdate, odate, udate, refno 
 
 2. Persistence, Service, Controller 완료 
 
+# 2021-04-21 개발일지
+3. 쪽지페이지 완료 
+- 탭(받은쪽지, 보낸쪽지)에 따라 리스트 출력
+- 각 항목을 클릭 시, 모달창으로 상세내역 조회 
+- 받은쪽지 : 답변/삭제, 보낸쪽지 : 수정/삭제
+  답변 : 이미 답할 경우, 버튼 숨김 
+  수정 : 쪽지를 읽었을 경우, 버튼 숨김 
+
+4. 문화/게시판 상세페이지에 쪽지 등록 추가 
+- 버튼 클릭 시, 모달창으로 등록폼 나옴 
+- 멤버, 관리지만 등록 가능 
+
+5. header에 쪽지함 추가  
 
 

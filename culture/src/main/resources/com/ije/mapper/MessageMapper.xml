@@ -6,12 +6,16 @@
 <mapper namespace="com.ije.mapper.MessageMapper">
 
 	<insert id="insert">
-	insert into tb_message(mno, sender, target, message)
-	values(seq_message.nextval, #{sender}, #{target}, #{message})
+	insert into tb_message(mno, sender, target, message, refno)
+	values(seq_message.nextval, #{sender}, #{target}, #{message}, #{refno})
 	</insert>
-	
+
 	<select id="read" resultType="com.ije.domain.MessageVO">
-	select * from tb_message where mno=#{mno} 
+	<![CDATA[
+	select mno, sender, target, message, sdate, odate, udate, refno,
+	NVL((select mno from tb_message b where b.refno=a.mno AND ROWNUM<=1),'0') as cno
+	from tb_message a where mno=#{mno} 
+	]]>
 	</select>
 	
 	
@@ -44,6 +48,13 @@
 		ROWNUM <= #{pageNum}*#{amount}
 	) where rn > (#{pageNum}-1)*#{amount}
 	]]>
+	</select>
+	
+	<select id="getCount" resultType="int">
+	select count(*) from 
+	tb_message where 
+	<include refid="criteria"></include>
+	1=1
 	</select>
 	
 	<update id="update">

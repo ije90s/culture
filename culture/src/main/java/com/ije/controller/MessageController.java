@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.ije.domain.Criteria;
+import com.ije.domain.MessagePageDTO;
 import com.ije.domain.MessageVO;
 import com.ije.service.MessageService;
 
@@ -39,18 +40,19 @@ public class MessageController {
 		return result>0?new ResponseEntity<>("success", HttpStatus.OK) : new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
 	}
 	
-	@GetMapping(value="/{mno}", produces = {MediaType.APPLICATION_JSON_UTF8_VALUE, MediaType.APPLICATION_XML_VALUE})
-	public ResponseEntity<MessageVO> get(@PathVariable("mno") Long mno){
+	@GetMapping(value="/{mno}/{userid}", produces = {MediaType.APPLICATION_JSON_UTF8_VALUE, MediaType.APPLICATION_XML_VALUE})
+	public ResponseEntity<MessageVO> get(@PathVariable("mno") Long mno, @PathVariable("userid") String userid){
 		log.info("쪽지 조회하기............................");
 		log.info(mno);
-		return new ResponseEntity<>(service.get(mno), HttpStatus.OK); 
+		return new ResponseEntity<>(service.get(mno, userid), HttpStatus.OK); 
 	}
 	
-	@GetMapping(value="/list/{type}/{keyword}", produces = {MediaType.APPLICATION_JSON_UTF8_VALUE, MediaType.APPLICATION_XML_VALUE})
-	public ResponseEntity<List<MessageVO>> list(@PathVariable("type") String type, @PathVariable("keyword") String keyword){
+	@GetMapping(value="/pages/{type}/{keyword}/{page}", produces = {MediaType.APPLICATION_JSON_UTF8_VALUE, MediaType.APPLICATION_XML_VALUE})
+	public ResponseEntity<MessagePageDTO> list(@PathVariable("type") String type, @PathVariable("keyword") String keyword, @PathVariable("page") int page){
 		log.info("리스트 조회하기................................");
 		log.info(type+" "+keyword);
 		Criteria cri = new Criteria(); 
+		cri.setPageNum(page);
 		cri.setType(type);
 		cri.setKeyword(keyword);
 		return new ResponseEntity<>(service.getList(cri), HttpStatus.OK); 
@@ -61,13 +63,6 @@ public class MessageController {
 		log.info("쪽지 수정하기....................");
 		log.info(upt);
 		return service.modify(upt)>0?new ResponseEntity<>("success", HttpStatus.OK) : new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR); 
-	}
-	
-	@PutMapping(value="/odate/{mno}", produces = {MediaType.TEXT_PLAIN_VALUE})
-	public ResponseEntity<String> modifyOdate(@PathVariable("mno") Long mno){
-		log.info("쪽지 읽음....................");
-		log.info(mno);
-		return service.modifyOdate(mno)>0?new ResponseEntity<>("success", HttpStatus.OK) : new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR); 
 	}
 	
 	@DeleteMapping(value="{mno}", produces = {MediaType.TEXT_PLAIN_VALUE})

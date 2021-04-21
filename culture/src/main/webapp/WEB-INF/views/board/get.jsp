@@ -17,7 +17,11 @@
                             	<c:if test="${board.report eq 'N' }"> 신고하기</c:if>
 			                    <c:if test="${board.report ne 'N' }"> 신고확인중</c:if>
 		                        </span>
-		                        <div class="float-right">작성자 : ${board.writer}</div>
+		                        <div class="float-right">작성자 : ${board.writer} 
+		                        <sec:authorize access="hasAnyRole('ROLE_ADMIN','ROLE_MEMBER')">
+		                        	<i id="msgBtn" class="fa fa-paper-plane" aria-hidden="true" style='cursor:pointer;'></i>
+		                        </sec:authorize>
+		                        </div>
 	                        </h6></div>
                             <div class="card-body">                            
                             	<div class="form-group">
@@ -118,7 +122,7 @@
 
       <!-- Modal body -->
       <div class="modal-body">
-     	<div class="form-group reply">
+     	<div class="form-group">
      		<label>댓글</label>
      		<input class="form-control" name="reply" />
      	</div>
@@ -129,7 +133,11 @@
      	<div>
   			<label>작성일</label>
      		<input class="form-control" name="rdate" />   	
-     	</div> 	
+     	</div> 
+     	<div>
+     		<label>내용</label>
+     		<input class="form-control" name="message" />
+     	</div>
       </div>
       <!-- Modal footer -->
       <div class="modal-footer">
@@ -144,6 +152,7 @@
 </div>            	
 <!-- The Modal 끝 -->     
 <script src="/resources/scripts/reply.js"></script>
+<script src="/resources/scripts/message.js"></script>
 <script src="/resources/scripts/report.js"></script>          
 <script src="/resources/scripts/common.js"></script>	  
 <script>
@@ -404,16 +413,19 @@ $(document).ready(function(){
 	}		
 	
 	
-	var replyer = null; 
+	var target = '<c:out value="${board.writer}" />';
+	var replyer = null;
 	var auth = null; 
 	<sec:authorize access="isAuthenticated()">
 		replyer = '<sec:authentication property="principal.username" />'; 
 		auth = '<sec:authentication property="principal.member.authList" />';
 	</sec:authorize>
 	var modal = $(".modal"); 
-	var modalReply = $(".modal").find("input[name='reply']"); 
-	var modalReplyer = $(".modal").find("input[name='replyer']"); 
-	var modalRdate = $(".modal").find("input[name='rdate']"); 
+	var modalTitle = $(".modal-title"); 
+	var modalReply = modal.find("input[name='reply']"); 
+	var modalReplyer = modal.find("input[name='replyer']"); 
+	var modalRdate = modal.find("input[name='rdate']"); 
+	var modalMsg = modal.find("input[name='message']"); 
 	var modalModBtn = $("#modBtn"); 
 	var modalDelBtn = $("#delBtn"); 
 	var modalReBtn = $("#reBtn"); 
@@ -426,19 +438,42 @@ $(document).ready(function(){
 	});
 	
 	$("#regBtn").click(function(){
+		modalTitle.text("댓글"); 
+		
+		modalReply.closest("div").show(); 
+		modalReplyer.closest("div").show(); 	
+		modalRdate.closest("div").hide(); 
+		modalMsg.closest("div").hide(); 	
+		
 		modalReply.val(""); 
 		modalReplyer.val(replyer);
-		modalRdate.closest("div").hide(); 
 		modal.find(modalDelBtn).hide(); 
 		modal.find(modalReBtn).hide();
 		modal.find(modalModBtn).text("등록").show();
-		modal.data("rno", 0); 
+		modal.data("no", 0); 
+		modal.data("type", "reply"); 
 		$(".modal").modal("show");
 	});
 	
+	$("#msgBtn").click(function(){
+		modalTitle.text("쪽지"); 
+		modalReply.closest("div").hide(); 
+		modalReplyer.closest("div").hide(); 
+		modalRdate.closest("div").hide(); 
+		modalMsg.closest("div").show();
+		modal.find(modalDelBtn).hide(); 
+		modal.find(modalReBtn).hide();
+		modal.find(modalModBtn).text("등록").show();
+		modal.data("no", 0); 
+		modal.data("type", "msg"); 
+		$(".modal").modal("show");
+	});	
+	
+	
 	modalModBtn.on("click",function(){
 		
-		var rno = modal.data("rno"); 
+		var no = modal.data("no"); 
+		var type = modal.data("type"); 
 		var text = $(this).text(); 
 		var reply; 
 		
@@ -449,7 +484,7 @@ $(document).ready(function(){
 			reply={
 					reply : modalReply.val(),
 					replyer : origin, 
-					rno : rno
+					rno : no
 				};
 			
 			if(!replyer){
@@ -472,20 +507,40 @@ $(document).ready(function(){
 			});					
 		}else if(text=="등록"){
 			
-			reply = {
-					reply : modalReply.val(), 
-					replyer : modalReplyer.val(), 
-					bno : bnoValue, 
-					refno : 0
-			};
+			if(type=="reply"){
+				reply = {
+						reply : modalReply.val(), 
+						replyer : modalReplyer.val(), 
+						bno : bnoValue, 
+						refno : 0
+				};
+						
+				replyService.add(reply, function(result){
+					alert("등록되었습니다."); 
 					
-			replyService.add(reply, function(result){
-				alert("등록되었습니다."); 
+					//modal.find("input").val(""); 
+					modal.modal("hide");
+					showList(-1);
+				});					
+			}else{
 				
-				//modal.find("input").val(""); 
-				modal.modal("hide");
-				showList(-1);
-			});			
+				reply ={
+					sender : replyer,
+					target : target,
+					message : modalMsg.val(), 
+					refno : 0
+				};
+				
+				msgService.add(reply, function(result){
+					alert("등록되었습니다.");
+					if(confirm("내용 확인하시겠습니까?")){
+						self.location="/member/message";
+					}
+					modal.modal("hide"); 
+					showList(pageNum);
+				});
+			}
+		
 		}else{
 			
 			reply = {
@@ -494,7 +549,7 @@ $(document).ready(function(){
 					bno : bnoValue, 
 					refno : rno
 			};
-			console.log(reply);
+			//console.log(reply);
 			
 			if(auth.includes("USER")){
 				alert("답글 쓸수 있는 권한이 없습니다."); 
@@ -515,7 +570,7 @@ $(document).ready(function(){
 		
 		e.preventDefault();
 		
-		var rno = modal.data("rno"); 
+		var rno = modal.data("no"); 
 		
 		if(!replyer){
 			alert("로그인후 삭제가 가능합니다."); 
@@ -542,7 +597,6 @@ $(document).ready(function(){
 		e.preventDefault();
 		modalReply.val(""); 
 		modalReplyer.val(replyer);
-		modalRdate.closest("div").hide(); 
 		modal.find(modalDelBtn).hide(); 
 		modal.find(modalModBtn).text("답글").show();
 		modal.find(modalReBtn).hide();
@@ -551,12 +605,21 @@ $(document).ready(function(){
 		
 	$(".chat").on("click", "li", function(e){
 		var rno = $(this).data("rno"); 
-
+		
 		replyService.get(rno, function(data){
+			modalTitle.text("댓글"); 
+			
+			modalReply.closest("div").show(); 
+			modalReplyer.closest("div").show(); 	
+			modalRdate.closest("div").show(); 
+			modalMsg.closest("div").hide(); 	
+			
 			modalReply.val(data.reply); 
 			modalReplyer.val(data.replyer); 
 			modalRdate.attr("readonly", "readonly").val(replyService.displyTime(data.rdate));
-			modal.data("rno", data.rno); 
+
+			modal.data("no", data.rno); 
+			modal.data("type", "reply");
 			modal.find(modalModBtn).text("수정").show();
 			modal.find(modalReBtn).show();
 			modal.find(modalDelBtn).show(); 

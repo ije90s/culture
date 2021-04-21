@@ -16,4 +16,5 @@ public class MessageVO {
 	private Date odate; 
 	private Date udate; 
 	private Long refno; 
+	private Long cno;
 }

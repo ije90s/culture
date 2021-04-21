@@ -20,7 +20,7 @@
 		                            	<c:if test="${culture.report eq 'N' }"> 신고하기</c:if>
 		                            	<c:if test="${culture.report ne 'N' }"> 신고확인중</c:if>
 		                            </span>	
-		                            <div class="float-right">작성자 : ${culture.writer}</div>
+		                            <c:if test="${pinfo.member.mno ne culture.mno}"><div class="float-right">작성자 : ${culture.writer} <i id="msgBtn" class="fa fa-paper-plane" aria-hidden="true"></i></div></c:if>
 	                                </h6>
                                 </c:if>
                             </div>
@@ -118,6 +118,34 @@
                              </div> <!-- card-body 끝  -->
                         </div> <!-- card mb-4 끝 -->
                 	</div> <!-- container-fluid 끝 -->
+<!-- The Modal -->
+<div class="modal fade" id="myModal" role="dialog">
+  <div class="modal-dialog">
+    <div class="modal-content">
+
+      <!-- Modal Header -->
+      <div class="modal-header">
+        <h4 class="modal-title">쪽지</h4>
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+      </div>
+
+      <!-- Modal body -->
+      <div class="modal-body">
+     	<div>
+     		<label>내용</label>
+     		<input class="form-control" name="message" />
+     	</div>
+      </div>
+      <!-- Modal footer -->
+      <div class="modal-footer">
+      	<button type="button" class="btn btn-success" id="reBtn">등록</button>
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">닫기</button>
+      </div>
+    </div>
+  </div>
+</div>            	
+<!-- The Modal 끝 -->                   	
+                	
 <div class="warningWrapper">
 	<div class="warningDiv">
 		<form id="reportForm">
@@ -151,6 +179,7 @@
  	<input type="hidden" name="keyword" value="${cri.keyword }" />
  </form>   
  <script src="/resources/scripts/common.js"></script>
+  <script src="/resources/scripts/message.js"></script>
  <script src="/resources/scripts/report.js"></script>
  <script>
  $(document).ready(function(){
@@ -320,7 +349,7 @@
 			 formRe.find("input[name='title']").val(""); 
 			 formRe.find("#content").val("");
 			 $(".warningWrapper").hide(); 
-		 }else{
+		 }else if(oper == "back"){
 			 history.back(-1);
 		 }
 	 });
@@ -379,6 +408,36 @@
 			 });
 		 }
 	 });	
+	 
+	 var target = '<c:out value="${culture.writer}" />';
+	 var sender = null;
+	 <sec:authorize access="isAuthenticated()">
+	 sender = '<sec:authentication property="principal.username" />'; 
+	 </sec:authorize>
+	 var modal = $(".modal"); 
+	 var modalMsg = modal.find("input[name='message']"); 
+	 var modalReBtn = $("#reBtn"); 
+	 
+	 $("#msgBtn").on("click", function(e){
+		 $(".modal").modal("show");
+	 });
+	 
+	 modalReBtn.on("click", function(e){	 
+		 var msg={
+			sender : sender, 
+			target : target, 
+			message : modalMsg.val(), 
+			refno : 0
+		};
+
+		 msgService.add(msg, function(result){
+			alert("등록되었습니다."); 
+			if(confirm("확인하시겠습니까?")){
+				self.location="/member/message"; 
+			}
+			modal.modal("hide");
+		 });
+	 });
  });
  </script>               	
 <%@ include file="../includes/footer.jsp"  %>
