@@ -101,7 +101,8 @@ $(document).ready(function(){
 				if(list[i].odate!=null) readchk="읽음";
 				
 				str+="<tr mno='"+list[i].mno+"' style='cursor:pointer;'><td>"+list[i].mno+"</td><td>"+user+"</td><td>"+list[i].message+"</td><td>"+msgService.displyTime(list[i].sdate)+"</td>";
-				if(type!="T") str+="<td>"+readchk+"</td>";
+				if(type!="T") 
+					str+="<td>"+readchk+"</td>";
 				str+="</tr>";
 			}
 			str+="</tbody>";

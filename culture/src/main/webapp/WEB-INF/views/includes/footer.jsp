@@ -1,6 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
-    
+ <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>   
    
                 </main>
                 <footer class="py-4 bg-light mt-auto">
@@ -31,6 +31,44 @@
         		if(e.keyCode==13)
         			$("#searchTotalForm").submit(); 
         	});
+        	
+
+
+			var checkId = null; 
+        	var sock = new SockJS("http://localhost:7080/echo");
+
+        	<sec:authorize access="isAuthenticated()">
+			checkId = '<sec:authentication property="principal.username" />'; 
+		    </sec:authorize>
+		    
+        	$(document).ready(function(){
+        	    if(checkId!=null)
+        	            connectWS();
+        	});
+ 
+        	 
+        	function connectWS(){
+        		sock.onopen = function() {
+        	    	console.log('연결 시작');
+        	    };
+        	    sock.onmessage = function(e){
+        	    	var splitdata =e.data.split(":");
+        	        
+        	    	if(splitdata[0].indexOf("chkMsg") > -1)
+        	    		if(parseInt(splitdata[1])==0){
+        	    			 $(".alert-num").hide();
+        	    		}else{
+        	    			 $(".alert-num").text(splitdata[1]);
+        	    		}
+        	        else
+        	            $(".alert-num").hide();
+        	        }
+        	        
+        	    	sock.onclose = function(){
+        	           console.log("연결 종료");
+        	        }
+        	        sock.onerror = function (err) {console.log('Errors : ' , err);};
+        	}
         });
         </script>
     </body>

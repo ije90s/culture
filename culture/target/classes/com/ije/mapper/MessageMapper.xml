@@ -71,5 +71,10 @@
 	<delete id="delete">
 	delete tb_message where mno=#{mno}
 	</delete>
+	
+	<select id="getCountByTarget" resultType="int">
+	select count(*) from tb_message 
+	where target=#{target} and odate is null
+	</select>
 
 </mapper>

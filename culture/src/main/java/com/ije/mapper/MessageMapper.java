@@ -14,4 +14,5 @@ public interface MessageMapper {
 	public int updateOdate(Long mno); 
 	public int delete(Long mno);
 	public int getCount(Criteria cri);
+	public int getCountByTarget(String target); 
 }

@@ -22,7 +22,8 @@
         
         <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js" integrity="sha512-qTXRIMyZIFb8iQcfjXWCO8+M5Tbc38Qi5WzdPOYZHIlZpzBHG3L3by84BBBOiRGiEb7KKtAOAs5qYdUiZiQNNQ==" crossorigin="anonymous"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.min.js"></script>
-	    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.bundle.min.js"></script>    
+	    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.bundle.min.js"></script>  
+	    <script src="https://cdn.jsdelivr.net/npm/sockjs-client@1/dist/sockjs.min.js"></script>  
     </head>
     <body class="sb-nav-fixed">
         <nav class="sb-topnav navbar navbar-expand navbar-dark bg-dark">
@@ -38,7 +39,14 @@
 	                </div>
                 </div>
             </form>
-
+            <button class="btn btn-link" onclick="javascript:self.location='/member/message'">
+				<i class="fa fa-comments fa-fw" style="color:rgba(255, 255, 255, 0.5); font-size:20px;"></i>
+				<span class="badge badge-pill badge-danger alert-num">1</span>
+				<!--div id="badge" >	            
+				<i class="fa fa-comments fa-fw" style="color:rgba(255, 255, 255, 0.5); font-size:20px;"></i>
+				<a class="entypo-bell"></a>
+				</div-->
+            </button>
             <!-- Navbar-->
             <ul class="navbar-nav ml-auto ml-md-0">
                 <li class="nav-item dropdown">
@@ -51,7 +59,6 @@
 		                        <a class="dropdown-item" href='/report/list/<sec:authentication property="principal.username"/>?tab=all'>신고리스트</a>
 		                        </sec:authorize>
                         		<div class="dropdown-divider"></div>
-                        		<a class="dropdown-item" href="/member/message"><i class="fa fa-comments fa-fw"></i> 쪽지함</a>
                         		<a class="dropdown-item" href="#" onclick="document.getElementById('logoutForm').submit();"><i class="fa fa-toggle-off"></i> Logout</a>
 	                        	<form id="logoutForm" action="/customLogout" method="POST">
 	   								<input name="${_csrf.parameterName}" type="hidden" value="${_csrf.token}"/>
