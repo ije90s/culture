@@ -173,13 +173,12 @@ $(document).ready(function(){
 	$("#mtable").on("click", "tr", function(e){
 		
 		var mno = $(this).attr("mno"); 
-		
 		if(!username){
 			alert("로그인 이후에 수정 가능합니다.");
 			return false; 
 		}
 		
-		msgService.get(mno, username, function(data){
+		msgService.get(mno, username,  function(data){
 			modalSender.attr("readonly", "readonly").val(data.sender); 
 			modalTarget.attr("readonly", "readonly").val(data.target); 
 			modalMSG.val(data.message);

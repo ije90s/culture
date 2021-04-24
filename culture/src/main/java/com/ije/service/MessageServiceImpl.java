@@ -56,4 +56,10 @@ public class MessageServiceImpl implements MessageService {
 		return mapper.delete(mno);
 	}
 
+	@Override
+	public List<MessageVO> getListByTarget(String target) {
+		log.info("안읽은 쪽지 3개 가져오기");
+		return mapper.getListByTarget(target);
+	}
+
 }

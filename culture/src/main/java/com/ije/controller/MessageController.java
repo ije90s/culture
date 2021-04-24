@@ -71,5 +71,13 @@ public class MessageController {
 		log.info(mno);
 		return service.remove(mno)>0?new ResponseEntity<>("success", HttpStatus.OK) : new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
 	}
-
+	
+	@GetMapping(value="/notRead/{target}", produces = {MediaType.APPLICATION_JSON_UTF8_VALUE, MediaType.APPLICATION_XML_VALUE})
+	public ResponseEntity<List<MessageVO>> notRead(@PathVariable("target") String target) {
+		log.info("안읽은 쪽지...............................");
+		log.info(target);
+		log.info(service.getListByTarget(target));
+		return new ResponseEntity<>(service.getListByTarget(target), HttpStatus.OK);
+	}
+	
 }

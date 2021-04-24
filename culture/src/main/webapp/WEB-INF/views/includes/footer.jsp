@@ -16,7 +16,7 @@
                     </div>
                 </footer>
             </div>
-        </div>   
+        </div>  
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
         <script src="/resources/dist/js/scripts.js"></script>
         <script src="https://cdn.datatables.net/1.10.20/js/jquery.dataTables.min.js" crossorigin="anonymous"></script>
@@ -40,13 +40,9 @@
         	<sec:authorize access="isAuthenticated()">
 			checkId = '<sec:authentication property="principal.username" />'; 
 		    </sec:authorize>
-		    
-        	$(document).ready(function(){
-        	    if(checkId!=null)
-        	            connectWS();
-        	});
- 
-        	 
+        	if(checkId!=null)
+        		connectWS();
+
         	function connectWS(){
         		sock.onopen = function() {
         	    	console.log('연결 시작');
@@ -58,7 +54,7 @@
         	    		if(parseInt(splitdata[1])==0){
         	    			 $(".alert-num").hide();
         	    		}else{
-        	    			 $(".alert-num").text(splitdata[1]);
+        	    			 $(".alert-num").text(splitdata[1].trim());
         	    		}
         	        else
         	            $(".alert-num").hide();
@@ -69,7 +65,32 @@
         	        }
         	        sock.onerror = function (err) {console.log('Errors : ' , err);};
         	}
+        	
+        	(function(){
+        		$.getJSON("/message/notRead/"+checkId, function(arr){
+        			
+        			//console.log(arr);
+        			var str=""; 
+        			
+        			if(arr==null && arr.length==0){
+        				return; 
+        			}
+        			for(var i=0;i<arr.length;i++){
+        				var message = arr[i].message; 
+        				if(message.length>10) message=message.substr(0,10)+"…";
+            			str+="<a class='dropdown-item' href='/member/messageDetail?mno="+arr[i].mno+"'>";
+            			str+='<div><span class="pull-right badge badge-pill badge-primary read-check">From</span> ';
+            			str+='<strong>'+arr[i].sender+'</strong></div>'; 
+            			str+='<div>'+message+'</div></a>'; 
+            			str+='<div class="dropdown-divider"></div>';        		
+        			}
+        			str+='<a class="dropdown-item" href="/member/message">더보기</a>';
+					$("#notReadList").html(str);
+        		}); 
+        	})();
+        	
         });
+
         </script>
     </body>
 </html>

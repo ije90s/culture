@@ -39,14 +39,15 @@
 	                </div>
                 </div>
             </form>
-            <button class="btn btn-link" onclick="javascript:self.location='/member/message'">
-				<i class="fa fa-comments fa-fw" style="color:rgba(255, 255, 255, 0.5); font-size:20px;"></i>
-				<span class="badge badge-pill badge-danger alert-num">1</span>
-				<!--div id="badge" >	            
-				<i class="fa fa-comments fa-fw" style="color:rgba(255, 255, 255, 0.5); font-size:20px;"></i>
-				<a class="entypo-bell"></a>
-				</div-->
-            </button>
+            <ul class="navbar-nav ml-auto ml-md-0">
+            	<li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" id="msgDropdown" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+	                    <i class="fa fa-comments fa-fw" style="color:rgba(255, 255, 255, 0.5); font-size:20px;"></i>
+	                    <span class="badge badge-pill badge-danger alert-num">1</span>
+				    </a>
+                    <div id="notReadList" class="dropdown-menu dropdown-menu-right" aria-labelledby="msgDropdown"></div>
+                </li>
+            </ul>
             <!-- Navbar-->
             <ul class="navbar-nav ml-auto ml-md-0">
                 <li class="nav-item dropdown">

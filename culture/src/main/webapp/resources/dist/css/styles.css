@@ -10351,4 +10351,4 @@ body {
 					  80% {transform: scale(1.2);} 
 					  100% {transform: scale(1);}
 					}
-					.alert-num{position:realtive; display: inline-block; overflow: hidden; right:12px; top:-7px;}
+					.alert-num{position:realtive; display: inline-block; overflow: hidden;margin-bottom:5px;margin-left:-12px;}

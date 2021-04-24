@@ -15,4 +15,5 @@ public interface MessageMapper {
 	public int delete(Long mno);
 	public int getCount(Criteria cri);
 	public int getCountByTarget(String target); 
+	public List<MessageVO> getListByTarget(String target);
 }

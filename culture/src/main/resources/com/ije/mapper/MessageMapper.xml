@@ -76,5 +76,13 @@
 	select count(*) from tb_message 
 	where target=#{target} and odate is null
 	</select>
+	
+	<select id="getListByTarget" resultType="com.ije.domain.MessageVO">
+	<![CDATA[
+	select /*+ INDEX_ASC(tb_message, pk_message) */ 
+	mno, sender, target, message, sdate, odate, udate, refno 
+	from tb_message where target=#{target} and odate is null and ROWNUM <= 3
+	]]>
+	</select>
 
 </mapper>
