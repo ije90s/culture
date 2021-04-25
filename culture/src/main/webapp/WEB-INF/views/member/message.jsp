@@ -12,8 +12,8 @@
                             <div class="card-header">
                             	<div class="float-right"> 
 	                            	<ul class="list-group list-group-horizontal">
-	                            		<li class="list-group-item"><a class="move" href="T">받은쪽지</a></li>
-	                            		<li class="list-group-item"><a class="move" href="S">보낸쪽지</a></li>
+	                            		<li class='list-group-item'><a class="move" href="T">받은쪽지</a></li>
+	                            		<li class='list-group-item'><a class="move" href="S">보낸쪽지</a></li>
 	                            	</ul>
                             	</div>
                             </div>
@@ -71,7 +71,7 @@ $(document).ready(function(){
 	var table =$("#mtable"); 
 	var username = null; 
 	var pageNum=1; 
-	var type = "T"; 
+	var type = 'T';
 	var msgPageFooter = $(".card-footer"); 
 	<sec:authorize access="isAuthenticated()">
 	username = '<sec:authentication property="principal.username" />'; 
@@ -148,13 +148,13 @@ $(document).ready(function(){
 		msgPageFooter.html(str);
 	}	
 	
-	var modal = $(".modal"); 
-	var modalSender = $(".modal").find("input[name='sender']"); 
-	var modalTarget = $(".modal").find("input[name='target']"); 
-	var modalMSG = $(".modal").find("input[name='message']"); 
-	var modalModBtn = $("#modBtn"); 
-	var modalDelBtn = $("#delBtn"); 
-	var modalReBtn = $("#reBtn"); 	
+	var modal = $("#myModal"); 
+	var modalSender = modal.find("input[name='sender']"); 
+	var modalTarget = modal.find("input[name='target']"); 
+	var modalMSG = modal.find("input[name='message']"); 
+	var modalModBtn = modal.find("#modBtn"); 
+	var modalDelBtn = modal.find("#delBtn"); 
+	var modalReBtn = modal.find("#reBtn"); 	
 	
 	var csrfHeader = "${_csrf.headerName}";
 	var csrfToken = "${_csrf.token}";
@@ -193,7 +193,7 @@ $(document).ready(function(){
 				if(data.odate!=null) modal.find(modalModBtn).hide();
 			}
 			modal.find(modalDelBtn).show(); 
-			$(".modal").modal("show");
+			modal.modal("show");
 		});		
 	});
 	

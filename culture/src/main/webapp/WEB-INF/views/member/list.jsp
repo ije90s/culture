@@ -216,7 +216,7 @@ $(document).ready(function(){
 		form.attr("action", "/member/list").submit();
 	});
 		
-	var modal = $(".modal"); 
+	var modal = $("#myModal"); 
 	var ranking = modal.find(".ranking"); 
 	var block = modal.find(".block"); 
 	

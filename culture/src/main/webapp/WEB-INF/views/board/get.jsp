@@ -420,15 +420,15 @@ $(document).ready(function(){
 		replyer = '<sec:authentication property="principal.username" />'; 
 		auth = '<sec:authentication property="principal.member.authList" />';
 	</sec:authorize>
-	var modal = $(".modal"); 
-	var modalTitle = $(".modal-title"); 
+	var modal = $("#myModal"); 
+	var modalTitle = modal.find(".modal-title"); 
 	var modalReply = modal.find("input[name='reply']"); 
 	var modalReplyer = modal.find("input[name='replyer']"); 
 	var modalRdate = modal.find("input[name='rdate']"); 
 	var modalMsg = modal.find("input[name='message']"); 
-	var modalModBtn = $("#modBtn"); 
-	var modalDelBtn = $("#delBtn"); 
-	var modalReBtn = $("#reBtn"); 
+	var modalModBtn = modal.find("#modBtn"); 
+	var modalDelBtn = modal.find("#delBtn"); 
+	var modalReBtn = modal.find("#reBtn"); 
 	
 	var csrfHeader = "${_csrf.headerName}";
 	var csrfToken = "${_csrf.token}";
@@ -447,12 +447,12 @@ $(document).ready(function(){
 		
 		modalReply.val(""); 
 		modalReplyer.val(replyer);
-		modal.find(modalDelBtn).hide(); 
-		modal.find(modalReBtn).hide();
-		modal.find(modalModBtn).text("등록").show();
+		modalDelBtn.hide(); 
+		modalReBtn.hide();
+		modalModBtn.text("등록").show();
 		modal.data("no", 0); 
 		modal.data("type", "reply"); 
-		$(".modal").modal("show");
+		modal.modal("show");
 	});
 	
 	$("#msgBtn").click(function(){
@@ -461,12 +461,12 @@ $(document).ready(function(){
 		modalReplyer.closest("div").hide(); 
 		modalRdate.closest("div").hide(); 
 		modalMsg.closest("div").show();
-		modal.find(modalDelBtn).hide(); 
-		modal.find(modalReBtn).hide();
-		modal.find(modalModBtn).text("등록").show();
+		modalDelBtn.hide(); 
+		modalReBtn.hide();
+		modalModBtn.text("등록").show();
 		modal.data("no", 0); 
 		modal.data("type", "msg"); 
-		$(".modal").modal("show");
+		modal.modal("show");
 	});	
 	
 	
@@ -597,10 +597,10 @@ $(document).ready(function(){
 		e.preventDefault();
 		modalReply.val(""); 
 		modalReplyer.val(replyer);
-		modal.find(modalDelBtn).hide(); 
-		modal.find(modalModBtn).text("답글").show();
-		modal.find(modalReBtn).hide();
-		$(".modal").modal("show");	
+		modalDelBtn.hide(); 
+		modalModBtn.text("답글").show();
+		modalReBtn.hide();
+		modal.modal("show");	
 	});
 		
 	$(".chat").on("click", "li", function(e){
@@ -620,10 +620,10 @@ $(document).ready(function(){
 
 			modal.data("no", data.rno); 
 			modal.data("type", "reply");
-			modal.find(modalModBtn).text("수정").show();
-			modal.find(modalReBtn).show();
-			modal.find(modalDelBtn).show(); 
-			$(".modal").modal("show");
+			modalModBtn.text("수정").show();
+			modalReBtn.show();
+			modalDelBtn.show(); 
+			modal.modal("show");
 		});
 	});
 		

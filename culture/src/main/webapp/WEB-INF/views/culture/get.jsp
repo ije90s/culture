@@ -414,12 +414,12 @@
 	 <sec:authorize access="isAuthenticated()">
 	 sender = '<sec:authentication property="principal.username" />'; 
 	 </sec:authorize>
-	 var modal = $(".modal"); 
+	 var modal = $("#myModal"); 
 	 var modalMsg = modal.find("input[name='message']"); 
-	 var modalReBtn = $("#reBtn"); 
+	 var modalReBtn = modal.find("#reBtn"); 
 	 
 	 $("#msgBtn").on("click", function(e){
-		 $(".modal").modal("show");
+		 modal.modal("show");
 	 });
 	 
 	 modalReBtn.on("click", function(e){	 

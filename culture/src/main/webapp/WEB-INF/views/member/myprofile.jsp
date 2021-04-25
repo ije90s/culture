@@ -258,10 +258,10 @@ $(document).ready(function(){
 		memberService.validate($(this));
 	});
 	
-	var modal = $(".modal"); 
-	var modalTitle = $(".modal-title");
-	var modalBody = $(".modal-body"); 
-	var modalBtn = $(".btn-primary"); 
+	var modal = $("#myModal"); 
+	var modalTitle = modal.find(".modal-title");
+	var modalBody = modal.find(".modal-body"); 
+	var modalBtn = modal.find(".btn-primary"); 
 	$(".move").on("click", function(e){
 		e.preventDefault();
 		var href = $(this).attr("href"); 

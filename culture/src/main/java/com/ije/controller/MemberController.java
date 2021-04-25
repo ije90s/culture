@@ -285,10 +285,4 @@ public class MemberController {
 		log.info("쪽지함.............");
 	}
 	
-	@GetMapping("/messageDetail")
-	@PreAuthorize("isAuthenticated()")
-	public void messageDetail(@RequestParam("mno") Long mno, Model d) {
-		log.info("쪽지 상세...............");
-		d.addAttribute("mno", mno);
-	}
 }
