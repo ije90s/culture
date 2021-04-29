@@ -26,14 +26,14 @@
 * 관리자 : 공지사항, 회원/게시판관리, 신고처리   
 
 ### 2-2. 요구화면 정의서 
-[tab(요구화면정의서 참조)](./etc/culture.xlsx)
+[요구화면정의서](./etc/요구화면정의서.pdf)
 
 ## 3. DB 구성 
 ### ERD 구성 
 ![culture](./etc/culture.png)
 
 ### 테이블 정의서
-[tab(테이블정의서참조)](./etc/culture.xlsx)
+[테이블정의서](./etc/테이블정의서.pdf)
 
 ## 4. 화면정의서 
-[tab(화면정의서참조)](./etc/culture.xlsx)
+[화면정의서](./etc/화면정의서.pdf)
