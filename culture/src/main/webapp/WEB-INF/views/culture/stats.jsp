@@ -159,7 +159,7 @@ $(document).ready(function(){
 		$('.nav-tabs a[href="#'+tab+'"]').tab('show');
 	});
 	
-	var modal = $(".modal"); 
+	var modal = $("#myModal"); 
 	var modalThead = modal.find("thead"); 
 	var modalTbody = modal.find("tbody");
 	
@@ -184,7 +184,7 @@ $(document).ready(function(){
 				str+="<td>"+list[i].rank+"점</td></tr>";		
 			}
 			modalTbody.html(str);
-			$(".modal").modal("show");
+			modal.modal("show");
 		});
 	}); 
 	
@@ -208,7 +208,7 @@ $(document).ready(function(){
 				}			
 			}
 			modalTbody.html(str);
-			$(".modal").modal("show");
+			modal.modal("show");
 		}); 	
 	}); 
 	
