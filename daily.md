@@ -22,13 +22,6 @@ git에 대한 지식이 부족하여 현 프로젝트를 repository하는데 시
 ## 2021.02.22 일지 
 1. 웹 계층 CRUD 구현 
 - CultureController에 아래와 같은 표로 구현 
-|구분|URL|Method|Parameter|From|URL이동|
-|------|---|---|---|---|---|
-|목록|/culture/list|get||||
-|상세|/culture/get|get|cno|||
-|등록|/culture/register|post|모든항목|입력화면필요|O|
-|수정|/culture/modify|post|모든항목|입력화면필요|O|
-|삭제|/culture/remove|post|cno|입력화면필요|O|
 - MockMVC로 각각 화면 테스트 
 2. 화면단 처리 
 - [부트스트랩을 이용](https://startbootstrap.com/theme/sb-admin-2)
@@ -521,7 +514,7 @@ userDetail 커스텀 클래스을 이용하여 블락, 강퇴회원을 로그인
 ## 2021-04-23 일지 
 1. 쪽지 알림 기능 추가 
 - WebSocket을 이용하여 유저가 접속 시, 읽지 않은 쪽지 건수 가져오도록 셋팅
-- 화면단에는 footer.jsp에 sockjs-client(https://github.com/sockjs/sockjs-client)을 이용, 
+- 화면단에는 footer.jsp에 [sockjs-client](https://github.com/sockjs/sockjs-client)을 이용, 
   가져온 건수를 읽어 상단 쪽지아이콘에 뱃지로 표시하도록 처리 
 
 ## 2021-04-24 일지 
